@@ -14,8 +14,12 @@ import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import com.bsptechs.main.popup.file.FileUtility;
 import com.bsptechs.main.util.ui.MainFrameUtility;
+import java.awt.Frame;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -24,6 +28,9 @@ import javax.swing.JOptionPane;
 public class UiPopupTable extends UiPopupAbstract {
 
     private static DatabaseDAOInter database = new DatabaseDAOImpl();
+    private JList list;
+    private JPanel pane;
+    private JFrame frame;
 
     public UiPopupTable() {
 
@@ -71,6 +78,10 @@ public class UiPopupTable extends UiPopupAbstract {
 
     }
 
+    private UiPopupTable(Frame frame, JList list, JPanel pane) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public void delete() {
         System.out.println("table delete");
         //Tebriz burani dolduracaq
@@ -88,12 +99,11 @@ public class UiPopupTable extends UiPopupAbstract {
 
     public void viewTable() {
         Main m = Config.getMain();
+ UiElement element = (UiElement) m.getListTable().getSelectedValue();
 
-        UiElement element = (UiElement) m.getListTable().getSelectedValue();
-         
-        if (element.getData() instanceof TableName) { 
+        if (element.getData() instanceof TableName) {
             TableName tb = (TableName) element.getData();
-            MainFrameUtility.runQuery("select * from "+tb.getTableName());
+            MainFrameUtility.runQuery("select * from " + tb.getTableName());
         }
     }
 
@@ -101,7 +111,7 @@ public class UiPopupTable extends UiPopupAbstract {
         TableName tb = MainFrameUtility.getSelectedTableFromList();
         String newTblName = (String) JOptionPane.showInputDialog(null, "Enter new name:", "Rename Table",
                 JOptionPane.QUESTION_MESSAGE, null, null, tb.getTableName());
-        database.renameTable(tb.getDatabaseName(), tb.getTableName(), newTblName);
+        database.renameTable(tb, newTblName);
         List<TableName> tbNames = database.getAllTables(tb.getDatabaseName());
         MainFrameUtility.fillList(tbNames, frame, new UiPopupTable(frame, list, pane), "table", list);
     }
@@ -111,24 +121,23 @@ public class UiPopupTable extends UiPopupAbstract {
         UiElement selectedElement = (UiElement) list.getModel().getElementAt(selectedIndex);
         TableName tb = (TableName) selectedElement.getData();
         List<TableName> tbNames = database.getAllTables(tb.getDatabaseName());
-        
         Main m = Config.getMain();
         MainFrameUtility.fillList(tbNames, m, new UiPopupTable(), "table", m.getListTable());
     }
 
     private void emptyTable() {
         TableName tb = MainFrameUtility.getSelectedTableFromList();
-        database.emptyTable(tb.getDatabaseName(), tb.getTableName());
+        database.emptyTable(tb.getDatabaseName().getName(), tb.getTableName());
     }
 
     private void truncateTeable() {
         TableName tb = MainFrameUtility.getSelectedTableFromList();
-        database.truncateTable(tb.getDatabaseName(), tb.getTableName());
+        database.truncateTable(tb.getDatabaseName().getName(), tb.getTableName());
     }
 
     private void copyTable() {
         TableName tb = MainFrameUtility.getSelectedTableFromList();
-        FileUtility.writeDBAndTblNameFile(tb.getDatabaseName(), tb.getTableName());
+        FileUtility.writeDBAndTblNameFile(tb.getDatabaseName().getName(), tb.getTableName());
     }
 
     private void pasteTable() {
@@ -136,13 +145,13 @@ public class UiPopupTable extends UiPopupAbstract {
 
         String newTblName = (String) JOptionPane.showInputDialog(null, "Enter name:", "Paste Table",
                 JOptionPane.QUESTION_MESSAGE, null, null, tb.getTableName());
-        database.pasteTable(FileUtility.readDBAndTblName(), tb.getDatabaseName(), newTblName);
+        database.pasteTable(FileUtility.readDBAndTblName(), tb.getDatabaseName().getName(), newTblName);
         refreshDB();
     }
 
     private void dublicateTable() {
         TableName tb = MainFrameUtility.getSelectedTableFromList();
-        database.dublicateTable(tb.getDatabaseName(), tb.getTableName());
+        database.dublicateTable(tb.getDatabaseName().getName(), tb.getTableName());
         refreshDB();
     }
 
