@@ -20,6 +20,8 @@ public class TableCell {
     private String columnName;
     private Object columnValue;
     private boolean primaryKey;
+    private boolean editable = true;
+    private boolean updateMode;
     
     public TableCell() {
     }

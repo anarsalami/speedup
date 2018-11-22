@@ -91,7 +91,7 @@ public class UiPopupTable extends UiPopupAbstract {
 
         if (element instanceof UiElementTable) {
             UiElementTable tb = (UiElementTable) element;
-            PanelQuery.runQuery("select * from " + tb.getTableName());
+            PanelQuery.viewTable(tb);
         }
     }
 

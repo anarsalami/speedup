@@ -9,7 +9,9 @@ import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.table.CustomTable;
 import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
 import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.table.TableData;
+import com.bsptechs.main.bean.ui.table.CustomTableModel;
+import com.bsptechs.main.bean.ui.table.TableRow;
+import com.bsptechs.main.bean.ui.uielement.UiElementTable;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import com.bsptechs.main.util.ImageUtil;
@@ -34,6 +36,8 @@ public class PanelQuery extends javax.swing.JPanel {
         initComponents();
         preparePanel(connection, database);
         setIcon();
+        CustomTable tbl = getTable();
+        tbl.setConnection(getSelectedConnection());
     }
 
     public void setIcon() {
@@ -69,6 +73,9 @@ public class PanelQuery extends javax.swing.JPanel {
             connection = list.get(0);
         }
         cbConnections.setSelectedItem(connection);
+
+        CustomTable tbl = getTable();
+        tbl.setConnection(getSelectedConnection());
     }
 
     public void prepareDatabasesCombobox(UiElementConnection connection, UiElementDatabase database) {
@@ -124,8 +131,6 @@ public class PanelQuery extends javax.swing.JPanel {
         btnSaveChangesForTable = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        btnRefresh = new javax.swing.JButton();
-        btnStop = new javax.swing.JButton();
 
         splitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -378,41 +383,56 @@ public class PanelQuery extends javax.swing.JPanel {
 
             }
         ));
+        tblQueryResult.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tblQueryResultFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tblQueryResultFocusLost(evt);
+            }
+        });
+        tblQueryResult.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                tblQueryResultPropertyChange(evt);
+            }
+        });
         jScrollPane4.setViewportView(tblQueryResult);
 
-        btnAdd.setText("Add");
+        btnAdd.setText("+");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
-        btnSaveChangesForTable.setText("Save");
+        btnSaveChangesForTable.setText("S");
+        btnSaveChangesForTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveChangesForTableActionPerformed(evt);
+            }
+        });
 
-        btnDelete.setText("Delete");
+        btnDelete.setText("-");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
             }
         });
 
-        btnCancel.setText("Cancel");
-
-        btnRefresh.setText("Refresh");
-
-        btnStop.setText("Stop");
+        btnCancel.setText("X");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btnAdd)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDelete)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSaveChangesForTable)
+                .addComponent(btnSaveChangesForTable, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRefresh)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnStop)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -423,9 +443,7 @@ public class PanelQuery extends javax.swing.JPanel {
                     .addComponent(btnAdd)
                     .addComponent(btnSaveChangesForTable)
                     .addComponent(btnDelete)
-                    .addComponent(btnCancel)
-                    .addComponent(btnRefresh)
-                    .addComponent(btnStop)))
+                    .addComponent(btnCancel)))
         );
 
         javax.swing.GroupLayout pnlResultLayout = new javax.swing.GroupLayout(pnlResult);
@@ -459,6 +477,8 @@ public class PanelQuery extends javax.swing.JPanel {
 
     public void setQuery(String txt) {
         txtQuery.setText(txt);
+        CustomTable tbl = getTable();
+        tbl.setQuery(txt);
     }
 
     private CustomTable getTable() {
@@ -468,8 +488,18 @@ public class PanelQuery extends javax.swing.JPanel {
     @SneakyThrows
     public void runQuery() {
         CustomTable tbl = getTable();
-        TableData data = db.runQuery(txtQuery.getText(), getSelectedConnection(), getSelectedDatabase());
-        tbl.setData(data);
+        CustomTableModel model = db.runQuery(txtQuery.getText(), getSelectedConnection(), getSelectedDatabase());
+        tbl.setModel(model);
+        tbl.setConnection(getSelectedConnection());
+        tbl.setDatabase(getSelectedDatabase());
+    }
+ 
+    
+    @SneakyThrows
+    public void runQuery(String query, UiElementConnection conn, UiElementDatabase database) {
+        CustomTable tbl = getTable();
+        CustomTableModel model = db.runQuery(query, conn, database);
+        tbl.setModel(model);
     }
 
     public UiElementDatabase getSelectedDatabase() {
@@ -587,12 +617,46 @@ public class PanelQuery extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        CustomTable tbl = getTable();
+        TableRow addedRow = tbl.addEmptyRow();
+        System.out.println("row added");
+        btnAdd.setEnabled(false);
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void tblQueryResultPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tblQueryResultPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblQueryResultPropertyChange
+
+    private void tblQueryResultFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblQueryResultFocusGained
+        CustomTable table = getTable();
+        TableRow row = table.getSelectedTableRow();
+        System.out.println("tblQueryResultFocusGained=" + row);
+    }//GEN-LAST:event_tblQueryResultFocusGained
+
+    private void tblQueryResultFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblQueryResultFocusLost
+        CustomTable table = getTable();
+        TableRow row = table.getSelectedTableRow();
+        System.out.println("tblQueryResultFocusLost=" + row);
+    }//GEN-LAST:event_tblQueryResultFocusLost
+
+    private void btnSaveChangesForTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesForTableActionPerformed
+        CustomTable table = getTable();
+        TableRow row = table.getSelectedTableRow();
+        db.saveRow(table.getConnection(), row);
+        runQuery(table.getQuery(), table.getConnection(), table.getDatabase());
+    }//GEN-LAST:event_btnSaveChangesForTableActionPerformed
+
+    public static void viewTable(UiElementTable table) {
+        runQuery("select * from " + table.getTableName());
+    }
+
     public static void runQuery(String txt) {
         Config.getMain().prepareNewQuery();
         Config.getMain().getPanelQuery().setQuery(txt);
         Config.getMain().getPanelQuery().runQuery();
     }
- 
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -602,11 +666,9 @@ public class PanelQuery extends javax.swing.JPanel {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExportResult;
     private javax.swing.JButton btnQueryBuilder;
-    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnRun;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnSaveChangesForTable;
-    private javax.swing.JButton btnStop;
     private javax.swing.JButton btnText;
     private javax.swing.JButton btnexplain;
     private javax.swing.JButton btnstop;

@@ -824,9 +824,9 @@ public class Main extends javax.swing.JFrame {
         return panelQuery;
     }
 
-    public void prepareNewQuery() {
+     public void prepareNewQuery() {
         UiElementTable table = getListTable().getSelectedTable();
-
+        System.out.println("table name="+table.getTableName()+", databasename="+table.getDatabaseName());
         UiElementConnection conn = table != null ? table.getDatabaseName().getConnection() : Config.getCurrentConnection();
         UiElementDatabase db = table != null ? table.getDatabaseName() : Config.getCurrentDatabaseName();
 

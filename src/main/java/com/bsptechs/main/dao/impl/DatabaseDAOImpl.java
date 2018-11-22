@@ -6,7 +6,7 @@ import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
 import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
 import com.bsptechs.main.bean.ui.uielement.UiElementTable;
 import com.bsptechs.main.bean.ui.table.TableCell;
-import com.bsptechs.main.bean.ui.table.TableData;
+import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;
 import com.bsptechs.main.dao.inter.AbstractDatabase;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
@@ -89,7 +89,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @Override
-    public TableData runQuery(String query, UiElementConnection connection, UiElementDatabase database) throws Exception {
+    public CustomTableModel runQuery(String query, UiElementConnection connection, UiElementDatabase database) throws Exception {
         Connection conn = connect(connection);
  
         Statement stmt = conn.createStatement();
@@ -118,7 +118,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
             rows.add(row);
         }
-        TableData table = new TableData(rows, columns, databaseName, tableName);
+        CustomTableModel table = new CustomTableModel(rows, columns, databaseName, tableName);
         return table;
     }
 
@@ -254,8 +254,6 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         return collations;
     }
     
-    
-    
     @SneakyThrows
     @Override 
     public boolean deleteRows(UiElementConnection connection, List<TableRow> rows) {
@@ -317,4 +315,34 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
         return true;
     }
+    
+     @SneakyThrows
+     @Override
+     public boolean saveRow(UiElementConnection connection, TableRow row) {
+        Connection conn = connect(connection);
+
+        Vector<TableCell> cells = row;
+        String query = "update "
+                + " " + row.getDatabaseName() + "." + row.getTableName() + " set ";
+
+        for (int i = 0; i < cells.size(); i++) {
+            TableCell cell = cells.get(i);
+            if(cell.isUpdateMode())
+                query += cell.getColumnName() + "=?,";
+        }
+        query = query.substring(0,query.length()-1);
+        System.out.println("query deleteRowByRow=" + query);
+        PreparedStatement stmt = conn.prepareStatement(query);
+        int index = 1;
+        for (int i = 0; i < cells.size(); i++) {
+            TableCell cell = cells.get(i);
+            if(cell.isUpdateMode())
+                stmt.setObject(index++, cell.getColumnValue());
+        }
+
+        stmt.executeUpdate();
+        return true;
+    }
+
+    
 }

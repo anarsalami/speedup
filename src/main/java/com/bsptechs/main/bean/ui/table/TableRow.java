@@ -22,7 +22,8 @@ public class TableRow extends Vector<TableCell> {
 
     private String databaseName;
     private String tableName;
-
+    private boolean updateMode;
+    
     public TableRow(String databaseName, String tableName) {
         this.databaseName = databaseName;
         this.tableName = tableName;
