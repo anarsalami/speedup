@@ -3,8 +3,8 @@ package com.bsptechs.main;
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
 import com.bsptechs.main.bean.ui.panel.PanelQuery;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.tree.CustomJTree;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
+import com.bsptechs.main.bean.ui.tree.database.DatabaseJTree;
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
 import com.bsptechs.main.util.Util;
 import java.awt.Color;
 import java.sql.SQLException;
@@ -16,14 +16,14 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
-import com.bsptechs.main.bean.ui.uielement.UiElementTable;
+import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 import lombok.SneakyThrows;
 
 public class Main extends javax.swing.JFrame {
 
-    UiElementConnection conn = null;
+    ConnectionTreeNode conn = null;
 
     public Main() {
         initComponents();
@@ -33,13 +33,6 @@ public class Main extends javax.swing.JFrame {
         setIcons();
     }
 
-//    public String getSelectedConnectionName() {
-//        DefaultMutableTreeNode root = (DefaultMutableTreeNode) JTree.getModel().getRoot();
-//        Enumeration e = root.preorderEnumeration();
-//        while (e.hasMoreElements()) {
-//            System.out.println(e.nextElement());
-//        }
-//    }
     public PanelUiElementInformation getInformationPanel() {
         return (PanelUiElementInformation) pnlUiElementInformation;
     }
@@ -61,9 +54,9 @@ public class Main extends javax.swing.JFrame {
 
     public void refreshNewQuery() {
         boolean found = false;
-        List<UiElementConnection> l = Config.instance().getConnections();
+        List<ConnectionTreeNode> l = getConnectionTree().getConnectionNodes();
         for (int i = 0; i < l.size(); i++) {
-            UiElementConnection cn = l.get(i);
+            ConnectionTreeNode cn = l.get(i);
             if (cn.getParentConnection() != null) {
                 found = true;
                 break;
@@ -78,18 +71,15 @@ public class Main extends javax.swing.JFrame {
 
     public void prepare() throws Exception {
         Config.initialize();
-        CustomJTree tree = getListTable();
-        tree.setRoot(tree.getSelectedRoot());
-        List<UiElementConnection> connections = Config.instance().getConnections();
-        tree.fillTree(connections);
-    }
+        getConnectionTree().addConnectionNodes(Config.getConnectionBeans());
+    }    
 
     public JTabbedPane getTabPaneTable() {
         return tabTables;
     }
 
-    public CustomJTree getListTable() {
-        return (CustomJTree) listDatabases;
+    public DatabaseJTree getConnectionTree() {
+        return (DatabaseJTree) connectionTree;
     }
 
     /**
@@ -120,7 +110,7 @@ public class Main extends javax.swing.JFrame {
         splitPaneCenter = new javax.swing.JSplitPane();
         panelLeft = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        listDatabases = new com.bsptechs.main.bean.ui.tree.CustomJTree();
+        connectionTree = new com.bsptechs.main.bean.ui.tree.database.DatabaseJTree();
         tabbedPaneCenter = new javax.swing.JTabbedPane();
         tabQuery = new javax.swing.JTabbedPane();
         tabDesignTable = new javax.swing.JTabbedPane();
@@ -443,16 +433,16 @@ public class Main extends javax.swing.JFrame {
         panelLeft.setMaximumSize(new java.awt.Dimension(10000, 32767));
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("connections");
-        listDatabases.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        listDatabases.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
+        connectionTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        connectionTree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
             public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
-                listDatabasesTreeExpanded(evt);
+                connectionTreeTreeExpanded(evt);
             }
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
-                listDatabasesTreeCollapsed(evt);
+                connectionTreeTreeCollapsed(evt);
             }
         });
-        jScrollPane3.setViewportView(listDatabases);
+        jScrollPane3.setViewportView(connectionTree);
 
         javax.swing.GroupLayout panelLeftLayout = new javax.swing.GroupLayout(panelLeft);
         panelLeft.setLayout(panelLeftLayout);
@@ -806,11 +796,11 @@ public class Main extends javax.swing.JFrame {
         ConnectionFrame.showAsRegister();
     }//GEN-LAST:event_menuNewConnectionActionPerformed
 
-    private void listDatabasesTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_listDatabasesTreeExpanded
-    }//GEN-LAST:event_listDatabasesTreeExpanded
+    private void connectionTreeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_connectionTreeTreeExpanded
+    }//GEN-LAST:event_connectionTreeTreeExpanded
 
-    private void listDatabasesTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_listDatabasesTreeCollapsed
-    }//GEN-LAST:event_listDatabasesTreeCollapsed
+    private void connectionTreeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_connectionTreeTreeCollapsed
+    }//GEN-LAST:event_connectionTreeTreeCollapsed
 
     private void menuDataTransferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDataTransferActionPerformed
         try {
@@ -825,16 +815,17 @@ public class Main extends javax.swing.JFrame {
     }
 
      public void prepareNewQuery() {
-        UiElementTable table = getListTable().getSelectedTable();
-        System.out.println("table name="+table.getTableName()+", databasename="+table.getDatabaseName());
-        UiElementConnection conn = table != null ? table.getDatabaseName().getConnection() : Config.getCurrentConnection();
-        UiElementDatabase db = table != null ? table.getDatabaseName() : Config.getCurrentDatabaseName();
+        DatabaseJTree tree = getConnectionTree();
+        TableTreeNode table = tree.getSelectedTableNode();
+        System.out.println("table name="+table.getName()+", databasename="+table.getDatabase());
+        ConnectionTreeNode conn = table != null ? table.getDatabase().getConnection() : tree.getCurrentConnectionNode();
+        DatabaseTreeNode db = table != null ? table.getDatabase() : tree.getCurrentDatabaseNode();
 
         prepareNewQuery(conn, db);
     }
 
     @SneakyThrows
-    public void prepareNewQuery(UiElementConnection conn, UiElementDatabase db) {
+    public void prepareNewQuery(ConnectionTreeNode conn, DatabaseTreeNode db) {
         panelQuery = new PanelQuery(conn, db);
         tabbedPaneCenter.setEnabled(true);
         Util.addPanelToTab(tabQuery, panelQuery, "Query");
@@ -843,14 +834,17 @@ public class Main extends javax.swing.JFrame {
     private void btnNewQueryActionPerformed(java.awt.event.ActionEvent evt) {
         prepareNewQuery();
     }
-
-    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
+ 
     /**
      * @param args the command line arguments
      */
+    
+    private static Main main = null;
+    
+    public static Main instance(){
+        return main;
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -890,9 +884,9 @@ public class Main extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    Config.setMain(new Main());
-                    Config.getMain().prepare();
-                    Config.getMain().setVisible(true);
+                    main =  new Main();
+                    main.prepare();
+                    main.setVisible(true);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
@@ -917,6 +911,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btnTable;
     private javax.swing.JButton btnUsers;
     private javax.swing.JButton btnView;
+    private javax.swing.JTree connectionTree;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu2;
@@ -936,7 +931,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTree listDatabases;
     private javax.swing.JMenuBar menuBarTop;
     private javax.swing.JMenuItem menuDataTransfer;
     private javax.swing.JMenuItem menuNewConnection;

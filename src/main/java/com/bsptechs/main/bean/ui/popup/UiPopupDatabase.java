@@ -5,15 +5,13 @@
  */
 package com.bsptechs.main.bean.ui.popup;
 
-import com.bsptechs.main.bean.ui.panel.PanelQuery;
+import com.bsptechs.main.Main;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import javax.swing.JList;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.tree.CustomJTree;
-import com.bsptechs.main.bean.ui.uielement.UiElement;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
-import com.bsptechs.main.util.Util;
+import com.bsptechs.main.bean.ui.tree.database.DatabaseJTree;
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,10 +57,10 @@ public class UiPopupDatabase extends UiPopupAbstract {
 
     public void newQuery() throws ClassNotFoundException, SQLException {
         System.out.println("new query");
-        CustomJTree tree = Config.getMain().getListTable();
-        UiElementConnection cnn = tree.getSelectedConnection();
-        UiElementDatabase db = tree.getSelectedDatabase();
-        Config.getMain().prepareNewQuery(cnn, db);
+        DatabaseJTree tree = Main.instance().getConnectionTree();
+        ConnectionTreeNode cnn = tree.getSelectedConnectionNode();
+        DatabaseTreeNode db = tree.getSelectedDatabaseNode();
+        Main.instance().prepareNewQuery(cnn, db);
     }
 
 }

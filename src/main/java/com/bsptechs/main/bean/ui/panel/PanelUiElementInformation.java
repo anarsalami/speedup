@@ -5,10 +5,10 @@
  */
 package com.bsptechs.main.bean.ui.panel;
 
-import com.bsptechs.main.bean.ui.uielement.UiElement;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
-import com.bsptechs.main.bean.ui.uielement.UiElementTable;
+import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 
 /**
@@ -27,15 +27,15 @@ public class PanelUiElementInformation extends javax.swing.JPanel {
         setVisible(true);
     }
 
-    public void preparePanel(UiElement element) {
+    public void preparePanel(CustomTreeNode element) {
         System.out.println("element="+element);
         if (element == null) {
             return;
         }
 
-        if (element instanceof UiElementConnection) {
+        if (element instanceof ConnectionTreeNode) {
             System.out.println("connection");
-            UiElementConnection el = (UiElementConnection) element;
+            ConnectionTreeNode el = (ConnectionTreeNode) element;
             String name = el.getName();
             String port = el.getPort();
             String ipAdress = el.getIpAdr();
@@ -46,10 +46,10 @@ public class PanelUiElementInformation extends javax.swing.JPanel {
             lblHost.setText(ipAdress);
             lblPort.setText(port);
             lblUserName1.setText(userName);
-        }else if(element instanceof UiElementTable){
-             UiElementTable el = (UiElementTable) element;
-        }else if(element instanceof UiElementDatabase){
-             UiElementDatabase el = (UiElementDatabase) element;
+        }else if(element instanceof TableTreeNode){
+             TableTreeNode el = (TableTreeNode) element;
+        }else if(element instanceof DatabaseTreeNode){
+             DatabaseTreeNode el = (DatabaseTreeNode) element;
         }
     }
 

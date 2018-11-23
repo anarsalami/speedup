@@ -584,18 +584,18 @@
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                       <SubComponents>
-                        <Component class="javax.swing.JTree" name="listDatabases">
+                        <Component class="javax.swing.JTree" name="connectionTree">
                           <Properties>
                             <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
                               <TreeModel code="connections"/>
                             </Property>
                           </Properties>
                           <Events>
-                            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="listDatabasesTreeExpanded"/>
-                            <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="listDatabasesTreeCollapsed"/>
+                            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="connectionTreeTreeExpanded"/>
+                            <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="connectionTreeTreeCollapsed"/>
                           </Events>
                           <AuxValues>
-                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.bsptechs.main.bean.ui.tree.CustomJTree()"/>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.bsptechs.main.bean.ui.tree.database.DatabaseJTree()"/>
                           </AuxValues>
                         </Component>
                       </SubComponents>

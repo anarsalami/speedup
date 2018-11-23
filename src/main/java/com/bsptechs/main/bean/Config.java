@@ -1,27 +1,16 @@
 package com.bsptechs.main.bean;
 
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.panel.PanelDataTransferGeneral;
 import com.bsptechs.main.util.FileUtility;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- *
- * @author Penthos
- */
 public final class Config implements Serializable {
 
-    private static final String fileName = "mySql.txt";
-    private List<UiElementConnection> connections = null;
-    private static UiElementConnection currentConnection = null;
-    private static UiElementDatabase currentDatabaseName = null;
+    private static final long serialVersionUID = 1L;
+    public static final String FILE_NAME = "mySql.txt";
     private static Config config = null;
-    private static volatile Main main;
-    private static volatile PanelDataTransferGeneral paneldatatransfer;
+
+    private CustomList<ConnectionBean> connectionBeans = new CustomList<>();
 
     public static void initialize() {
         config = readConfig();
@@ -31,78 +20,26 @@ public final class Config implements Serializable {
         return config;
     }
 
-    public List<UiElementConnection> getConnections() {
-        return connections;
+    public static CustomList<ConnectionBean> getConnectionBeans() {
+        return instance().connectionBeans;
     }
 
-    public UiElementConnection getConnectionByName(String connectionName) {
-        if (connections == null) {
-            return null;
-        }
-        for (int i = 0; i < connections.size(); i++) {
-            UiElementConnection connection = connections.get(i);
-            if (connection.getName().equalsIgnoreCase(connectionName)) {
-                return connection;
-            }
-        }
-        return null;
-    }
-
-    public void appendConnection(UiElementConnection connection) {
-        if (connections == null) {
-            connections = new ArrayList<>();
-        }
-        connections.add(connection);
-    }
-
-    public static void setCurrentConnection(UiElementConnection connection) {
-        currentConnection = connection;
-    }
-//
-
-    public static UiElementConnection getCurrentConnection() {
-        return currentConnection;
-    }
-
-    public static String getFileName() {
-        return fileName;
-    }
-
-    public static void setMain(Main frame) {
-        main = frame;
-    }
-
-    public static Main getMain() {
-        return main;
-    }
-
-    public static UiElementDatabase getCurrentDatabaseName() {
-        return currentDatabaseName;
-    }
-
-    public static void setCurrentDatabaseName(UiElementDatabase currentDatabaseName) {
-        Config.currentDatabaseName = currentDatabaseName;
-    }
-
-    public static void saveConfig() {
-        FileUtility.writeObjectToFile(Config.instance(), Config.getFileName());
+    public void saveConfig() {
+        connectionBeans = Main.instance().getConnectionTree().getConnectionBeans();
+        FileUtility.writeObjectToFile(Config.instance(), FILE_NAME);
     }
 
     public static Config readConfig() {
-        Object configObj = FileUtility.readFileDeserialize(Config.getFileName());
+        Object configObj = FileUtility.readFileDeserialize(FILE_NAME);
+        Config cnf;
         if (configObj == null) {
-            return new Config();
+            cnf = new Config();
+            System.out.println("null");
         } else {
-            return (Config) configObj;
+            cnf = (Config) configObj;
+            System.out.println("else");
         }
-    }
-
-    public static void setPanelDataTransfer(PanelDataTransferGeneral frame) {
-        paneldatatransfer = frame;
-    }
-
-    public static PanelDataTransferGeneral getPanelDataTransfer() {
-        return paneldatatransfer;
+        return cnf;
     }
 
 }

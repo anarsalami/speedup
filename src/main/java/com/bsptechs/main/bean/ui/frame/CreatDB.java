@@ -5,11 +5,11 @@
  */
 package com.bsptechs.main.bean.ui.frame;
 
+import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
+import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class CreatDB extends javax.swing.JFrame {
 
     DatabaseDAOImpl databaseDAOImpl = new DatabaseDAOImpl();
-    UiElementDatabase database;
+    DatabaseTreeNode database;
 
     /**
      * Creates new form CreatDB
@@ -38,8 +38,7 @@ public class CreatDB extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     private List<Charset> fillCharsetCombo() {
-        System.out.println(Config.getCurrentConnection());
-        List<Charset> list = databaseDAOImpl.getAllCharsets(Config.getCurrentConnection());
+        List<Charset> list = databaseDAOImpl.getAllCharsets(Main.instance().getConnectionTree().getCurrentConnectionNode());
         System.out.println(list);
         for (Charset charset : list) {
             charsetCmbo.addItem(charset);
@@ -51,7 +50,7 @@ public class CreatDB extends javax.swing.JFrame {
         Charset selectedCharset = (Charset) charsetCmbo.getSelectedItem();
         System.out.println(selectedCharset);
         collationCombo.removeAllItems();
-        List<Collation> collations = databaseDAOImpl.getAllCollations(Config.getCurrentConnection(), selectedCharset);
+        List<Collation> collations = databaseDAOImpl.getAllCollations(Main.instance().getConnectionTree().getCurrentConnectionNode(), selectedCharset);
         for (Collation collation : collations) {
             collationCombo.addItem(collation);
         }

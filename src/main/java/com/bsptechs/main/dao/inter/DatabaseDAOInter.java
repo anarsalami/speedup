@@ -2,9 +2,9 @@ package com.bsptechs.main.dao.inter;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.uielement.UiElementTable;
+import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;
 import java.sql.SQLException;
@@ -16,32 +16,32 @@ import java.util.List;
  */
 public interface DatabaseDAOInter {
 
-    List<UiElementDatabase> getAllDatabases(UiElementConnection connection);
+    List<DatabaseTreeNode> getAllDatabases(ConnectionTreeNode connection);
 
-    List<UiElementTable> getAllTables(UiElementDatabase database);
+    List<TableTreeNode> getAllTables(DatabaseTreeNode database);
 
-    boolean emptyTable(UiElementDatabase db, String tblName);
+    boolean emptyTable(DatabaseTreeNode db, String tblName);
 
-    boolean truncateTable(UiElementDatabase DBName, String tblName);
+    boolean truncateTable(DatabaseTreeNode DBName, String tblName);
 
-    boolean dublicateTable(UiElementDatabase DBName, String tbLName);
+    boolean dublicateTable(DatabaseTreeNode DBName, String tbLName);
 
-    boolean pasteTable(String information, UiElementDatabase DBName, String tbLName);
+    boolean pasteTable(String information, DatabaseTreeNode DBName, String tbLName);
 
-    boolean renameTable(UiElementTable table, String newTblName);
+    boolean renameTable(TableTreeNode table, String newTblName);
 
-    public CustomTableModel runQuery(String query, UiElementConnection connection, UiElementDatabase database) throws Exception;
+    public CustomTableModel runQuery(String query, ConnectionTreeNode connection, DatabaseTreeNode database) throws Exception;
 
-    public boolean createDb(UiElementConnection ui, String name, String charset, String collate);
+    public boolean createDb(ConnectionTreeNode ui, String name, String charset, String collate);
 
-    public List<Charset> getAllCharsets(UiElementConnection connection);
+    public List<Charset> getAllCharsets(ConnectionTreeNode connection);
 
-    public List<Collation> getAllCollations(UiElementConnection connection, Charset charset);
+    public List<Collation> getAllCollations(ConnectionTreeNode connection, Charset charset);
 
-    public boolean deleteRow(UiElementConnection connection, TableRow row);
+    public boolean deleteRow(ConnectionTreeNode connection, TableRow row);
 
-    public boolean deleteRows(UiElementConnection connection, List<TableRow> rows);
+    public boolean deleteRows(ConnectionTreeNode connection, List<TableRow> rows);
     
-    public boolean saveRow(UiElementConnection connection, TableRow row);
+    public boolean saveRow(ConnectionTreeNode connection, TableRow row);
 
 }

@@ -1,21 +1,25 @@
-package com.bsptechs.main.bean.ui.uielement;
+package com.bsptechs.main.bean.ui.tree.database.node;
 
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.popup.UiPopupDatabase;
-import com.bsptechs.main.bean.ui.uielement.UiElement;
+import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
+import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import java.util.List;
 import javax.swing.JPopupMenu;
 
-public class UiElementDatabase extends UiElement {
+public class DatabaseTreeNode extends CustomTreeNode {
 
     private String name;
-    private UiElementConnection connection;
-    private List<UiElementTable> tables;
+    private ConnectionTreeNode connection;
+    private List<TableTreeNode> tables;
 
-    public UiElementDatabase() {
+    public DatabaseTreeNode() {
     }
 
-    public UiElementDatabase(String name, UiElementConnection connection) {
+    public DatabaseTreeNode(String name, ConnectionTreeNode connection) {
         this.name = name;
         this.connection = connection;
     }
@@ -28,19 +32,19 @@ public class UiElementDatabase extends UiElement {
         this.name = name;
     }
 
-    public UiElementConnection getConnection() {
+    public ConnectionTreeNode getConnection() {
         return connection;
     }
 
-    public void setConnection(UiElementConnection connection) {
+    public void setConnection(ConnectionTreeNode connection) {
         this.connection = connection;
     }
 
-    public List<UiElementTable> getTables() {
+    public List<TableTreeNode> getTables() {
         return tables;
     }
 
-    public void setTables(List<UiElementTable> tables) {
+    public void setTables(List<TableTreeNode> tables) {
         this.tables = tables;
     }
 
@@ -51,8 +55,8 @@ public class UiElementDatabase extends UiElement {
 
     @Override
     public void onDoubleClick() {
-        Config.setCurrentDatabaseName(this);
-        if (tables == null) {
+        Main.instance().getConnectionTree().setCurrentDatabaseNode(this);
+        if (tables == null) { 
             tables = database.getAllTables(this);
             addChildren(tables);
             expand();
@@ -65,7 +69,7 @@ public class UiElementDatabase extends UiElement {
     }
 
     @Override
-    public List<UiElementTable> getSubList() {
+    public List<TableTreeNode> getSubList() {
         return getTables();
     }
 

@@ -8,8 +8,8 @@ package com.bsptechs.main.bean.ui.popup;
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.panel.PanelQuery;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.uielement.UiElementTable;
-import com.bsptechs.main.bean.ui.uielement.UiElement;
+import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.util.List;
@@ -85,22 +85,21 @@ public class UiPopupTable extends UiPopupAbstract {
     }
 
     public void viewTable() {
-        Main m = Config.getMain();
 
-        UiElement element = (UiElement) m.getListTable().getSelectionPath().getLastPathComponent();
+        CustomTreeNode element = (CustomTreeNode) Main.instance().getConnectionTree().getSelectionPath().getLastPathComponent();
 
-        if (element instanceof UiElementTable) {
-            UiElementTable tb = (UiElementTable) element;
+        if (element instanceof TableTreeNode) {
+            TableTreeNode tb = (TableTreeNode) element;
             PanelQuery.viewTable(tb);
         }
     }
 
-    public UiElementTable getSelectedTable() {
-        return (UiElementTable) getSelectedElement();
+    public TableTreeNode getSelectedTable() {
+        return (TableTreeNode) getSelectedElement();
     }
 
     public void renameTable() {
-        UiElementTable tb = getSelectedTable();
+        TableTreeNode tb = getSelectedTable();
         String newTblName = (String) JOptionPane.showInputDialog(
                 null,
                 "Enter new name:",
@@ -108,38 +107,36 @@ public class UiPopupTable extends UiPopupAbstract {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
-                tb.getTableName()
+                tb.getName()
         );
         database.renameTable(tb, newTblName);
        tb.nodeChanged();
     }
 
     private void refreshDB() {
-        UiElementTable tb = getSelectedTable();
-        List<UiElementTable> tbNames = database.getAllTables(tb.getDatabaseName());
-
-        Main m = Config.getMain();
+        TableTreeNode tb = getSelectedTable();
+        List<TableTreeNode> tbNames = database.getAllTables(tb.getDatabase());
     }
 
     private void emptyTable() {
-        UiElementTable tb = getSelectedTable();
-        database.emptyTable(tb.getDatabaseName(), tb.getTableName());
+        TableTreeNode tb = getSelectedTable();
+        database.emptyTable(tb.getDatabase(), tb.getName());
     }
 
     private void truncateTeable() {
-        UiElementTable tb = getSelectedTable();
-        database.truncateTable(tb.getDatabaseName(), tb.getTableName());
+        TableTreeNode tb = getSelectedTable();
+        database.truncateTable(tb.getDatabase(), tb.getName());
     }
 
-    private UiElementTable selectedElementForCopy;
+    private TableTreeNode selectedElementForCopy;
 
     private void copyTable() {
-        UiElementTable tb = getSelectedTable();
+        TableTreeNode tb = getSelectedTable();
         this.selectedElementForCopy = tb;
     }
 
     private void pasteTable() {
-        UiElementTable tb = getSelectedTable();
+        TableTreeNode tb = getSelectedTable();
 
         String newTblName = (String) JOptionPane.showInputDialog(
                 null,
@@ -148,20 +145,20 @@ public class UiPopupTable extends UiPopupAbstract {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
-                tb.getTableName()
+                tb.getName()
         );
 
         database.pasteTable(
-                selectedElementForCopy.getDatabaseName() + "." + selectedElementForCopy.getTableName(),
-                tb.getDatabaseName(),
+                selectedElementForCopy.getDatabase() + "." + selectedElementForCopy.getName(),
+                tb.getDatabase(),
                 newTblName
         );
         refreshDB();
     }
 
     private void dublicateTable() {
-        UiElementTable tb = getSelectedTable();
-        database.dublicateTable(tb.getDatabaseName(), tb.getTableName());
+        TableTreeNode tb = getSelectedTable();
+        database.dublicateTable(tb.getDatabase(), tb.getName());
         refreshDB();
     }
 

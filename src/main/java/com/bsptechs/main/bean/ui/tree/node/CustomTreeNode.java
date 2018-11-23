@@ -1,5 +1,6 @@
-package com.bsptechs.main.bean.ui.uielement;
+package com.bsptechs.main.bean.ui.tree.node;
 
+import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
@@ -8,11 +9,12 @@ import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-public abstract class UiElement extends DefaultMutableTreeNode {
+public abstract class CustomTreeNode extends DefaultMutableTreeNode {
 
-    public static DatabaseDAOInter database = new DatabaseDAOImpl();
+    private static final long serialVersionUID = 1L;
+    public DatabaseDAOInter database = new DatabaseDAOImpl();
 
-    public UiElement() {
+    public CustomTreeNode() {
     }
 
     public abstract void onClick();
@@ -21,19 +23,19 @@ public abstract class UiElement extends DefaultMutableTreeNode {
 
     public abstract JPopupMenu getPopup();
 
-    public abstract List<? extends UiElement> getSubList();
+    public abstract List<? extends CustomTreeNode> getSubList();
 
     public abstract String getIcon();
 
-    public void addChildren(List<? extends UiElement> listData) {
+    public void addChildren(List<? extends CustomTreeNode> listData) {
         if (listData == null) {
             return;
         }
 
-        for (UiElement t : listData) {
+        for (CustomTreeNode t : listData) {
             add(t);
         }
-        
+
         nodeStructureChanged();
 
     }
@@ -45,16 +47,15 @@ public abstract class UiElement extends DefaultMutableTreeNode {
     }
 
     public void nodeChanged() {
-        Config.getMain().getListTable().getTreeModel().nodeChanged(this);
+        Main.instance().getConnectionTree().getTreeModel().nodeChanged(this);
     }
 
     public void nodeStructureChanged() {
-        Config.getMain().getListTable().getTreeModel().nodeStructureChanged(this);
+        Main.instance().getConnectionTree().getTreeModel().nodeStructureChanged(this);
     }
-    
-    
-    public void expand(){
-       Config.getMain().getListTable().expandPath(new TreePath(this.getPath()));
+
+    public void expand() {
+        Main.instance().getConnectionTree().expandPath(new TreePath(this.getPath()));
     }
-    
+
 }

@@ -5,8 +5,8 @@
  */
 package com.bsptechs.main.bean.ui.table;
 
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTable;
@@ -20,8 +20,8 @@ import lombok.Data;
 @Data
 public class CustomTable extends JTable {
 
-    private UiElementConnection connection;
-    private UiElementDatabase database;
+    private ConnectionTreeNode connection;
+    private DatabaseTreeNode database;
     private String query;
 
     public CustomTable() {

@@ -2,9 +2,9 @@ package com.bsptechs.main.dao.impl;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.uielement.UiElementTable;
+import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import com.bsptechs.main.bean.ui.table.TableCell;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;
@@ -30,8 +30,8 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public List<UiElementDatabase> getAllDatabases(UiElementConnection connection) {
-        List<UiElementDatabase> databasesList = new ArrayList<>();
+    public List<DatabaseTreeNode> getAllDatabases(ConnectionTreeNode connection) {
+        List<DatabaseTreeNode> databasesList = new ArrayList<>();
 
         Connection conn = connect(connection);
         Statement stmt = conn.createStatement();
@@ -43,36 +43,36 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
         while (resultset.next()) {
             String result = resultset.getString("Database");
-            databasesList.add(new UiElementDatabase(result, connection));
+            databasesList.add(new DatabaseTreeNode(result, connection));
         }
         return databasesList;
     }
 
     @Override
     @SneakyThrows
-    public List<UiElementTable> getAllTables(UiElementDatabase database) {
-        List<UiElementTable> list = new ArrayList<>();
+    public List<TableTreeNode> getAllTables(DatabaseTreeNode database) {
+        List<TableTreeNode> list = new ArrayList<>();
         Connection conn = connect(database.getConnection());
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM information_schema.tables where table_schema = ?");
         stmt.setString(1, database.getName());
         ResultSet resultset = stmt.executeQuery();
         while (resultset.next()) {
             String result = resultset.getString("table_name");
-            list.add(new UiElementTable(result, database));
+            list.add(new TableTreeNode(result, database));
         }
         return list;
     }
 
     @Override
     @SneakyThrows
-    public boolean renameTable(UiElementTable table, String newTblName) {
-        Connection conn = connect(table.getDatabaseName().getConnection());
+    public boolean renameTable(TableTreeNode table, String newTblName) {
+        Connection conn = connect(table.getDatabase().getConnection());
         PreparedStatement stmt = conn.prepareStatement(
                 "RENAME "
-                + " TABLE `" + table.getDatabaseName().getName() + "`.`" + table.getTableName() + "` "
-                + " TO `" + table.getDatabaseName().getName() + "`.`" + newTblName + "`");
+                + " TABLE `" + table.getDatabase().getName() + "`.`" + table.getName() + "` "
+                + " TO `" + table.getDatabase().getName() + "`.`" + newTblName + "`");
         stmt.executeUpdate();
-        table.setTableName(newTblName);
+        table.setName(newTblName);
         return true;
     }
 
@@ -89,7 +89,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @Override
-    public CustomTableModel runQuery(String query, UiElementConnection connection, UiElementDatabase database) throws Exception {
+    public CustomTableModel runQuery(String query, ConnectionTreeNode connection, DatabaseTreeNode database) throws Exception {
         Connection conn = connect(connection);
  
         Statement stmt = conn.createStatement();
@@ -124,7 +124,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean emptyTable(UiElementDatabase DBName, String tblName) {
+    public boolean emptyTable(DatabaseTreeNode DBName, String tblName) {
         Connection conn = connect(DBName.getConnection());
         PreparedStatement stmt = conn.prepareStatement("delete  from " + DBName + "." + tblName);
 
@@ -135,7 +135,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean truncateTable(UiElementDatabase DBName, String tblName) {
+    public boolean truncateTable(DatabaseTreeNode DBName, String tblName) {
         Connection conn = connect(DBName.getConnection());
 
         PreparedStatement stmt = conn.prepareStatement("TRUNCATE TABLE " + DBName + "." + tblName);
@@ -147,7 +147,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean dublicateTable(UiElementDatabase DBName, String tbLName) {
+    public boolean dublicateTable(DatabaseTreeNode DBName, String tbLName) {
         Connection conn = connect(DBName.getConnection());
         String newTbLName = tbLName.concat("_copy");
         PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + newTbLName + " LIKE " + DBName + "." + tbLName);
@@ -159,7 +159,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean pasteTable(String information, UiElementDatabase DBName, String TblName) {
+    public boolean pasteTable(String information, DatabaseTreeNode DBName, String TblName) {
 
         Connection conn = connect(DBName.getConnection());
         PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + TblName + " LIKE " + information);
@@ -171,7 +171,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    public boolean dataTransfer(UiElementDatabase DBNameWeHave, String tbLNameWeHave, UiElementDatabase DBNameWeWant, String tbLNameWeWant) {
+    public boolean dataTransfer(DatabaseTreeNode DBNameWeHave, String tbLNameWeHave, DatabaseTreeNode DBNameWeWant, String tbLNameWeWant) {
         Connection connWeHave = connect(DBNameWeHave.getConnection());
         Connection connWeWant = connect(DBNameWeWant.getConnection());
         String newTbLName1 = tbLNameWeHave;
@@ -209,7 +209,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean createDb(UiElementConnection connection, String name, String charset, String collate) {
+    public boolean createDb(ConnectionTreeNode connection, String name, String charset, String collate) {
 
         Connection conn = connect(connection);
         com.mysql.jdbc.PreparedStatement stmt = (com.mysql.jdbc.PreparedStatement) conn.createStatement();
@@ -220,7 +220,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public List<Charset> getAllCharsets(UiElementConnection connection) {
+    public List<Charset> getAllCharsets(ConnectionTreeNode connection) {
         List<Charset> charset = new ArrayList<>();
         Connection conn = connect(connection);
         Statement stmt = conn.createStatement();
@@ -234,7 +234,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @Override
     @SneakyThrows
-    public List<Collation> getAllCollations(UiElementConnection connection, Charset charset) {
+    public List<Collation> getAllCollations(ConnectionTreeNode connection, Charset charset) {
         if (charset != null && charset.getCollations() != null) {
             return charset.getCollations();
         }
@@ -256,7 +256,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     
     @SneakyThrows
     @Override 
-    public boolean deleteRows(UiElementConnection connection, List<TableRow> rows) {
+    public boolean deleteRows(ConnectionTreeNode connection, List<TableRow> rows) {
         for (TableRow row : rows) {
             deleteRow(connection, row);
         }
@@ -265,7 +265,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean deleteRow(UiElementConnection connection, TableRow row) {
+    public boolean deleteRow(ConnectionTreeNode connection, TableRow row) {
         List<TableCell> primaryCells = row.getAllPrimaryCell();
 
         if (primaryCells == null || primaryCells.isEmpty()) {
@@ -279,7 +279,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    public boolean deleteRowByRow(UiElementConnection connection, TableRow row) {
+    public boolean deleteRowByRow(ConnectionTreeNode connection, TableRow row) {
         Connection conn = connect(connection);
 
         Vector<TableCell> cells = row;
@@ -303,7 +303,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    private boolean deleteRowByCell(UiElementConnection connection, TableCell cell) {
+    private boolean deleteRowByCell(ConnectionTreeNode connection, TableCell cell) {
         Connection conn = connect(connection);
         String query = "delete "
                 + " from " + cell.getDatabaseName() + "." + cell.getTable()
@@ -318,7 +318,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     
      @SneakyThrows
      @Override
-     public boolean saveRow(UiElementConnection connection, TableRow row) {
+     public boolean saveRow(ConnectionTreeNode connection, TableRow row) {
         Connection conn = connect(connection);
 
         Vector<TableCell> cells = row;

@@ -5,7 +5,7 @@
  */
 package com.bsptechs.main.bean.ui.tree;
 
-import com.bsptechs.main.bean.ui.uielement.UiElement;
+import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 import java.awt.Component;
 import javax.swing.JLabel;
@@ -27,13 +27,10 @@ public class CustomTreeCellRenderer implements TreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
             boolean leaf, int row, boolean hasFocus) {
-        if(value instanceof UiElement){
-            UiElement el = (UiElement) value;
+        if(value instanceof CustomTreeNode){
+            CustomTreeNode el = (CustomTreeNode) value;
             label.setIcon(ImageUtil.getIcon(el.getIcon()));
             label.setText(el.toString());
-        }else {
-            label.setIcon(ImageUtil.getIcon("connection.png"));
-            label.setText("" + value);
         }
 
         return label;
