@@ -55,7 +55,7 @@ public class DatabaseTreeNode extends CustomTreeNode {
     public void onDoubleClick() {
         Main.instance().getConnectionTree().setCurrentDatabaseNode(this);
         List<TableBean> tables = getTableBeans();
-        if (tables == null) {
+        if (tables.isEmpty()) {
             tables = database.getAllTables(this.db);
             addTables(tables);
             expand();
