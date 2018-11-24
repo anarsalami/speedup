@@ -1,10 +1,12 @@
 package com.bsptechs.main.dao.inter;
 
-import com.bsptechs.main.bean.DatabaseName;
-import com.bsptechs.main.bean.NConnection;
-import com.bsptechs.main.bean.TableName;
-import com.bsptechs.main.bean.table.TableData;
-import java.sql.SQLException;
+import com.bsptechs.main.bean.Charset;
+import com.bsptechs.main.bean.Collation;
+import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.DatabaseBean;
+import com.bsptechs.main.bean.TableBean;
+import com.bsptechs.main.bean.ui.table.CustomTableModel;
+import com.bsptechs.main.bean.ui.table.TableRow;
 import java.util.List;
 
 /**
@@ -13,20 +15,32 @@ import java.util.List;
  */
 public interface DatabaseDAOInter {
 
-    List<DatabaseName> getAllDatabases(NConnection connection);
+    List<DatabaseBean> getAllDatabases(ConnectionBean connection);
 
-    List<TableName> getAllTables(DatabaseName database);
+    List<TableBean> getAllTables(DatabaseBean database);
 
-    boolean emptyTable(String DBName, String tblName);
+    boolean emptyTable(DatabaseBean db, String tblName);
 
-    boolean truncateTable(String DBName, String tblName);
+    boolean truncateTable(DatabaseBean DBName, String tblName);
 
-    boolean dublicateTable(String DBName, String tbLName);
+    boolean dublicateTable(DatabaseBean DBName, String tbLName);
 
-    boolean pasteTable(String information, String DBName, String tbLName);
+    boolean pasteTable(String information, DatabaseBean DBName, String tbLName);
 
-    boolean renameTable(TableName table, String newTblName);
+    boolean renameTable(TableBean table, String newTblName);
 
-    public TableData runQuery(String query, NConnection connection, DatabaseName database) throws ClassNotFoundException, SQLException;
+    public CustomTableModel runQuery(String query, ConnectionBean connection, DatabaseBean database) throws Exception;
+
+    public boolean createDb(ConnectionBean ui, String name, String charset, String collate);
+
+    public List<Charset> getAllCharsets(ConnectionBean connection);
+
+    public List<Collation> getAllCollations(ConnectionBean connection, Charset charset);
+
+    public boolean deleteRow(ConnectionBean connection, TableRow row);
+
+    public boolean deleteRows(ConnectionBean connection, List<TableRow> rows);
+    
+    public boolean saveRow(ConnectionBean connection, TableRow row);
 
 }

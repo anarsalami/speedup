@@ -1,57 +1,84 @@
 package com.bsptechs.main;
 
+import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
+import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.DatabaseName;
-import com.bsptechs.main.bean.NConnection;
-import com.bsptechs.main.util.ui.MainFrameUtility;
+import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.DatabaseJTree;
+import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.util.Util;
 import java.awt.Color;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JTabbedPane;
+import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
+import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
+import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
+import com.bsptechs.main.util.ImageUtil;
+import lombok.SneakyThrows;
 
-/**
- *
- * @author RafaelAhmedov
- */
 public class Main extends javax.swing.JFrame {
+
+    ConnectionTreeNode conn = null;
 
     public Main() {
         initComponents();
         btnNewQuery.setEnabled(false);
+        menuNewQuery.setEnabled(false);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setIcons();
     }
 
-    public void enableNewQuery() {
-        btnNewQuery.setEnabled(true);
+    public PanelUiElementInformation getInformationPanel() {
+        return (PanelUiElementInformation) pnlUiElementInformation;
     }
-    private PanelQuery panelQuery = null;
+
+    public void setIcons() {
+        btnNewConnection.setIcon(ImageUtil.getIcon("mainframe/connection.png"));
+        btnNewQuery.setIcon(ImageUtil.getIcon("mainframe/newquery.png"));
+        btnTable.setIcon(ImageUtil.getIcon("mainframe/table.png"));
+        btnView.setIcon(ImageUtil.getIcon("mainframe/view.png"));
+        btnFunctions.setIcon(ImageUtil.getIcon("mainframe/function.png"));
+        btnEvent.setIcon(ImageUtil.getIcon("mainframe/event.png"));
+        btnUsers.setIcon(ImageUtil.getIcon("mainframe/user.png"));
+        btnQuery.setIcon(ImageUtil.getIcon("mainframe/query.png"));
+        btnReport.setIcon(ImageUtil.getIcon("mainframe/report.png"));
+        btnBackup.setIcon(ImageUtil.getIcon("mainframe/backup.png"));
+        btnAutomation.setIcon(ImageUtil.getIcon("mainframe/automation.png"));
+        btnModel.setIcon(ImageUtil.getIcon("mainframe/model.png"));
+    }
+
+    public void refreshNewQuery() {
+        boolean found = false;
+        List<ConnectionTreeNode> l = getConnectionTree().getConnectionNodes();
+        for (int i = 0; i < l.size(); i++) {
+            ConnectionTreeNode cn = l.get(i);
+            if (cn.getParentConnection() != null) {
+                found = true;
+                break;
+            }
+        }
+
+        btnNewQuery.setEnabled(found);
+        menuNewQuery.setEnabled(found);
+    }
 
     public void prepare() throws Exception {
         Config.initialize();
-        MainFrameUtility.prepareDatabaseList();
-        MainFrameUtility.prepareConnectionsList();
-        refreshData();
-
-    }
-
-    public void refreshData() {
-        MainFrameUtility.fillConnectionsIntoJList();
+        getConnectionTree().addConnectionNodes(Config.getConnectionBeans());
     }
 
     public JTabbedPane getTabPaneTable() {
         return tabTables;
     }
 
-    public JList getListTable() {
-        return listDatabases;
-    }
-
-    public JList getListConnections() {
-        return listConnections;
+    public DatabaseJTree getConnectionTree() {
+        return (DatabaseJTree) connectionTree;
     }
 
     /**
@@ -81,22 +108,18 @@ public class Main extends javax.swing.JFrame {
         panelCenter = new javax.swing.JPanel();
         splitPaneCenter = new javax.swing.JSplitPane();
         panelLeft = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        listDatabases = new javax.swing.JList<>();
-        btnBack = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        listConnections = new javax.swing.JList<>();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        connectionTree = new com.bsptechs.main.bean.ui.tree.database.DatabaseJTree();
         tabbedPaneCenter = new javax.swing.JTabbedPane();
         tabQuery = new javax.swing.JTabbedPane();
         tabDesignTable = new javax.swing.JTabbedPane();
         tabNewTable = new javax.swing.JTabbedPane();
         tabTables = new javax.swing.JTabbedPane();
+        pnlUiElementInformation = new com.bsptechs.main.bean.ui.panel.PanelUiElementInformation();
         menuBarTop = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        menuNewMySQLConnection = new javax.swing.JMenuItem();
-        jMenu9 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuNewConnection = new javax.swing.JMenuItem();
+        menuNewQuery = new javax.swing.JMenuItem();
         jMenu10 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
@@ -111,6 +134,7 @@ public class Main extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
+        menuDataTransfer = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         jMenu7 = new javax.swing.JMenu();
 
@@ -292,11 +316,11 @@ public class Main extends javax.swing.JFrame {
         btnNewConnection.setPreferredSize(new java.awt.Dimension(80, 61));
         btnNewConnection.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnNewConnection.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnNewConnectionMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnNewConnectionMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnNewConnectionMouseExited(evt);
             }
         });
         btnNewConnection.addActionListener(new java.awt.event.ActionListener() {
@@ -313,11 +337,11 @@ public class Main extends javax.swing.JFrame {
         btnTable.setPreferredSize(new java.awt.Dimension(80, 61));
         btnTable.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnTableMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnTableMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnTableMouseEntered(evt);
             }
         });
         btnTable.addActionListener(new java.awt.event.ActionListener() {
@@ -379,7 +403,7 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(btnAutomation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(btnModel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 189, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         pnlMainTopLayout.setVerticalGroup(
             pnlMainTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -407,53 +431,34 @@ public class Main extends javax.swing.JFrame {
         panelLeft.setBackground(new java.awt.Color(255, 255, 255));
         panelLeft.setMaximumSize(new java.awt.Dimension(10000, 32767));
 
-        listDatabases.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                listDatabasesMousePressed(evt);
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("connections");
+        connectionTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        connectionTree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
+            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
+                connectionTreeTreeExpanded(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                listDatabasesMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                listDatabasesMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(listDatabases);
-
-        btnBack.setText("Back");
-        btnBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBackActionPerformed(evt);
+            public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
+                connectionTreeTreeCollapsed(evt);
             }
         });
-
-        jScrollPane2.setViewportView(listConnections);
+        jScrollPane3.setViewportView(connectionTree);
 
         javax.swing.GroupLayout panelLeftLayout = new javax.swing.GroupLayout(panelLeft);
         panelLeft.setLayout(panelLeftLayout);
         panelLeftLayout.setHorizontalGroup(
             panelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLeftLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(panelLeftLayout.createSequentialGroup()
-                .addGroup(panelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
         panelLeftLayout.setVerticalGroup(
             panelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(panelLeftLayout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
         );
 
         splitPaneCenter.setLeftComponent(panelLeft);
 
+        tabbedPaneCenter.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tabbedPaneCenter.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tabbedPaneCenter.setEnabled(false);
         tabbedPaneCenter.setMaximumSize(new java.awt.Dimension(0, 0));
@@ -476,23 +481,25 @@ public class Main extends javax.swing.JFrame {
         panelCenterLayout.setHorizontalGroup(
             panelCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelCenterLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(splitPaneCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(splitPaneCenter, javax.swing.GroupLayout.PREFERRED_SIZE, 1209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlUiElementInformation, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelCenterLayout.setVerticalGroup(
             panelCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelCenterLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(splitPaneCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(pnlUiElementInformation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(splitPaneCenter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout panelWrapperLayout = new javax.swing.GroupLayout(panelWrapper);
         panelWrapper.setLayout(panelWrapperLayout);
         panelWrapperLayout.setHorizontalGroup(
             panelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMainTop, javax.swing.GroupLayout.DEFAULT_SIZE, 1223, Short.MAX_VALUE)
+            .addComponent(pnlMainTop, javax.swing.GroupLayout.DEFAULT_SIZE, 1431, Short.MAX_VALUE)
             .addComponent(panelCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelWrapperLayout.setVerticalGroup(
@@ -516,27 +523,21 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jMenuItem1.setText("New Project");
-        jMenu1.add(jMenuItem1);
-
-        menuNewMySQLConnection.setText("New Connection");
-        menuNewMySQLConnection.addActionListener(new java.awt.event.ActionListener() {
+        menuNewConnection.setText("New Connection");
+        menuNewConnection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuNewMySQLConnectionActionPerformed(evt);
+                menuNewConnectionActionPerformed(evt);
             }
         });
-        jMenu1.add(menuNewMySQLConnection);
+        jMenu1.add(menuNewConnection);
 
-        jMenu9.setText("New");
-        jMenu1.add(jMenu9);
-
-        jMenuItem2.setText("Open Connection");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        menuNewQuery.setText("New Query");
+        menuNewQuery.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuNewQueryActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem2);
+        jMenu1.add(menuNewQuery);
 
         jMenu10.setText("Open Recent");
         jMenu1.add(jMenu10);
@@ -609,6 +610,15 @@ public class Main extends javax.swing.JFrame {
         menuBarTop.add(jMenu4);
 
         jMenu5.setText("Tools");
+
+        menuDataTransfer.setText("Data Transfer");
+        menuDataTransfer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuDataTransferActionPerformed(evt);
+            }
+        });
+        jMenu5.add(menuDataTransfer);
+
         menuBarTop.add(jMenu5);
 
         jMenu6.setText("Window");
@@ -633,9 +643,9 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    private void menuNewQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewQueryActionPerformed
+        prepareNewQuery(null, false);
+    }//GEN-LAST:event_menuNewQueryActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
@@ -661,25 +671,8 @@ public class Main extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenu1MenuDragMouseEntered
 
-    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        NConnection cn = Config.getCurrentConnection();
-        MainFrameUtility.connect(cn);
-    }//GEN-LAST:event_btnBackActionPerformed
-
-    private void listDatabasesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listDatabasesMouseClicked
-
-    }//GEN-LAST:event_listDatabasesMouseClicked
-
-    private void listDatabasesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listDatabasesMouseReleased
-
-    }//GEN-LAST:event_listDatabasesMouseReleased
-
-    private void listDatabasesMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listDatabasesMousePressed
-
-    }//GEN-LAST:event_listDatabasesMousePressed
-
     private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_btnTableActionPerformed
 
     private void btnTableMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnTableMouseEntered
@@ -691,7 +684,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTableMouseExited
 
     private void btnNewConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewConnectionActionPerformed
-        MainFrameUtility.showFrameForMySQLConnection(this, tabTables, listConnections, listDatabases);
+        ConnectionFrame.showAsRegister();
     }//GEN-LAST:event_btnNewConnectionActionPerformed
 
     private void btnNewConnectionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNewConnectionMouseEntered
@@ -798,37 +791,54 @@ public class Main extends javax.swing.JFrame {
         btnNewQuery.setBorder(null);
     }//GEN-LAST:event_btnNewQueryMouseExited
 
-    private void menuNewMySQLConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewMySQLConnectionActionPerformed
-        MainFrameUtility.showFrameForMySQLConnection(this, tabTables, listConnections, listDatabases);
-    }//GEN-LAST:event_menuNewMySQLConnectionActionPerformed
+    private void menuNewConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewConnectionActionPerformed
+        ConnectionFrame.showAsRegister();
+    }//GEN-LAST:event_menuNewConnectionActionPerformed
 
-    public PanelQuery getPanelQuery() {
-        return panelQuery;
-    }
+    private void connectionTreeTreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_connectionTreeTreeExpanded
+    }//GEN-LAST:event_connectionTreeTreeExpanded
 
-    public void prepareNewQuery() {
+    private void connectionTreeTreeCollapsed(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_connectionTreeTreeCollapsed
+    }//GEN-LAST:event_connectionTreeTreeCollapsed
+
+    private void menuDataTransferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDataTransferActionPerformed
         try {
-            panelQuery = new PanelQuery(Config.getCurrentConnection(), Config.getCurrentDatabaseName());
-            tabbedPaneCenter.setEnabled(true);
-            MainFrameUtility.addPanelToTab(tabQuery, panelQuery, "Query");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            DataTransferFrame.showDataTransfer();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+    }//GEN-LAST:event_menuDataTransferActionPerformed
+
+    @SneakyThrows
+    public PanelQuery prepareNewQuery(String queryStr, boolean run) {
+        DatabaseJTree tree = getConnectionTree();
+        TableTreeNode table = tree.getSelectedTableNode();
+        ConnectionBean conn = table != null ? table.getTable().getDatabase().getConnection() : tree.getCurrentConnectionNode().getConnection();
+        DatabaseBean db = table != null ? table.getTable().getDatabase() : tree.getCurrentDatabaseNode().getDatabase();
+
+        PanelQuery panel = new PanelQuery(conn, db, queryStr);
+        tabbedPaneCenter.setEnabled(true);
+        Util.addPanelToTab(tabQuery, panel, "Query");
+        if (run) {
+            panel.runQuery();
+        }
+
+        return panel;
     }
 
     private void btnNewQueryActionPerformed(java.awt.event.ActionEvent evt) {
-        prepareNewQuery();
-    }
-
-    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        prepareNewQuery(null, false);
     }
 
     /**
      * @param args the command line arguments
      */
+    private static Main main = null;
+
+    public static Main instance() {
+        return main;
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -868,9 +878,9 @@ public class Main extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    Config.setMain(new Main());
-                    Config.getMain().prepare();
-                    Config.getMain().setVisible(true);
+                    main = new Main();
+                    main.prepare();
+                    main.setVisible(true);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
@@ -884,7 +894,6 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAutomation;
-    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnBackup;
     private javax.swing.JButton btnEvent;
     private javax.swing.JButton btnFunctions;
@@ -896,6 +905,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btnTable;
     private javax.swing.JButton btnUsers;
     private javax.swing.JButton btnView;
+    private javax.swing.JTree connectionTree;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu2;
@@ -904,11 +914,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
-    private javax.swing.JMenu jMenu9;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -916,17 +923,17 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JList<String> listConnections;
-    private javax.swing.JList<String> listDatabases;
     private javax.swing.JMenuBar menuBarTop;
-    private javax.swing.JMenuItem menuNewMySQLConnection;
+    private javax.swing.JMenuItem menuDataTransfer;
+    private javax.swing.JMenuItem menuNewConnection;
+    private javax.swing.JMenuItem menuNewQuery;
     private javax.swing.JPanel panelCenter;
     private javax.swing.JPanel panelLeft;
     private javax.swing.JPanel panelWrapper;
     private javax.swing.JPanel pnlMainTop;
+    private com.bsptechs.main.bean.ui.panel.PanelUiElementInformation pnlUiElementInformation;
     private javax.swing.JSplitPane splitPaneCenter;
     private javax.swing.JTabbedPane tabDesignTable;
     private javax.swing.JTabbedPane tabNewTable;

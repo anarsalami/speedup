@@ -1,86 +1,45 @@
 package com.bsptechs.main.bean;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.util.ui.MainFrameUtility;
+import com.bsptechs.main.util.FileUtility;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-/** 
- *
- * @author Penthos
- */
 public final class Config implements Serializable {
- 
-    private static final String fileName = "mySql.txt";
-    private List<NConnection> connections = null;
-    private static NConnection currentConnection = null;
-    private static DatabaseName currentDatabaseName = null;
+
+    private static final long serialVersionUID = 1L;
+    public static final String FILE_NAME = "mySql.txt";
     private static Config config = null;
 
+    private CustomList<ConnectionBean> connectionBeans = new CustomList<>();
+
     public static void initialize() {
-        config = MainFrameUtility.readConfig();
+        config = readConfig();
     }
 
     public static Config instance() {
         return config;
     }
 
-    public List<NConnection> getConnections() {
-        return connections;
+    public static CustomList<ConnectionBean> getConnectionBeans() {
+        return instance().connectionBeans;
     }
 
-    public NConnection getConnectionByName(String connectionName) {
-        if(connections==null){
-            return null;
+    public void saveConfig() {
+        connectionBeans = Main.instance().getConnectionTree().getConnectionBeans();
+        FileUtility.writeObjectToFile(Config.instance(), FILE_NAME);
+    }
+
+    public static Config readConfig() {
+        Object configObj = FileUtility.readFileDeserialize(FILE_NAME);
+        Config cnf;
+        if (configObj == null) {
+            cnf = new Config();
+            System.out.println("null");
+        } else {
+            cnf = (Config) configObj;
+            System.out.println("else");
         }
-        for (int i = 0; i < connections.size(); i++) {
-            NConnection connection = connections.get(i);
-            if (connection.getName().equalsIgnoreCase(connectionName)) {
-                return connection;
-            }
-        }
-        return null;
+        return cnf;
     }
-
-    public void setConnections(List<NConnection> connections) {
-        this.connections = connections;
-    }
-
-    public void appendConnection(NConnection connection) {
-        if (connections == null) {
-            connections = new ArrayList<>();
-        }
-        connections.add(connection);
-    }
-
-    public static void setCurrentConnection(NConnection connection) {
-        currentConnection = connection;
-    }
-//
-    public static NConnection getCurrentConnection() {
-        return currentConnection;
-    }
-
-    public static String getFileName() {
-        return fileName;
-    }
-    private static volatile Main main;
-
-    public static void setMain(Main frame) {
-        main = frame;
-    }
-
-    public static Main getMain() {
-        return main;
-    }
-
-    public static DatabaseName getCurrentDatabaseName() {
-        return currentDatabaseName;
-    }
-
-    public static void setCurrentDatabaseName(DatabaseName currentDatabaseName) {
-        Config.currentDatabaseName = currentDatabaseName;
-    } 
 
 }
