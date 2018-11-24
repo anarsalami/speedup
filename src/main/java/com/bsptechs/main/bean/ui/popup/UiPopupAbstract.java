@@ -28,7 +28,7 @@ public abstract class UiPopupAbstract extends JPopupMenu {
         return this.selectedElement;
     }
 
-    protected void addMenuItem(String text, EmptyFI adder) {
+    protected final void addMenuItem(String text, EmptyFI adder) {
         JMenuItem item = menuItem(text);
         item.addActionListener((java.awt.event.ActionEvent evt) -> {
             adder.action();

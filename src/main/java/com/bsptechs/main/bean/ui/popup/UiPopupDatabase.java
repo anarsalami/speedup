@@ -34,13 +34,7 @@ public class UiPopupDatabase extends UiPopupAbstract {
             delete();
         });
         addMenuItem("New Query", () -> {
-            try {
-                newQuery();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(UiPopupDatabase.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(UiPopupDatabase.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            newQuery();
         });
 
     }
@@ -55,12 +49,9 @@ public class UiPopupDatabase extends UiPopupAbstract {
         //Tebriz burani dolduracaq
     }
 
-    public void newQuery() throws ClassNotFoundException, SQLException {
+    public void newQuery() {
         System.out.println("new query");
-        DatabaseJTree tree = Main.instance().getConnectionTree();
-        ConnectionTreeNode cnn = tree.getSelectedConnectionNode();
-        DatabaseTreeNode db = tree.getSelectedDatabaseNode();
-        Main.instance().prepareNewQuery(cnn, db);
+        Main.instance().prepareNewQuery(null, false);
     }
 
 }

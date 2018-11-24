@@ -5,7 +5,8 @@
  */
 package com.bsptechs.main.bean.ui.tree.database.node;
 
-import com.bsptechs.main.bean.ui.panel.PanelQuery;
+import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.ui.popup.UiPopupTable;
 import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import java.util.List;
@@ -26,7 +27,7 @@ public class TableTreeNode extends CustomTreeNode {
         this.name = name;
         this.database = database;
     }
- 
+
     @Override
     public void onClick() {
 
@@ -34,7 +35,7 @@ public class TableTreeNode extends CustomTreeNode {
 
     @Override
     public void onDoubleClick() {
-        PanelQuery.runQuery("select * from " + this.getName());
+        Main.instance().prepareNewQuery("select * from " + this.getName(), true);
     }
 
     @Override

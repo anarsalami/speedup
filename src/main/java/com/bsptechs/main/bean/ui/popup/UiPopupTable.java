@@ -6,7 +6,7 @@
 package com.bsptechs.main.bean.ui.popup;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.panel.PanelQuery;
+import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
@@ -90,7 +90,7 @@ public class UiPopupTable extends UiPopupAbstract {
 
         if (element instanceof TableTreeNode) {
             TableTreeNode tb = (TableTreeNode) element;
-            PanelQuery.viewTable(tb);
+            Main.instance().prepareNewQuery("select * from "+tb.getName(), true);
         }
     }
 

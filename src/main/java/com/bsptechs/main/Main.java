@@ -1,7 +1,7 @@
 package com.bsptechs.main;
 
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
-import com.bsptechs.main.bean.ui.panel.PanelQuery;
+import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.tree.database.DatabaseJTree;
 import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
@@ -67,12 +67,10 @@ public class Main extends javax.swing.JFrame {
         menuNewQuery.setEnabled(found);
     }
 
-    private PanelQuery panelQuery = null;
-
     public void prepare() throws Exception {
         Config.initialize();
         getConnectionTree().addConnectionNodes(Config.getConnectionBeans());
-    }    
+    }
 
     public JTabbedPane getTabPaneTable() {
         return tabTables;
@@ -645,7 +643,7 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuNewQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewQueryActionPerformed
-        prepareNewQuery();
+        prepareNewQuery(null, false);
     }//GEN-LAST:event_menuNewQueryActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -810,41 +808,36 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuDataTransferActionPerformed
 
-    public PanelQuery getPanelQuery() {
-        return panelQuery;
-    }
-
-     public void prepareNewQuery() {
+    @SneakyThrows
+    public PanelQuery prepareNewQuery(String queryStr, boolean run) {
         DatabaseJTree tree = getConnectionTree();
         TableTreeNode table = tree.getSelectedTableNode();
-        System.out.println("table name="+table.getName()+", databasename="+table.getDatabase());
         ConnectionTreeNode conn = table != null ? table.getDatabase().getConnection() : tree.getCurrentConnectionNode();
         DatabaseTreeNode db = table != null ? table.getDatabase() : tree.getCurrentDatabaseNode();
 
-        prepareNewQuery(conn, db);
-    }
-
-    @SneakyThrows
-    public void prepareNewQuery(ConnectionTreeNode conn, DatabaseTreeNode db) {
-        panelQuery = new PanelQuery(conn, db);
+        PanelQuery panel = new PanelQuery(conn, db, queryStr);
         tabbedPaneCenter.setEnabled(true);
-        Util.addPanelToTab(tabQuery, panelQuery, "Query");
+        Util.addPanelToTab(tabQuery, panel, "Query");
+        if (run) {
+            panel.runQuery();
+        }
+
+        return panel;
     }
 
     private void btnNewQueryActionPerformed(java.awt.event.ActionEvent evt) {
-        prepareNewQuery();
+        prepareNewQuery(null, false);
     }
- 
+
     /**
      * @param args the command line arguments
      */
-    
     private static Main main = null;
-    
-    public static Main instance(){
+
+    public static Main instance() {
         return main;
     }
-    
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -884,7 +877,7 @@ public class Main extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    main =  new Main();
+                    main = new Main();
                     main.prepare();
                     main.setVisible(true);
                 } catch (ClassNotFoundException ex) {
