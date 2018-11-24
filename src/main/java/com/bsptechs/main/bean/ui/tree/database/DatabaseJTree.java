@@ -6,14 +6,11 @@
 package com.bsptechs.main.bean.ui.tree.database;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
 import com.bsptechs.main.bean.CustomList;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
 import com.bsptechs.main.bean.ui.tree.AbstractCustomTree;
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
 import com.bsptechs.main.util.MouseUtil;
 import java.awt.event.MouseAdapter;
 import java.util.Enumeration;
@@ -29,6 +26,11 @@ public class DatabaseJTree extends AbstractCustomTree {
 
     private ConnectionTreeNode currentConnectionNode = null;
     private DatabaseTreeNode currentDatabaseNode = null;
+
+    public void addConnectionNode(ConnectionBean connection) {
+        System.out.println(connection);
+        this.addCustomTreeNodeToRoot(new ConnectionTreeNode(this, connection));
+    }
 
     public CustomList<ConnectionBean> getConnectionBeans() {
         CustomList<ConnectionTreeNode> connections = getConnectionNodes();
@@ -65,7 +67,7 @@ public class DatabaseJTree extends AbstractCustomTree {
 
     public void addConnectionNodes(List<ConnectionBean> connections) {
         for (ConnectionBean cnb : connections) {
-            this.addCustomTreeNodeToRoot(new ConnectionTreeNode(cnb));
+            this.addCustomTreeNodeToRoot(new ConnectionTreeNode(this, cnb));
         }
     }
 
@@ -83,6 +85,19 @@ public class DatabaseJTree extends AbstractCustomTree {
 
     public void setCurrentDatabaseNode(DatabaseTreeNode currentDatabaseNode) {
         this.currentDatabaseNode = currentDatabaseNode;
+    }
+
+    public boolean hasAnyActiveConnection() {
+        List<ConnectionBean> l = this.getConnectionBeans();
+        boolean found = false;
+        for (int i = 0; i < l.size(); i++) {
+            ConnectionBean cn = l.get(i);
+            if (cn.getParentConnection() != null) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
     @Override

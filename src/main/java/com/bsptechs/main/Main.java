@@ -3,10 +3,10 @@ package com.bsptechs.main;
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
 import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.DatabaseJTree;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.ConnectionTreeNode;
 import com.bsptechs.main.util.Util;
 import java.awt.Color;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
-import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.TableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 import lombok.SneakyThrows;
 
@@ -54,16 +54,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void refreshNewQuery() {
-        boolean found = false;
-        List<ConnectionTreeNode> l = getConnectionTree().getConnectionNodes();
-        for (int i = 0; i < l.size(); i++) {
-            ConnectionTreeNode cn = l.get(i);
-            if (cn.getParentConnection() != null) {
-                found = true;
-                break;
-            }
-        }
-
+        boolean found = getConnectionTree().hasAnyActiveConnection();
         btnNewQuery.setEnabled(found);
         menuNewQuery.setEnabled(found);
     }

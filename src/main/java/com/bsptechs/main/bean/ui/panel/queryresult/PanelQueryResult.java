@@ -5,8 +5,8 @@
  */
 package com.bsptechs.main.bean.ui.panel.queryresult;
 
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.table.CustomTable;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;

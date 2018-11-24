@@ -1,5 +1,6 @@
 package com.bsptechs.main.bean;
 
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
 import com.bsptechs.main.Main;
 import com.bsptechs.main.util.FileUtility;
 import java.io.Serializable;

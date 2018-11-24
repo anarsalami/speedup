@@ -2,10 +2,10 @@ package com.bsptechs.main.dao.impl;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
-import com.bsptechs.main.bean.TableBean;
-import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.TableTreeNode;
 import com.bsptechs.main.bean.ui.table.TableCell;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;

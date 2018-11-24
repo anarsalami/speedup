@@ -8,7 +8,7 @@ package com.bsptechs.main.bean.ui.popup;
 import com.bsptechs.main.Main; 
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.EmptyFI;
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
+import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 

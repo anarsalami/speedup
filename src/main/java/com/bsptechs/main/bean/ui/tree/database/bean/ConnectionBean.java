@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bsptechs.main.bean;
+package com.bsptechs.main.bean.ui.tree.database.bean;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.ConnectionTreeNode;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;

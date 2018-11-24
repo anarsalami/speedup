@@ -1,6 +1,6 @@
 package com.bsptechs.main.dao.inter;
 
-import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;

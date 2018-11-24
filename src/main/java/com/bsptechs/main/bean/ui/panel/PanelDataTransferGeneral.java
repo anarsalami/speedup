@@ -1,10 +1,10 @@
 package com.bsptechs.main.bean.ui.panel;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.DatabaseTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.util.List;

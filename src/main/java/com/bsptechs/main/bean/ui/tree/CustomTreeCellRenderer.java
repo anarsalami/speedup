@@ -5,7 +5,6 @@
  */
 package com.bsptechs.main.bean.ui.tree;
 
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 import java.awt.Component;
 import javax.swing.JLabel;

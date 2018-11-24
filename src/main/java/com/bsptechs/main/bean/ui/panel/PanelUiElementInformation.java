@@ -5,10 +5,11 @@
  */
 package com.bsptechs.main.bean.ui.panel;
 
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.TableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 
 /**
@@ -27,15 +28,15 @@ public class PanelUiElementInformation extends javax.swing.JPanel {
         setVisible(true);
     }
 
-    public void preparePanel(CustomTreeNode element) {
+    public void preparePanel(Object element) {
         System.out.println("element="+element);
         if (element == null) {
             return;
         }
 
-        if (element instanceof ConnectionTreeNode) {
+        if (element instanceof ConnectionBean) {
             System.out.println("connection");
-            ConnectionTreeNode el = (ConnectionTreeNode) element;
+            ConnectionBean el = (ConnectionBean) element;
             String name = el.getName();
             String port = el.getPort();
             String ipAdress = el.getIpAdr();
@@ -46,10 +47,10 @@ public class PanelUiElementInformation extends javax.swing.JPanel {
             lblHost.setText(ipAdress);
             lblPort.setText(port);
             lblUserName1.setText(userName);
-        }else if(element instanceof TableTreeNode){
-             TableTreeNode el = (TableTreeNode) element;
-        }else if(element instanceof DatabaseTreeNode){
-             DatabaseTreeNode el = (DatabaseTreeNode) element;
+        }else if(element instanceof TableBean){
+             TableBean el = (TableBean) element;
+        }else if(element instanceof DatabaseBean){
+             DatabaseBean el = (DatabaseBean) element;
         }
     }
 

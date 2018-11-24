@@ -5,7 +5,6 @@
  */
 package com.bsptechs.main.bean.ui.tree;
 
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import java.awt.event.MouseAdapter;
 import java.util.List;
 import javax.swing.JTree;

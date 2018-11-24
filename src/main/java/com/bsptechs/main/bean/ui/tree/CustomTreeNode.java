@@ -1,4 +1,4 @@
-package com.bsptechs.main.bean.ui.tree.node;
+package com.bsptechs.main.bean.ui.tree;
 
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.CustomList;
