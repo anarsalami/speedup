@@ -6,10 +6,9 @@
 package com.bsptechs.main.bean.ui.tree.database.node;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
+import com.bsptechs.main.bean.TableBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupTable;
 import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
-import java.util.List;
 import javax.swing.JPopupMenu;
 import lombok.Data;
 
@@ -20,12 +19,10 @@ import lombok.Data;
 @Data
 public class TableTreeNode extends CustomTreeNode {
 
-    private String name;
-    private DatabaseTreeNode database;
+    private TableBean table;
 
-    public TableTreeNode(String name, DatabaseTreeNode database) {
-        this.name = name;
-        this.database = database;
+    public TableTreeNode(TableBean table) {
+        this.table = table;
     }
 
     @Override
@@ -35,17 +32,12 @@ public class TableTreeNode extends CustomTreeNode {
 
     @Override
     public void onDoubleClick() {
-        Main.instance().prepareNewQuery("select * from " + this.getName(), true);
+        Main.instance().prepareNewQuery("select * from " + this.table.getName(), true);
     }
 
     @Override
     public JPopupMenu getPopup() {
         return new UiPopupTable();
-    }
-
-    @Override
-    public List<? extends CustomTreeNode> getSubList() {
-        return null;
     }
 
     @Override
@@ -55,6 +47,6 @@ public class TableTreeNode extends CustomTreeNode {
 
     @Override
     public String toString() {
-        return name;
+        return table.getName();
     }
 }

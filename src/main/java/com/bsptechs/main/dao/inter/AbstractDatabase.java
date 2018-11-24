@@ -1,6 +1,6 @@
 package com.bsptechs.main.dao.inter;
 
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ConnectionBean;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public abstract class AbstractDatabase {
 
-    public Connection connect(ConnectionTreeNode connection) throws ClassNotFoundException, SQLException {
+    public Connection connect(ConnectionBean connection) throws ClassNotFoundException, SQLException {
         if(connection.getParentConnection()!=null){
             System.out.println(connection.getName()+" is using its own connection which created before");
             return connection.getParentConnection();

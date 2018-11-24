@@ -38,7 +38,7 @@ public class CreatDB extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     private List<Charset> fillCharsetCombo() {
-        List<Charset> list = databaseDAOImpl.getAllCharsets(Main.instance().getConnectionTree().getCurrentConnectionNode());
+        List<Charset> list = databaseDAOImpl.getAllCharsets(Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection());
         System.out.println(list);
         for (Charset charset : list) {
             charsetCmbo.addItem(charset);
@@ -50,7 +50,7 @@ public class CreatDB extends javax.swing.JFrame {
         Charset selectedCharset = (Charset) charsetCmbo.getSelectedItem();
         System.out.println(selectedCharset);
         collationCombo.removeAllItems();
-        List<Collation> collations = databaseDAOImpl.getAllCollations(Main.instance().getConnectionTree().getCurrentConnectionNode(), selectedCharset);
+        List<Collation> collations = databaseDAOImpl.getAllCollations(Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection(), selectedCharset);
         for (Collation collation : collations) {
             collationCombo.addItem(collation);
         }

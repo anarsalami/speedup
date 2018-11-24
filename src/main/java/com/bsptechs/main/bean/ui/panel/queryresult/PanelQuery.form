@@ -136,7 +136,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbConnectionsActionPerformed"/>
                   </Events>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;ConnectionTreeNode&gt;"/>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;ConnectionBean&gt;"/>
                   </AuxValues>
                 </Component>
                 <Component class="javax.swing.JComboBox" name="cbDatabases">
@@ -149,7 +149,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbDatabasesActionPerformed"/>
                   </Events>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;DatabaseTreeNode&gt;"/>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;DatabaseBean&gt;"/>
                   </AuxValues>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnRun">

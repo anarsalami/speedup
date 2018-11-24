@@ -1,7 +1,8 @@
 package com.bsptechs.main.bean.ui.panel;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
 import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
@@ -46,7 +47,7 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 	}
 
 	for (int i = 0; i < list.size(); i++) {
-	    comboboxConnectionSource.addItem(list.get(i));
+	    comboboxConnectionSource.addItem(list.get(i).getConnection());
 	}
 	System.out.println("Config.getCurrentConnection()=" + connection);
 	if (connection != null) {
@@ -60,9 +61,9 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 	}
 	System.out.println("prepareDatabasesCombobox=" + database);
 	comboboxDatabaseSource.removeAllItems();
-	List<DatabaseTreeNode> databases = connection.getDatabases();
+	List<DatabaseBean> databases = connection.getAllDatabaseBeans();
 	if (databases == null) {
-	    databases = db.getAllDatabases(connection);
+	    databases = db.getAllDatabases(connection.getConnection());
 	}
 	for (int i = 0; i < databases.size(); i++) {
 	    comboboxDatabaseSource.addItem(databases.get(i));
@@ -610,11 +611,11 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLoadProfile;
     private javax.swing.JButton btnNext;
-    private javax.swing.JComboBox<ConnectionTreeNode> comboboxConnectionSource;
-    private javax.swing.JComboBox<DatabaseTreeNode> comboboxDatabaseSource;
+    private javax.swing.JComboBox<ConnectionBean> comboboxConnectionSource;
+    private javax.swing.JComboBox<DatabaseBean> comboboxDatabaseSource;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<DatabaseTreeNode> jComboBox3;
-    private javax.swing.JComboBox<ConnectionTreeNode> jComboBox4;
+    private javax.swing.JComboBox<DatabaseBean> jComboBox3;
+    private javax.swing.JComboBox<ConnectionBean> jComboBox4;
     private javax.swing.JComboBox<String> jComboBoxSaveProfile;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

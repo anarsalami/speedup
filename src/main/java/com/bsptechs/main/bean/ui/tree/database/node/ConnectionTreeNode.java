@@ -1,10 +1,10 @@
 package com.bsptechs.main.bean.ui.tree.database.node;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.CustomList;
+import com.bsptechs.main.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupConnection;
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -31,13 +31,30 @@ public class ConnectionTreeNode extends CustomTreeNode implements Serializable {
     public void connect() {
         if (connection.getDatabases() == null) {
             System.out.println("connection connect");
-            connection.setDatabases(database.getAllDatabases(this));
+            connection.setDatabases(database.getAllDatabases(connection));
             Main.instance().getConnectionTree().setCurrentConnectionNode(this);
-            addChildren(connection.getDatabases());
+            addDatabases(connection.getDatabases());
             Main.instance().refreshNewQuery();
             nodeStructureChanged();
             expand();
         }
+    }
+    
+    public void addDatabases(List<DatabaseBean> databases){
+        CustomList<DatabaseTreeNode> dbNodes = new CustomList<>();
+        for(DatabaseBean db: databases){
+            dbNodes.add(new DatabaseTreeNode(db));
+        }
+        super.addChildren(dbNodes);
+    } 
+    
+    public CustomList<DatabaseBean> getAllDatabaseBeans(){
+        CustomList<DatabaseBean> list = new CustomList<>();
+        List<DatabaseTreeNode> l = getChildren(DatabaseTreeNode.class);
+        for(int i=0;i<l.size();i++){
+            list.add(l.get(i).getDatabase());
+        }
+        return list;
     }
     
     public void reset(){
@@ -58,10 +75,7 @@ public class ConnectionTreeNode extends CustomTreeNode implements Serializable {
         return new UiPopupConnection();
     }
 
-    @Override
-    public List<DatabaseTreeNode> getSubList() {
-        return connection.getDatabases();
-    }
+     
 
     @Override
     public String getIcon() {
@@ -128,13 +142,8 @@ public class ConnectionTreeNode extends CustomTreeNode implements Serializable {
     public void setParentConnection(Connection parentConnection) {
         this.connection.setParentConnection(parentConnection);
     }
-
-    public List<DatabaseTreeNode> getDatabases() {
-        return connection.getDatabases();
-    }
-
-    public void setDatabases(List<DatabaseTreeNode> databases) {
-        this.connection.setDatabases(databases);
-    }
+ 
+    
+    
 
 }

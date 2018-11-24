@@ -5,11 +5,11 @@
  */
 package com.bsptechs.main.bean.ui.panel.queryresult;
 
+import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.table.CustomTable;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import lombok.SneakyThrows;
@@ -138,22 +138,22 @@ public class PanelQueryResult extends javax.swing.JPanel {
     }
 
     private String queryStr;
-    private ConnectionTreeNode connectionTreeNode;
-    private DatabaseTreeNode databaseTreeNode;
+    private ConnectionBean connection;
+    private DatabaseBean database;
 
     @SneakyThrows
-    public void runQuery(String queryStr, ConnectionTreeNode connectionNode, DatabaseTreeNode databaseNode) {
+    public void runQuery(String queryStr, ConnectionBean connection, DatabaseBean database) {
         this.queryStr = queryStr;
-        this.connectionTreeNode = connectionNode;
-        this.databaseTreeNode = databaseNode;
+        this.connection = connection;
+        this.database = database;
 
         CustomTable tbl = getTable();
-        CustomTableModel model = db.runQuery(queryStr, connectionNode, databaseNode);
+        CustomTableModel model = db.runQuery(queryStr, connection, database);
         tbl.setModel(model);
     }
 
     private void runQuery() {
-        runQuery(queryStr, connectionTreeNode, databaseTreeNode);
+        runQuery(queryStr, connection, database);
     }
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         CustomTable tbl = getTable();
@@ -171,7 +171,7 @@ public class PanelQueryResult extends javax.swing.JPanel {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         CustomTable tbl = getTable();
-        db.deleteRow(connectionTreeNode, tbl.getSelectedTableRow());
+        db.deleteRow(connection, tbl.getSelectedTableRow());
         runQuery();
     }//GEN-LAST:event_btnDeleteActionPerformed
 

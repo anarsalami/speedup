@@ -3,6 +3,8 @@ package com.bsptechs.main;
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
 import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.bean.ConnectionBean;
+import com.bsptechs.main.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.DatabaseJTree;
 import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
 import com.bsptechs.main.util.Util;
@@ -16,7 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
 import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 import lombok.SneakyThrows;
@@ -812,8 +813,8 @@ public class Main extends javax.swing.JFrame {
     public PanelQuery prepareNewQuery(String queryStr, boolean run) {
         DatabaseJTree tree = getConnectionTree();
         TableTreeNode table = tree.getSelectedTableNode();
-        ConnectionTreeNode conn = table != null ? table.getDatabase().getConnection() : tree.getCurrentConnectionNode();
-        DatabaseTreeNode db = table != null ? table.getDatabase() : tree.getCurrentDatabaseNode();
+        ConnectionBean conn = table != null ? table.getTable().getDatabase().getConnection() : tree.getCurrentConnectionNode().getConnection();
+        DatabaseBean db = table != null ? table.getTable().getDatabase() : tree.getCurrentDatabaseNode().getDatabase();
 
         PanelQuery panel = new PanelQuery(conn, db, queryStr);
         tabbedPaneCenter.setEnabled(true);

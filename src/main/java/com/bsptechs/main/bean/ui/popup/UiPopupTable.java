@@ -43,7 +43,7 @@ public class UiPopupTable extends UiPopupAbstract {
             renameTable();
         });
         addMenuItem("Refresh", () -> {
-            refreshDB();
+            
         });
         addMenuItem("Empty Table", () -> {
             emptyTable();
@@ -86,11 +86,10 @@ public class UiPopupTable extends UiPopupAbstract {
 
     public void viewTable() {
 
-        CustomTreeNode element = (CustomTreeNode) Main.instance().getConnectionTree().getSelectionPath().getLastPathComponent();
+        TableTreeNode element = Main.instance().getConnectionTree().getSelectedTableNode();
 
-        if (element instanceof TableTreeNode) {
-            TableTreeNode tb = (TableTreeNode) element;
-            Main.instance().prepareNewQuery("select * from "+tb.getName(), true);
+        if (element !=null) {
+            Main.instance().prepareNewQuery("select * from "+element.getTable().getName(), true);
         }
     }
 
@@ -107,25 +106,21 @@ public class UiPopupTable extends UiPopupAbstract {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
-                tb.getName()
+                tb.getTable().getName()
         );
-        database.renameTable(tb, newTblName);
+        database.renameTable(tb.getTable(), newTblName);
        tb.nodeChanged();
     }
-
-    private void refreshDB() {
-        TableTreeNode tb = getSelectedTable();
-        List<TableTreeNode> tbNames = database.getAllTables(tb.getDatabase());
-    }
+ 
 
     private void emptyTable() {
         TableTreeNode tb = getSelectedTable();
-        database.emptyTable(tb.getDatabase(), tb.getName());
+        database.emptyTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
     private void truncateTeable() {
         TableTreeNode tb = getSelectedTable();
-        database.truncateTable(tb.getDatabase(), tb.getName());
+        database.truncateTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
     private TableTreeNode selectedElementForCopy;
@@ -145,21 +140,19 @@ public class UiPopupTable extends UiPopupAbstract {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
-                tb.getName()
+                tb.getTable().getName()
         );
 
         database.pasteTable(
-                selectedElementForCopy.getDatabase() + "." + selectedElementForCopy.getName(),
-                tb.getDatabase(),
+                selectedElementForCopy.getTable().getDatabase() + "." + selectedElementForCopy.getTable().getName(),
+                tb.getTable().getDatabase(),
                 newTblName
-        );
-        refreshDB();
+        ); 
     }
 
     private void dublicateTable() {
         TableTreeNode tb = getSelectedTable();
-        database.dublicateTable(tb.getDatabase(), tb.getName());
-        refreshDB();
+        database.dublicateTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
     private void dumpSqlFile() {

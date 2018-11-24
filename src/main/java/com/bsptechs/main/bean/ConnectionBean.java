@@ -7,7 +7,6 @@ package com.bsptechs.main.bean;
 
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,7 +28,7 @@ public class ConnectionBean implements Serializable{
     private String userName;
     private String password;
     private transient Connection parentConnection;
-    private transient List<DatabaseTreeNode> databases;
+    private transient List<DatabaseBean> databases;
 
     public ConnectionBean() {
     }

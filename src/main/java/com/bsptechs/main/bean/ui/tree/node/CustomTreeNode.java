@@ -1,9 +1,10 @@
 package com.bsptechs.main.bean.ui.tree.node;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.bean.CustomList;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
+import java.util.Enumeration;
 import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -23,8 +24,7 @@ public abstract class CustomTreeNode extends DefaultMutableTreeNode {
 
     public abstract JPopupMenu getPopup();
 
-    public abstract List<? extends CustomTreeNode> getSubList();
-
+//    public abstract List<? extends CustomTreeNode> getSubList();
     public abstract String getIcon();
 
     public void addChildren(List<? extends CustomTreeNode> listData) {
@@ -39,6 +39,15 @@ public abstract class CustomTreeNode extends DefaultMutableTreeNode {
         nodeStructureChanged();
 
     }
+
+    public <T> List<T> getChildren(Class<T> clazz) {
+        Enumeration en = this.children();
+        CustomList<T> list = new CustomList<>();
+        while (en.hasMoreElements()) {
+            list.add((T)en.nextElement());
+        }
+        return list;
+    } 
 
     @Override
     public void removeAllChildren() {

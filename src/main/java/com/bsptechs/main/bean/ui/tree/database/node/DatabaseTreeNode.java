@@ -1,52 +1,50 @@
 package com.bsptechs.main.bean.ui.tree.database.node;
 
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.bean.CustomList;
+import com.bsptechs.main.bean.DatabaseBean;
+import com.bsptechs.main.bean.TableBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupDatabase;
 import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
 import java.util.List;
 import javax.swing.JPopupMenu;
 
 public class DatabaseTreeNode extends CustomTreeNode {
-
-    private String name;
-    private ConnectionTreeNode connection;
-    private List<TableTreeNode> tables;
+ 
+    private DatabaseBean db;
 
     public DatabaseTreeNode() {
     }
 
-    public DatabaseTreeNode(String name, ConnectionTreeNode connection) {
-        this.name = name;
-        this.connection = connection;
+    public DatabaseTreeNode(DatabaseBean database) {
+        this.db = database;
     }
 
-    public String getName() {
-        return name;
+    public DatabaseBean getDatabase() {
+        return db;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDatabase(DatabaseBean database) {
+        this.db = database;
     }
-
-    public ConnectionTreeNode getConnection() {
-        return connection;
-    }
-
-    public void setConnection(ConnectionTreeNode connection) {
-        this.connection = connection;
-    }
-
-    public List<TableTreeNode> getTables() {
-        return tables;
-    }
-
-    public void setTables(List<TableTreeNode> tables) {
-        this.tables = tables;
-    }
+ 
+ 
+    public CustomList<TableBean> getTableBeans(){
+        CustomList<TableBean> list = new CustomList<>();
+        List<TableTreeNode> l = getChildren(TableTreeNode.class);
+        for(int i=0;i<l.size();i++){
+            list.add(l.get(i).getTable());
+        }
+        return list;
+    } 
+ 
+     public void addTables(List<TableBean> tables){
+        CustomList<TableTreeNode> nodes = new CustomList<>();
+        for(TableBean table: tables){
+            nodes.add(new TableTreeNode(table));
+        }
+        super.addChildren(nodes);
+    } 
 
     @Override
     public void onClick() {
@@ -56,9 +54,10 @@ public class DatabaseTreeNode extends CustomTreeNode {
     @Override
     public void onDoubleClick() {
         Main.instance().getConnectionTree().setCurrentDatabaseNode(this);
-        if (tables == null) { 
-            tables = database.getAllTables(this);
-            addChildren(tables);
+        List<TableBean> tables = getTableBeans();
+        if (tables == null) {
+            tables = database.getAllTables(this.db);
+            addTables(tables);
             expand();
         }
     }
@@ -67,20 +66,16 @@ public class DatabaseTreeNode extends CustomTreeNode {
     public JPopupMenu getPopup() {
         return new UiPopupDatabase();
     }
-
-    @Override
-    public List<TableTreeNode> getSubList() {
-        return getTables();
-    }
+ 
 
     @Override
     public String getIcon() {
         return "database.png";
     }
-    
-     @Override
-    public String toString(){
-        return name;
+
+    @Override
+    public String toString() {
+        return db.getName();
     }
 
 }
