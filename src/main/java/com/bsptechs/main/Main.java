@@ -5,8 +5,8 @@ import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
-import com.bsptechs.main.bean.ui.tree.database.DatabaseJTree;
-import com.bsptechs.main.bean.ui.tree.database.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTree;
+import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import com.bsptechs.main.util.Util;
 import java.awt.Color;
 import java.sql.SQLException;
@@ -18,13 +18,13 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
-import com.bsptechs.main.bean.ui.tree.database.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 import lombok.SneakyThrows;
 
 public class Main extends javax.swing.JFrame {
 
-    ConnectionTreeNode conn = null;
+    SUConnectionTreeNode conn = null;
 
     public Main() {
         initComponents();
@@ -68,8 +68,8 @@ public class Main extends javax.swing.JFrame {
         return tabTables;
     }
 
-    public DatabaseJTree getConnectionTree() {
-        return (DatabaseJTree) connectionTree;
+    public SUDatabaseTree getConnectionTree() {
+        return (SUDatabaseTree) connectionTree;
     }
 
     /**
@@ -100,7 +100,7 @@ public class Main extends javax.swing.JFrame {
         splitPaneCenter = new javax.swing.JSplitPane();
         panelLeft = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        connectionTree = new com.bsptechs.main.bean.ui.tree.database.DatabaseJTree();
+        connectionTree = new com.bsptechs.main.bean.ui.tree.database.SUDatabaseTree();
         tabbedPaneCenter = new javax.swing.JTabbedPane();
         tabQuery = new javax.swing.JTabbedPane();
         tabDesignTable = new javax.swing.JTabbedPane();
@@ -802,8 +802,8 @@ public class Main extends javax.swing.JFrame {
 
     @SneakyThrows
     public PanelQuery prepareNewQuery(String queryStr, boolean run) {
-        DatabaseJTree tree = getConnectionTree();
-        TableTreeNode table = tree.getSelectedTableNode();
+        SUDatabaseTree tree = getConnectionTree();
+        SUTableTreeNode table = tree.getSelectedTableNode();
         ConnectionBean conn = table != null ? table.getTable().getDatabase().getConnection() : tree.getCurrentConnectionNode().getConnection();
         DatabaseBean db = table != null ? table.getTable().getDatabase() : tree.getCurrentDatabaseNode().getDatabase();
 

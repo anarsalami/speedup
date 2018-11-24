@@ -6,7 +6,7 @@
 package com.bsptechs.main.bean.ui.tree.database.bean;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.tree.database.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -52,7 +52,7 @@ public class ConnectionBean implements Serializable{
             this.databases = null;
             Main.instance().refreshNewQuery();
         } catch (SQLException ex) {
-            Logger.getLogger(ConnectionTreeNode.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SUConnectionTreeNode.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

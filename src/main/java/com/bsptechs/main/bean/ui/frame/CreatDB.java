@@ -9,7 +9,7 @@ import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.tree.database.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class CreatDB extends javax.swing.JFrame {
 
     DatabaseDAOImpl databaseDAOImpl = new DatabaseDAOImpl();
-    DatabaseTreeNode database;
+    SUDatabaseTreeNode database;
 
     /**
      * Creates new form CreatDB

@@ -595,7 +595,7 @@
                             <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="connectionTreeTreeCollapsed"/>
                           </Events>
                           <AuxValues>
-                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.bsptechs.main.bean.ui.tree.database.DatabaseJTree()"/>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.bsptechs.main.bean.ui.tree.database.SUDatabaseTree()"/>
                           </AuxValues>
                         </Component>
                       </SubComponents>

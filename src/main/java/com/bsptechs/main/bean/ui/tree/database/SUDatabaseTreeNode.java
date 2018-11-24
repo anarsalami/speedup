@@ -5,27 +5,25 @@ import com.bsptechs.main.bean.CustomList;
 import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupDatabase;
-import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
 import java.util.List;
 import javax.swing.JPopupMenu;
 
-public class DatabaseTreeNode extends CustomTreeNode {
+public class SUDatabaseTreeNode extends SUAbstractTreeNode {
 
-    private final DatabaseBean db;
-    private final DatabaseJTree tree;
+    private final DatabaseBean database;
 
-    public DatabaseTreeNode(DatabaseJTree tree, DatabaseBean database) {
-        this.db = database;
-        this.tree = tree;
+    public SUDatabaseTreeNode(SUDatabaseTree tree, DatabaseBean database) {
+        super(tree);
+        this.database = database;
     }
 
     public DatabaseBean getDatabase() {
-        return db;
+        return database;
     }
 
     public CustomList<TableBean> getTableBeans() {
         CustomList<TableBean> list = new CustomList<>();
-        List<TableTreeNode> l = getChildren(TableTreeNode.class);
+        List<SUTableTreeNode> l = getChildren(SUTableTreeNode.class);
         for (int i = 0; i < l.size(); i++) {
             list.add(l.get(i).getTable());
         }
@@ -33,11 +31,15 @@ public class DatabaseTreeNode extends CustomTreeNode {
     }
 
     public void addTables(List<TableBean> tables) {
-        CustomList<TableTreeNode> nodes = new CustomList<>();
+        CustomList<SUTableTreeNode> nodes = new CustomList<>();
         for (TableBean table : tables) {
-            nodes.add(new TableTreeNode(tree, table));
+            nodes.add(new SUTableTreeNode(getTree(), table));
         }
         super.addChildren(nodes);
+    } 
+    
+    public SUDatabaseTree getTree(){
+        return (SUDatabaseTree) tree;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class DatabaseTreeNode extends CustomTreeNode {
         Main.instance().getConnectionTree().setCurrentDatabaseNode(this);
         List<TableBean> tables = getTableBeans();
         if (tables.isEmpty()) {
-            tables = database.getAllTables(this.db);
+            tables = dao.getAllTables(this.database);
             addTables(tables);
             expand();
         }
@@ -68,7 +70,7 @@ public class DatabaseTreeNode extends CustomTreeNode {
 
     @Override
     public String toString() {
-        return db.getName();
+        return database.getName();
     }
 
 }

@@ -8,7 +8,7 @@ package com.bsptechs.main.bean.ui.popup;
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.tree.database.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
@@ -86,19 +86,19 @@ public class UiPopupTable extends UiPopupAbstract {
 
     public void viewTable() {
 
-        TableTreeNode element = Main.instance().getConnectionTree().getSelectedTableNode();
+        SUTableTreeNode element = Main.instance().getConnectionTree().getSelectedTableNode();
 
         if (element !=null) {
             Main.instance().prepareNewQuery("select * from "+element.getTable().getName(), true);
         }
     }
 
-    public TableTreeNode getSelectedTable() {
-        return (TableTreeNode) getSelectedElement();
+    public SUTableTreeNode getSelectedTable() {
+        return (SUTableTreeNode) getSelectedElement();
     }
 
     public void renameTable() {
-        TableTreeNode tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
         String newTblName = (String) JOptionPane.showInputDialog(
                 null,
                 "Enter new name:",
@@ -114,24 +114,24 @@ public class UiPopupTable extends UiPopupAbstract {
  
 
     private void emptyTable() {
-        TableTreeNode tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
         database.emptyTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
     private void truncateTeable() {
-        TableTreeNode tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
         database.truncateTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
-    private TableTreeNode selectedElementForCopy;
+    private SUTableTreeNode selectedElementForCopy;
 
     private void copyTable() {
-        TableTreeNode tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
         this.selectedElementForCopy = tb;
     }
 
     private void pasteTable() {
-        TableTreeNode tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
 
         String newTblName = (String) JOptionPane.showInputDialog(
                 null,
@@ -151,7 +151,7 @@ public class UiPopupTable extends UiPopupAbstract {
     }
 
     private void dublicateTable() {
-        TableTreeNode tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
         database.dublicateTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 

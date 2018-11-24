@@ -9,7 +9,7 @@ import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.frame.CreatDB;
-import com.bsptechs.main.bean.ui.tree.database.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 
 /**
  *
@@ -43,13 +43,13 @@ public class UiPopupConnection extends UiPopupAbstract {
         
     }
     
-    private ConnectionTreeNode getSelectedConnection(){
-        return (ConnectionTreeNode) getSelectedElement();
+    private SUConnectionTreeNode getSelectedConnection(){
+        return (SUConnectionTreeNode) getSelectedElement();
     }
 
     public void delete() {
         System.out.println("delete connection");
-        ConnectionTreeNode c = getSelectedConnection();
+        SUConnectionTreeNode c = getSelectedConnection();
         c.reset();
         Main.instance().getConnectionTree().removeCustomTreeNode(c);
         Config.instance().saveConfig();
@@ -67,7 +67,7 @@ public class UiPopupConnection extends UiPopupAbstract {
 
     public void disconnect() {
         System.out.println("disconnection connection");
-        ConnectionTreeNode cn = getSelectedConnection();
+        SUConnectionTreeNode cn = getSelectedConnection();
         cn.reset();
         cn.removeAllChildren();
     }

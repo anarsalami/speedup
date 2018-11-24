@@ -22,68 +22,68 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author sarkhanrasullu
  */
-public class DatabaseJTree extends AbstractCustomTree {
+public class SUDatabaseTree extends AbstractCustomTree {
 
-    private ConnectionTreeNode currentConnectionNode = null;
-    private DatabaseTreeNode currentDatabaseNode = null;
+    private SUConnectionTreeNode currentConnectionNode = null;
+    private SUDatabaseTreeNode currentDatabaseNode = null;
 
     public void addConnectionNode(ConnectionBean connection) {
         System.out.println(connection);
-        this.addCustomTreeNodeToRoot(new ConnectionTreeNode(this, connection));
+        this.addCustomTreeNodeToRoot(new SUConnectionTreeNode(this, connection));
     }
 
     public CustomList<ConnectionBean> getConnectionBeans() {
-        CustomList<ConnectionTreeNode> connections = getConnectionNodes();
+        CustomList<SUConnectionTreeNode> connections = getConnectionNodes();
         CustomList<ConnectionBean> connectionBeans = new CustomList<ConnectionBean>();
-        for (ConnectionTreeNode conn : connections) {
+        for (SUConnectionTreeNode conn : connections) {
             connectionBeans.add(conn.getConnection());
         }
         return connectionBeans;
     }
 
-    public DatabaseTreeNode getSelectedDatabaseNode() {
-        return getSelectedCustomTreeNodeGeneric(DatabaseTreeNode.class);
+    public SUDatabaseTreeNode getSelectedDatabaseNode() {
+        return getSelectedCustomTreeNodeGeneric(SUDatabaseTreeNode.class);
     }
 
-    public TableTreeNode getSelectedTableNode() {
-        return getSelectedCustomTreeNodeGeneric(TableTreeNode.class);
+    public SUTableTreeNode getSelectedTableNode() {
+        return getSelectedCustomTreeNodeGeneric(SUTableTreeNode.class);
     }
 
-    public ConnectionTreeNode getSelectedConnectionNode() {
-        return getSelectedCustomTreeNodeGeneric(ConnectionTreeNode.class);
+    public SUConnectionTreeNode getSelectedConnectionNode() {
+        return getSelectedCustomTreeNodeGeneric(SUConnectionTreeNode.class);
     }
 
-    public CustomList<ConnectionTreeNode> getConnectionNodes() {
+    public CustomList<SUConnectionTreeNode> getConnectionNodes() {
         DefaultTreeModel treeModel = (DefaultTreeModel) this.getModel();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) treeModel.getRoot();
         Enumeration en = parentNode.children();
 
-        CustomList<ConnectionTreeNode> list = new CustomList<>();
+        CustomList<SUConnectionTreeNode> list = new CustomList<>();
         while (en.hasMoreElements()) {
-            list.add((ConnectionTreeNode) en.nextElement());
+            list.add((SUConnectionTreeNode) en.nextElement());
         }
         return list;
     }
 
     public void addConnectionNodes(List<ConnectionBean> connections) {
         for (ConnectionBean cnb : connections) {
-            this.addCustomTreeNodeToRoot(new ConnectionTreeNode(this, cnb));
+            this.addCustomTreeNodeToRoot(new SUConnectionTreeNode(this, cnb));
         }
     }
 
-    public void setCurrentConnectionNode(ConnectionTreeNode connection) {
+    public void setCurrentConnectionNode(SUConnectionTreeNode connection) {
         currentConnectionNode = connection;
     }
 
-    public ConnectionTreeNode getCurrentConnectionNode() {
+    public SUConnectionTreeNode getCurrentConnectionNode() {
         return currentConnectionNode;
     }
 
-    public DatabaseTreeNode getCurrentDatabaseNode() {
+    public SUDatabaseTreeNode getCurrentDatabaseNode() {
         return currentDatabaseNode;
     }
 
-    public void setCurrentDatabaseNode(DatabaseTreeNode currentDatabaseNode) {
+    public void setCurrentDatabaseNode(SUDatabaseTreeNode currentDatabaseNode) {
         this.currentDatabaseNode = currentDatabaseNode;
     }
 

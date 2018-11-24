@@ -8,8 +8,8 @@ package com.bsptechs.main.bean.ui.panel;
 import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
-import com.bsptechs.main.bean.ui.tree.database.DatabaseTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.TableTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
 
 /**
