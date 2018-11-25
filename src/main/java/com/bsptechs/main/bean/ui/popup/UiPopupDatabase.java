@@ -8,7 +8,7 @@ package com.bsptechs.main.bean.ui.popup;
 import com.bsptechs.main.Main;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import javax.swing.JList;
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.Config;
 import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTree;
 import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;

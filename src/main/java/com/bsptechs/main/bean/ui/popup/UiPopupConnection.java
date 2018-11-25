@@ -7,7 +7,7 @@ package com.bsptechs.main.bean.ui.popup;
 
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.Config;
 import com.bsptechs.main.bean.ui.frame.CreatDB;
 import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 

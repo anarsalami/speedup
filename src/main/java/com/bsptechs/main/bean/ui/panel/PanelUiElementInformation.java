@@ -5,9 +5,9 @@
  */
 package com.bsptechs.main.bean.ui.panel;
 
-import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
@@ -34,9 +34,9 @@ public class PanelUiElementInformation extends javax.swing.JPanel {
             return;
         }
 
-        if (element instanceof ConnectionBean) {
+        if (element instanceof SUConnectionBean) {
             System.out.println("connection");
-            ConnectionBean el = (ConnectionBean) element;
+            SUConnectionBean el = (SUConnectionBean) element;
             String name = el.getName();
             String port = el.getPort();
             String ipAdress = el.getIpAdr();
@@ -47,10 +47,10 @@ public class PanelUiElementInformation extends javax.swing.JPanel {
             lblHost.setText(ipAdress);
             lblPort.setText(port);
             lblUserName1.setText(userName);
-        }else if(element instanceof TableBean){
-             TableBean el = (TableBean) element;
-        }else if(element instanceof DatabaseBean){
-             DatabaseBean el = (DatabaseBean) element;
+        }else if(element instanceof SUTableBean){
+             SUTableBean el = (SUTableBean) element;
+        }else if(element instanceof SUDatabaseBean){
+             SUDatabaseBean el = (SUDatabaseBean) element;
         }
     }
 

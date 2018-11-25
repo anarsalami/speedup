@@ -6,7 +6,7 @@
 package com.bsptechs.main.bean.ui.tree.database;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.CustomList;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
 import com.bsptechs.main.bean.ui.tree.SUAbstractTree;
@@ -27,14 +27,14 @@ public class SUDatabaseTree extends SUAbstractTree {
     private SUConnectionTreeNode currentConnectionNode = null;
     private SUDatabaseTreeNode currentDatabaseNode = null;
 
-    public void addConnectionNode(ConnectionBean connection) {
+    public void addConnectionNode(SUConnectionBean connection) {
         System.out.println(connection);
         this.addCustomTreeNodeToRoot(new SUConnectionTreeNode(this, connection));
     }
 
-    public CustomList<ConnectionBean> getConnectionBeans() {
+    public CustomList<SUConnectionBean> getConnectionBeans() {
         CustomList<SUConnectionTreeNode> connections = getConnectionNodes();
-        CustomList<ConnectionBean> connectionBeans = new CustomList<ConnectionBean>();
+        CustomList<SUConnectionBean> connectionBeans = new CustomList<SUConnectionBean>();
         for (SUConnectionTreeNode conn : connections) {
             connectionBeans.add(conn.getConnection());
         }
@@ -65,8 +65,8 @@ public class SUDatabaseTree extends SUAbstractTree {
         return list;
     }
 
-    public void addConnectionNodes(List<ConnectionBean> connections) {
-        for (ConnectionBean cnb : connections) {
+    public void addConnectionNodes(List<SUConnectionBean> connections) {
+        for (SUConnectionBean cnb : connections) {
             this.addCustomTreeNodeToRoot(new SUConnectionTreeNode(this, cnb));
         }
     }
@@ -88,10 +88,10 @@ public class SUDatabaseTree extends SUAbstractTree {
     }
 
     public boolean hasAnyActiveConnection() {
-        List<ConnectionBean> l = this.getConnectionBeans();
+        List<SUConnectionBean> l = this.getConnectionBeans();
         boolean found = false;
         for (int i = 0; i < l.size(); i++) {
-            ConnectionBean cn = l.get(i);
+            SUConnectionBean cn = l.get(i);
             if (cn.getParentConnection() != null) {
                 found = true;
                 break;

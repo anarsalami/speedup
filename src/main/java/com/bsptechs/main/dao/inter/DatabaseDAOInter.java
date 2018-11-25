@@ -2,9 +2,9 @@ package com.bsptechs.main.dao.inter;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
-import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;
 import java.util.List;
@@ -15,32 +15,32 @@ import java.util.List;
  */
 public interface DatabaseDAOInter {
 
-    List<DatabaseBean> getAllDatabases(ConnectionBean connection);
+    List<SUDatabaseBean> getAllDatabases(SUConnectionBean connection);
 
-    List<TableBean> getAllTables(DatabaseBean database);
+    List<SUTableBean> getAllTables(SUDatabaseBean database);
 
-    boolean emptyTable(DatabaseBean db, String tblName);
+    boolean emptyTable(SUDatabaseBean db, String tblName);
 
-    boolean truncateTable(DatabaseBean DBName, String tblName);
+    boolean truncateTable(SUDatabaseBean DBName, String tblName);
 
-    boolean dublicateTable(DatabaseBean DBName, String tbLName);
+    boolean dublicateTable(SUDatabaseBean DBName, String tbLName);
 
-    boolean pasteTable(String information, DatabaseBean DBName, String tbLName);
+    boolean pasteTable(String information, SUDatabaseBean DBName, String tbLName);
 
-    boolean renameTable(TableBean table, String newTblName);
+    boolean renameTable(SUTableBean table, String newTblName);
 
-    public CustomTableModel runQuery(String query, ConnectionBean connection, DatabaseBean database) throws Exception;
+    public CustomTableModel runQuery(String query, SUConnectionBean connection, SUDatabaseBean database) throws Exception;
 
-    public boolean createDb(ConnectionBean ui, String name, String charset, String collate);
+    public boolean createDb(SUConnectionBean ui, String name, String charset, String collate);
 
-    public List<Charset> getAllCharsets(ConnectionBean connection);
+    public List<Charset> getAllCharsets(SUConnectionBean connection);
 
-    public List<Collation> getAllCollations(ConnectionBean connection, Charset charset);
+    public List<Collation> getAllCollations(SUConnectionBean connection, Charset charset);
 
-    public boolean deleteRow(ConnectionBean connection, TableRow row);
+    public boolean deleteRow(SUConnectionBean connection, TableRow row);
 
-    public boolean deleteRows(ConnectionBean connection, List<TableRow> rows);
+    public boolean deleteRows(SUConnectionBean connection, List<TableRow> rows);
     
-    public boolean saveRow(ConnectionBean connection, TableRow row);
+    public boolean saveRow(SUConnectionBean connection, TableRow row);
 
 }

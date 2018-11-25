@@ -20,7 +20,7 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class ConnectionBean implements Serializable{
+public class SUConnectionBean implements Serializable{
 
     private String name;
     private String ipAdr;
@@ -28,12 +28,12 @@ public class ConnectionBean implements Serializable{
     private String userName;
     private String password;
     private transient Connection parentConnection;
-    private transient List<DatabaseBean> databases;
+    private transient List<SUDatabaseBean> databases;
 
-    public ConnectionBean() {
+    public SUConnectionBean() {
     }
 
-    public ConnectionBean(String name, String ipAdr, String port, String userName, String password) {
+    public SUConnectionBean(String name, String ipAdr, String port, String userName, String password) {
         this.name = name;
         this.ipAdr = ipAdr;
         this.port = port;

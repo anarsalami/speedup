@@ -12,21 +12,14 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class DatabaseBean {
+public class SUTableBean {
 
     private String name;
-    private ConnectionBean connection;
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public DatabaseBean(String name, ConnectionBean connection) {
+    private SUDatabaseBean database;
+    
+    
+    public SUTableBean(String name, SUDatabaseBean database){
         this.name = name;
-        this.connection = connection;
+        this.database = database;
     }
-    
-    
-
 }

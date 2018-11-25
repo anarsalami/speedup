@@ -2,27 +2,27 @@ package com.bsptechs.main.bean.ui.tree.database;
 
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.CustomList;
-import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupDatabase;
 import java.util.List;
 import javax.swing.JPopupMenu;
 
 public class SUDatabaseTreeNode extends SUAbstractTreeNode {
 
-    private final DatabaseBean database;
+    private final SUDatabaseBean database;
 
-    public SUDatabaseTreeNode(SUDatabaseTree tree, DatabaseBean database) {
+    public SUDatabaseTreeNode(SUDatabaseTree tree, SUDatabaseBean database) {
         super(tree, database);
         this.database = database;
     }
 
-    public DatabaseBean getDatabase() {
+    public SUDatabaseBean getDatabase() {
         return database;
     }
 
-    public CustomList<TableBean> getTableBeans() {
-        CustomList<TableBean> list = new CustomList<>();
+    public CustomList<SUTableBean> getTableBeans() {
+        CustomList<SUTableBean> list = new CustomList<>();
         List<SUTableTreeNode> l = getChildren(SUTableTreeNode.class);
         for (int i = 0; i < l.size(); i++) {
             list.add(l.get(i).getTable());
@@ -30,9 +30,9 @@ public class SUDatabaseTreeNode extends SUAbstractTreeNode {
         return list;
     }
 
-    public void addTables(List<TableBean> tables) {
+    public void addTables(List<SUTableBean> tables) {
         CustomList<SUTableTreeNode> nodes = new CustomList<>();
-        for (TableBean table : tables) {
+        for (SUTableBean table : tables) {
             nodes.add(new SUTableTreeNode(getTree(), table));
         }
         super.addChildren(nodes);
@@ -50,7 +50,7 @@ public class SUDatabaseTreeNode extends SUAbstractTreeNode {
     @Override
     public void onDoubleClick() {
         Main.instance().getConnectionTree().setCurrentDatabaseNode(this);
-        List<TableBean> tables = getTableBeans();
+        List<SUTableBean> tables = getTableBeans();
         if (tables.isEmpty()) {
             tables = dao.getAllTables(this.database);
             addTables(tables);

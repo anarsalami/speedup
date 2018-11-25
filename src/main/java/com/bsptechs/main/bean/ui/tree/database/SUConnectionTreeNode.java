@@ -1,7 +1,7 @@
 package com.bsptechs.main.bean.ui.tree.database;
 
-import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupConnection;
 import com.bsptechs.main.bean.CustomList;
 import javax.swing.JPopupMenu;
@@ -10,11 +10,11 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class SUConnectionTreeNode extends SUAbstractTreeNode<ConnectionBean>{
+public class SUConnectionTreeNode extends SUAbstractTreeNode<SUConnectionBean>{
 
-    private final ConnectionBean connection = dataBean;
+    private final SUConnectionBean connection = dataBean;
  
-    public SUConnectionTreeNode(SUDatabaseTree tree, ConnectionBean connection){
+    public SUConnectionTreeNode(SUDatabaseTree tree, SUConnectionBean connection){
         super(tree,connection);
     }
     public void connect() { 
@@ -29,16 +29,16 @@ public class SUConnectionTreeNode extends SUAbstractTreeNode<ConnectionBean>{
         }
     }
 
-    public void addDatabases(List<DatabaseBean> databases) {
+    public void addDatabases(List<SUDatabaseBean> databases) {
         CustomList<SUDatabaseTreeNode> dbNodes = new CustomList<>();
-        for (DatabaseBean db : databases) {
+        for (SUDatabaseBean db : databases) {
             dbNodes.add(new SUDatabaseTreeNode(getTree(), db));
         }
         super.addChildren(dbNodes);
     }
 
-    public CustomList<DatabaseBean> getAllDatabaseBeans() {
-        CustomList<DatabaseBean> list = new CustomList<>();
+    public CustomList<SUDatabaseBean> getAllDatabaseBeans() {
+        CustomList<SUDatabaseBean> list = new CustomList<>();
         List<SUDatabaseTreeNode> l = getChildren(SUDatabaseTreeNode.class);
         for (int i = 0; i < l.size(); i++) {
             list.add(l.get(i).getDatabase());

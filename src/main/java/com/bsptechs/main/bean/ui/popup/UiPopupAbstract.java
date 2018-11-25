@@ -6,7 +6,7 @@
 package com.bsptechs.main.bean.ui.popup;
 
 import com.bsptechs.main.Main; 
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.Config;
 import com.bsptechs.main.bean.EmptyFI;
 import com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode;
 import javax.swing.JMenuItem;

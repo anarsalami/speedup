@@ -2,9 +2,8 @@ package com.bsptechs.main;
 
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
 import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
-import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTree;
 import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import com.bsptechs.main.util.Util;
@@ -804,8 +803,8 @@ public class Main extends javax.swing.JFrame {
     public PanelQuery prepareNewQuery(String queryStr, boolean run) {
         SUDatabaseTree tree = getConnectionTree();
         SUTableTreeNode table = tree.getSelectedTableNode();
-        ConnectionBean conn = table != null ? table.getTable().getDatabase().getConnection() : tree.getCurrentConnectionNode().getConnection();
-        DatabaseBean db = table != null ? table.getTable().getDatabase() : tree.getCurrentDatabaseNode().getDatabase();
+        SUConnectionBean conn = table != null ? table.getTable().getDatabase().getConnection() : tree.getCurrentConnectionNode().getConnection();
+        SUDatabaseBean db = table != null ? table.getTable().getDatabase() : tree.getCurrentDatabaseNode().getDatabase();
 
         PanelQuery panel = new PanelQuery(conn, db, queryStr);
         tabbedPaneCenter.setEnabled(true);

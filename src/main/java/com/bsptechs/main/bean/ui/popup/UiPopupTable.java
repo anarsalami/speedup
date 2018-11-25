@@ -7,7 +7,7 @@ package com.bsptechs.main.bean.ui.popup;
 
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.Config;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;

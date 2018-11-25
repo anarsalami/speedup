@@ -2,9 +2,9 @@ package com.bsptechs.main.dao.impl;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
-import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.DatabaseBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.bean.ui.table.TableCell;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
@@ -31,8 +31,8 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public List<DatabaseBean> getAllDatabases(ConnectionBean connection) {
-        List<DatabaseBean> databasesList = new ArrayList<>();
+    public List<SUDatabaseBean> getAllDatabases(SUConnectionBean connection) {
+        List<SUDatabaseBean> databasesList = new ArrayList<>();
 
         Connection conn = connect(connection);
         Statement stmt = conn.createStatement();
@@ -44,29 +44,29 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
         while (resultset.next()) {
             String result = resultset.getString("Database");
-            databasesList.add(new DatabaseBean(result, connection));
+            databasesList.add(new SUDatabaseBean(result, connection));
         }
         return databasesList;
     }
 
     @Override
     @SneakyThrows
-    public List<TableBean> getAllTables(DatabaseBean database) {
-        List<TableBean> list = new ArrayList<>();
+    public List<SUTableBean> getAllTables(SUDatabaseBean database) {
+        List<SUTableBean> list = new ArrayList<>();
         Connection conn = connect(database.getConnection());
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM information_schema.tables where table_schema = ?");
         stmt.setString(1, database.getName());
         ResultSet resultset = stmt.executeQuery();
         while (resultset.next()) {
             String result = resultset.getString("table_name");
-            list.add(new TableBean(result, database));
+            list.add(new SUTableBean(result, database));
         }
         return list;
     }
 
     @Override
     @SneakyThrows
-    public boolean renameTable(TableBean table, String newTblName) {
+    public boolean renameTable(SUTableBean table, String newTblName) {
         Connection conn = connect(table.getDatabase().getConnection());
         PreparedStatement stmt = conn.prepareStatement(
                 "RENAME "
@@ -90,7 +90,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @Override
-    public CustomTableModel runQuery(String query, ConnectionBean connection, DatabaseBean database) throws Exception {
+    public CustomTableModel runQuery(String query, SUConnectionBean connection, SUDatabaseBean database) throws Exception {
         Connection conn = connect(connection);
  
         Statement stmt = conn.createStatement();
@@ -125,7 +125,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean emptyTable(DatabaseBean DBName, String tblName) {
+    public boolean emptyTable(SUDatabaseBean DBName, String tblName) {
         Connection conn = connect(DBName.getConnection());
         PreparedStatement stmt = conn.prepareStatement("delete  from " + DBName + "." + tblName);
 
@@ -136,7 +136,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean truncateTable(DatabaseBean DBName, String tblName) {
+    public boolean truncateTable(SUDatabaseBean DBName, String tblName) {
         Connection conn = connect(DBName.getConnection());
 
         PreparedStatement stmt = conn.prepareStatement("TRUNCATE TABLE " + DBName + "." + tblName);
@@ -148,7 +148,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean dublicateTable(DatabaseBean DBName, String tbLName) {
+    public boolean dublicateTable(SUDatabaseBean DBName, String tbLName) {
         Connection conn = connect(DBName.getConnection());
         String newTbLName = tbLName.concat("_copy");
         PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + newTbLName + " LIKE " + DBName + "." + tbLName);
@@ -160,7 +160,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean pasteTable(String information, DatabaseBean DBName, String TblName) {
+    public boolean pasteTable(String information, SUDatabaseBean DBName, String TblName) {
 
         Connection conn = connect(DBName.getConnection());
         PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + TblName + " LIKE " + information);
@@ -172,7 +172,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    public boolean dataTransfer(DatabaseBean DBNameWeHave, String tbLNameWeHave, DatabaseBean DBNameWeWant, String tbLNameWeWant) {
+    public boolean dataTransfer(SUDatabaseBean DBNameWeHave, String tbLNameWeHave, SUDatabaseBean DBNameWeWant, String tbLNameWeWant) {
         Connection connWeHave = connect(DBNameWeHave.getConnection());
         Connection connWeWant = connect(DBNameWeWant.getConnection());
         String newTbLName1 = tbLNameWeHave;
@@ -210,7 +210,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean createDb(ConnectionBean connection, String name, String charset, String collate) {
+    public boolean createDb(SUConnectionBean connection, String name, String charset, String collate) {
 
         Connection conn = connect(connection);
         com.mysql.jdbc.PreparedStatement stmt = (com.mysql.jdbc.PreparedStatement) conn.createStatement();
@@ -221,7 +221,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public List<Charset> getAllCharsets(ConnectionBean connection) {
+    public List<Charset> getAllCharsets(SUConnectionBean connection) {
         List<Charset> charset = new ArrayList<>();
         Connection conn = connect(connection);
         Statement stmt = conn.createStatement();
@@ -235,7 +235,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @Override
     @SneakyThrows
-    public List<Collation> getAllCollations(ConnectionBean connection, Charset charset) {
+    public List<Collation> getAllCollations(SUConnectionBean connection, Charset charset) {
         if (charset != null && charset.getCollations() != null) {
             return charset.getCollations();
         }
@@ -257,7 +257,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     
     @SneakyThrows
     @Override 
-    public boolean deleteRows(ConnectionBean connection, List<TableRow> rows) {
+    public boolean deleteRows(SUConnectionBean connection, List<TableRow> rows) {
         for (TableRow row : rows) {
             deleteRow(connection, row);
         }
@@ -266,7 +266,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean deleteRow(ConnectionBean connection, TableRow row) {
+    public boolean deleteRow(SUConnectionBean connection, TableRow row) {
         List<TableCell> primaryCells = row.getAllPrimaryCell();
 
         if (primaryCells == null || primaryCells.isEmpty()) {
@@ -280,7 +280,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    public boolean deleteRowByRow(ConnectionBean connection, TableRow row) {
+    public boolean deleteRowByRow(SUConnectionBean connection, TableRow row) {
         Connection conn = connect(connection);
 
         Vector<TableCell> cells = row;
@@ -304,7 +304,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    private boolean deleteRowByCell(ConnectionBean connection, TableCell cell) {
+    private boolean deleteRowByCell(SUConnectionBean connection, TableCell cell) {
         Connection conn = connect(connection);
         String query = "delete "
                 + " from " + cell.getDatabaseName() + "." + cell.getTable()
@@ -319,7 +319,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     
      @SneakyThrows
      @Override
-     public boolean saveRow(ConnectionBean connection, TableRow row) {
+     public boolean saveRow(SUConnectionBean connection, TableRow row) {
         Connection conn = connect(connection);
 
         Vector<TableCell> cells = row;

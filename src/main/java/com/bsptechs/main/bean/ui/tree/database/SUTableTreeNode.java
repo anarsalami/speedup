@@ -6,7 +6,7 @@
 package com.bsptechs.main.bean.ui.tree.database;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.tree.database.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupTable;
 import javax.swing.JPopupMenu;
 import lombok.Data;
@@ -18,9 +18,9 @@ import lombok.Data;
 @Data
 public class SUTableTreeNode extends SUAbstractTreeNode {
 
-    private final TableBean table;
+    private final SUTableBean table;
 
-    public SUTableTreeNode(SUDatabaseTree tree, TableBean table) {
+    public SUTableTreeNode(SUDatabaseTree tree, SUTableBean table) {
         super(tree, table);
         this.table = table;
     }
