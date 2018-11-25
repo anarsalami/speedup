@@ -8,7 +8,7 @@ package com.bsptechs.main.bean.ui.popup;
 import com.bsptechs.main.Main; 
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.EmptyFI;
-import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
+import com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -18,13 +18,13 @@ import javax.swing.JPopupMenu;
  */
 public abstract class UiPopupAbstract extends JPopupMenu {
 
-    private CustomTreeNode selectedElement = null;
+    private SUAbstractTreeNode selectedElement = null;
 
     public UiPopupAbstract() {
         this.selectedElement = Main.instance().getConnectionTree().getSelectedCustomTreeNode();
     }
     
-    public CustomTreeNode getSelectedElement(){
+    public SUAbstractTreeNode getSelectedElement(){
         return this.selectedElement;
     }
 

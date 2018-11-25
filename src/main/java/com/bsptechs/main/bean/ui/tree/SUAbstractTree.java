@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bsptechs.main.bean.ui.tree;
 
 import java.awt.event.MouseAdapter;
@@ -13,15 +8,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-/**
- *
- * @author sarkhanrasullu
- */
-public abstract class AbstractCustomTree extends JTree {
+public abstract class SUAbstractTree extends JTree {
 
-    public AbstractCustomTree() {
+    public SUAbstractTree() {
         this.addMouseListener(getAdapter());
-        this.setCellRenderer(new CustomTreeCellRenderer());
+        this.setCellRenderer(new SUAbstractTreeCellRenderer());
         this.setRootVisible(false);
 
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("root node, should be invisible");
@@ -46,15 +37,15 @@ public abstract class AbstractCustomTree extends JTree {
         return null;
     }
 
-    public CustomTreeNode getSelectedCustomTreeNode() {
+    public SUAbstractTreeNode getSelectedCustomTreeNode() {
         DefaultMutableTreeNode obj = getSelectedNode();
-        if (obj != null && obj instanceof CustomTreeNode) {
-            return (CustomTreeNode) obj;
+        if (obj != null && obj instanceof SUAbstractTreeNode) {
+            return (SUAbstractTreeNode) obj;
         }
         return null;
     }
 
-    public void removeCustomTreeNode(CustomTreeNode element) {
+    public void removeCustomTreeNode(SUAbstractTreeNode element) {
         getTreeModel().removeNodeFromParent(element);
     }
 
@@ -62,13 +53,13 @@ public abstract class AbstractCustomTree extends JTree {
         return (DefaultTreeModel) this.getModel();
     }
 
-    public DefaultMutableTreeNode addCustomTreeNodeToRoot(CustomTreeNode node) {
+    public DefaultMutableTreeNode addCustomTreeNodeToRoot(SUAbstractTreeNode node) {
         DefaultTreeModel treeModel = (DefaultTreeModel) this.getModel();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) treeModel.getRoot();
         return addCustomTreeNode(treeModel, parentNode, node);
     }
 
-    private DefaultMutableTreeNode addCustomTreeNode(DefaultMutableTreeNode parentNode, CustomTreeNode node) {
+    private DefaultMutableTreeNode addCustomTreeNode(DefaultMutableTreeNode parentNode, SUAbstractTreeNode node) {
         DefaultTreeModel treeModel = (DefaultTreeModel) this.getModel();
         return addCustomTreeNode(treeModel, parentNode, node);
     }
@@ -81,13 +72,13 @@ public abstract class AbstractCustomTree extends JTree {
         return node;
     }
 
-    public void fillTreeAsRoot(List<? extends CustomTreeNode> listData) {
+    public void fillTreeAsRoot(List<? extends SUAbstractTreeNode> listData) {
 
         if (listData == null) {
             return;
         }
 
-        for (CustomTreeNode node : listData) {
+        for (SUAbstractTreeNode node : listData) {
             DefaultMutableTreeNode addEl = addCustomTreeNodeToRoot(node);
 //            if (node.getSubList() != null) {
 //                fillTree(node.getSubList(), addEl);

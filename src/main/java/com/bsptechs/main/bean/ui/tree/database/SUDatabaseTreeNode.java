@@ -13,7 +13,7 @@ public class SUDatabaseTreeNode extends SUAbstractTreeNode {
     private final DatabaseBean database;
 
     public SUDatabaseTreeNode(SUDatabaseTree tree, DatabaseBean database) {
-        super(tree);
+        super(tree, database);
         this.database = database;
     }
 
@@ -36,9 +36,9 @@ public class SUDatabaseTreeNode extends SUAbstractTreeNode {
             nodes.add(new SUTableTreeNode(getTree(), table));
         }
         super.addChildren(nodes);
-    } 
-    
-    public SUDatabaseTree getTree(){
+    }
+
+    public SUDatabaseTree getTree() {
         return (SUDatabaseTree) tree;
     }
 

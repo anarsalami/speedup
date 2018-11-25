@@ -9,8 +9,8 @@ import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.tree.database.bean.ConnectionBean;
 import com.bsptechs.main.bean.CustomList;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
-import com.bsptechs.main.bean.ui.tree.AbstractCustomTree;
-import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
+import com.bsptechs.main.bean.ui.tree.SUAbstractTree;
+import com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode;
 import com.bsptechs.main.util.MouseUtil;
 import java.awt.event.MouseAdapter;
 import java.util.Enumeration;
@@ -22,7 +22,7 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author sarkhanrasullu
  */
-public class SUDatabaseTree extends AbstractCustomTree {
+public class SUDatabaseTree extends SUAbstractTree {
 
     private SUConnectionTreeNode currentConnectionNode = null;
     private SUDatabaseTreeNode currentDatabaseNode = null;
@@ -106,7 +106,7 @@ public class SUDatabaseTree extends AbstractCustomTree {
         MouseAdapter m = new java.awt.event.MouseAdapter() {
             @Override
             public void mouseReleased(java.awt.event.MouseEvent e) {
-                CustomTreeNode element = getSelectedCustomTreeNode();
+                SUAbstractTreeNode element = getSelectedCustomTreeNode();
                 if (element == null) {
                     return;
                 }
@@ -118,10 +118,10 @@ public class SUDatabaseTree extends AbstractCustomTree {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 DefaultMutableTreeNode selectedUiElement = getSelectedNode();
-                if (selectedUiElement == null || !(selectedUiElement instanceof CustomTreeNode)) {
+                if (selectedUiElement == null || !(selectedUiElement instanceof SUAbstractTreeNode)) {
                     return;
                 }
-                CustomTreeNode element = (CustomTreeNode) selectedUiElement;
+                SUAbstractTreeNode element = (SUAbstractTreeNode) selectedUiElement;
 
                 if (MouseUtil.isLeftDoubleClicked(evt)) {
                     element.onDoubleClick();

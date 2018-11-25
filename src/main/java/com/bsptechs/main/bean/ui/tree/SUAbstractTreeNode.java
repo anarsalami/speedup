@@ -9,13 +9,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-public abstract class CustomTreeNode extends DefaultMutableTreeNode {
+public abstract class SUAbstractTreeNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = 1L;
     
-    protected final AbstractCustomTree tree;
+    protected final SUAbstractTree tree;
     
-    public CustomTreeNode(AbstractCustomTree tree) {
+    public SUAbstractTreeNode(SUAbstractTree tree) {
         this.tree = tree;
     }
 
@@ -28,12 +28,12 @@ public abstract class CustomTreeNode extends DefaultMutableTreeNode {
 //    public abstract List<? extends CustomTreeNode> getSubList();
     public abstract String getIcon();
 
-    public void addChildren(List<? extends CustomTreeNode> listData) {
+    public void addChildren(List<? extends SUAbstractTreeNode> listData) {
         if (listData == null) {
             return;
         }
 
-        for (CustomTreeNode t : listData) {
+        for (SUAbstractTreeNode t : listData) {
             add(t);
         }
 

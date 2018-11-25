@@ -21,7 +21,7 @@ public class SUTableTreeNode extends SUAbstractTreeNode {
     private final TableBean table;
 
     public SUTableTreeNode(SUDatabaseTree tree, TableBean table) {
-        super(tree);
+        super(tree, table);
         this.table = table;
     }
 

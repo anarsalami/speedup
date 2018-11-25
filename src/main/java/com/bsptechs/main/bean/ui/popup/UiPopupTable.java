@@ -9,7 +9,7 @@ import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
-import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
+import com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.util.List;

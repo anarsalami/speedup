@@ -10,16 +10,14 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class SUConnectionTreeNode extends SUAbstractTreeNode{
+public class SUConnectionTreeNode extends SUAbstractTreeNode<ConnectionBean>{
 
-    private final ConnectionBean connection;
-
-    public SUConnectionTreeNode(SUDatabaseTree tree, ConnectionBean connection) {
-        super(tree);
-        this.connection = connection;
+    private final ConnectionBean connection = dataBean;
+ 
+    public SUConnectionTreeNode(SUDatabaseTree tree, ConnectionBean connection){
+        super(tree,connection);
     }
-
-    public void connect() {
+    public void connect() { 
         if (connection.getDatabases() == null) {
             System.out.println("connection connect");
             connection.setDatabases(dao.getAllDatabases(connection));

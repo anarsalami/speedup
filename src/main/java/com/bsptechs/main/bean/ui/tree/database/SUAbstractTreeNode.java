@@ -5,7 +5,6 @@
  */
 package com.bsptechs.main.bean.ui.tree.database;
 
-import com.bsptechs.main.bean.ui.tree.CustomTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.io.Serializable;
@@ -14,10 +13,14 @@ import java.io.Serializable;
  *
  * @author sarkhanrasullu
  */
-public abstract class SUAbstractTreeNode extends CustomTreeNode implements Serializable {
-    public DatabaseDAOInter dao = new DatabaseDAOImpl();
+public abstract class SUAbstractTreeNode<T> extends com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode implements Serializable {
     
-    protected SUAbstractTreeNode(SUDatabaseTree tree){
+    protected DatabaseDAOInter dao = new DatabaseDAOImpl();
+    protected T dataBean;
+    
+    
+    protected SUAbstractTreeNode(SUDatabaseTree tree, T dataBean){
         super(tree);
+        this.dataBean = dataBean;
     }
 }
