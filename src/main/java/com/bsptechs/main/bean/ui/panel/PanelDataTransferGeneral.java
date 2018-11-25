@@ -1,14 +1,25 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.bsptechs.main.bean.ui.panel;
 
-import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
+import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.bean.ui.uielement.UiElement;
+import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
+import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.List;
 
+/**
+ *
+ * @author RafaelAhmedov
+ */
 public class PanelDataTransferGeneral extends javax.swing.JPanel {
 
     private static final DatabaseDAOInter db = new DatabaseDAOImpl();
@@ -22,32 +33,40 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 	pnlInformationSourceSide.setVisible(false);
 	pnlInformationTargetSide.setVisible(false);
 
-	DatabaseTreeNode db = null;
-	ConnectionTreeNode cn = Main.instance().getConnectionTree().getCurrentConnectionNode();
-	if (cn == null) {
-	    cn = Main.instance().getConnectionTree().getConnectionNodes().get(0);
+	UiElementDatabase db = null;
+	UiElementConnection cn = Config.getCurrentConnection();
+	if (cn == null
+		&& Config.instance() != null
+		&& Config.instance().getConnections() != null
+		&& Config.instance().getConnections().size() > 0) {
+	    cn = Config.instance().getConnections().get(0);
 	}
 
-	db = Main.instance().getConnectionTree().getCurrentDatabaseNode();
+	db = Config.getCurrentDatabaseName();
 	preparePanel(cn, db);
     }
- 
-    public final void preparePanel(ConnectionTreeNode connection, DatabaseTreeNode database) {
+
+//   public void refreshData() {
+//        MainFrameUtility.fillConnectionsIntoJList();
+//    }
+    public final void preparePanel(UiElementConnection connection, UiElementDatabase database) {
 	prepareConnectionCombobox(connection);
 	prepareDatabasesCombobox(connection, database);
     }
 
-    public void prepareConnectionCombobox(ConnectionTreeNode connection) {
+    
+
+    public void prepareConnectionCombobox(UiElementConnection connection) {
 
 	System.out.println("prepareConnectionCombobox=" + connection);
 	comboboxConnectionSource.removeAllItems();
-	List<ConnectionTreeNode> list = Main.instance().getConnectionTree().getConnectionNodes();
+	List<UiElementConnection> list = Config.instance().getConnections();
 	if (list == null) {
 	    return;
 	}
 
 	for (int i = 0; i < list.size(); i++) {
-	    comboboxConnectionSource.addItem(list.get(i).getConnection());
+	    comboboxConnectionSource.addItem(list.get(i));
 	}
 	System.out.println("Config.getCurrentConnection()=" + connection);
 	if (connection != null) {
@@ -55,15 +74,15 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 	}
     }
 
-    public void prepareDatabasesCombobox(ConnectionTreeNode connection, DatabaseTreeNode database) {
+    public void prepareDatabasesCombobox(UiElementConnection connection, UiElementDatabase database) {
 	if (connection == null) {
 	    return;
 	}
 	System.out.println("prepareDatabasesCombobox=" + database);
 	comboboxDatabaseSource.removeAllItems();
-	List<DatabaseBean> databases = connection.getAllDatabaseBeans();
+	List<UiElementDatabase> databases = connection.getDatabases();
 	if (databases == null) {
-	    databases = db.getAllDatabases(connection.getConnection());
+	    databases = db.getAllDatabases(connection);
 	}
 	for (int i = 0; i < databases.size(); i++) {
 	    comboboxDatabaseSource.addItem(databases.get(i));
@@ -71,14 +90,14 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 	comboboxDatabaseSource.setSelectedItem(database);
     }
 
-    public DatabaseTreeNode getSelectedDatabase() {
+    public UiElementDatabase getSelectedDatabase() {
 	Object obj = comboboxDatabaseSource.getSelectedItem();
 
-	return (DatabaseTreeNode) obj;
+	return (UiElementDatabase) obj;
     }
 
-    public ConnectionTreeNode getSelectedConnection() {
-	return (ConnectionTreeNode) comboboxConnectionSource.getSelectedItem();
+    public UiElementConnection getSelectedConnection() {
+	return (UiElementConnection) comboboxConnectionSource.getSelectedItem();
     }
 
     /**
@@ -611,11 +630,11 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLoadProfile;
     private javax.swing.JButton btnNext;
-    private javax.swing.JComboBox<ConnectionBean> comboboxConnectionSource;
-    private javax.swing.JComboBox<DatabaseBean> comboboxDatabaseSource;
+    private javax.swing.JComboBox<UiElementConnection> comboboxConnectionSource;
+    private javax.swing.JComboBox<UiElementDatabase> comboboxDatabaseSource;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<DatabaseBean> jComboBox3;
-    private javax.swing.JComboBox<ConnectionBean> jComboBox4;
+    private javax.swing.JComboBox<UiElementDatabase> jComboBox3;
+    private javax.swing.JComboBox<UiElementConnection> jComboBox4;
     private javax.swing.JComboBox<String> jComboBoxSaveProfile;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

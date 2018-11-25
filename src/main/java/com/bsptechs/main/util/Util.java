@@ -5,7 +5,13 @@
  */
 package com.bsptechs.main.util;
 
+import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
+import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
+import java.io.File;
 import java.util.regex.Pattern;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -44,6 +50,29 @@ public class Util {
         frame.setLocationRelativeTo(null);
 //        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 //        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+    }
+
+    public static boolean backUpDb() {
+        Config n = (Config) FileUtility.readFileDeserialize("mySql.txt");
+        Main m = Config.getMain();
+        UiElementDatabase element = (UiElementDatabase) m.getListTable().getSelectedUiElement();
+        String dbName = element.getName();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("/Users/Goshgar/Documents/"));
+        int retrival = chooser.showSaveDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+            try {
+                String source = chooser.getSelectedFile().getAbsolutePath() + "\\" + chooser.getSelectedFile().getName();
+                String executeCmd = "C:\\Program Files\\MySQL\\MySQL Server 5.5\\bin\\mysql -u " + Config.getCurrentConnection().getUserName() + " -p " + Config.getCurrentConnection().getPassword() + " " + element.getName() + " <" + chooser.getSelectedFile().getAbsolutePath();
+                Runtime runtime = Runtime.getRuntime();
+                runtime.exec(executeCmd, null);
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return false;
     }
 
 }

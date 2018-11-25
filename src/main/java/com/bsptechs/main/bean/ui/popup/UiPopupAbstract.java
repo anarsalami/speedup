@@ -5,10 +5,9 @@
  */
 package com.bsptechs.main.bean.ui.popup;
 
-import com.bsptechs.main.Main; 
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.EmptyFI;
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
+import com.bsptechs.main.bean.ui.uielement.UiElement;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -18,17 +17,17 @@ import javax.swing.JPopupMenu;
  */
 public abstract class UiPopupAbstract extends JPopupMenu {
 
-    private CustomTreeNode selectedElement = null;
+    private UiElement selectedElement = null;
 
     public UiPopupAbstract() {
-        this.selectedElement = Main.instance().getConnectionTree().getSelectedCustomTreeNode();
+        this.selectedElement = Config.getMain().getListTable().getSelectedUiElement();
     }
     
-    public CustomTreeNode getSelectedElement(){
+    public UiElement getSelectedElement(){
         return this.selectedElement;
     }
 
-    protected final void addMenuItem(String text, EmptyFI adder) {
+    protected void addMenuItem(String text, EmptyFI adder) {
         JMenuItem item = menuItem(text);
         item.addActionListener((java.awt.event.ActionEvent evt) -> {
             adder.action();

@@ -5,11 +5,10 @@
  */
 package com.bsptechs.main.bean.ui.popup;
 
-import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
 import com.bsptechs.main.bean.Config;
 import com.bsptechs.main.bean.ui.frame.CreatDB;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
 
 /**
  *
@@ -33,7 +32,7 @@ public class UiPopupConnection extends UiPopupAbstract {
             connect();
         });
 
-        addMenuItem("Disconnect", () -> {   
+        addMenuItem("Disconnect", () -> {
             disconnect();
         });
         
@@ -43,16 +42,18 @@ public class UiPopupConnection extends UiPopupAbstract {
         
     }
     
-    public ConnectionTreeNode getSelectedConnection(){
-        return (ConnectionTreeNode) getSelectedElement();
+    public UiElementConnection getSelectedConnection(){
+        return (UiElementConnection) getSelectedElement();
     }
 
     public void delete() {
         System.out.println("delete connection");
-        ConnectionTreeNode c = getSelectedConnection();
+        UiElementConnection c = getSelectedConnection();
+        Config.instance().getConnections().remove(c);
+        Config.saveConfig();
         c.reset();
-        Main.instance().getConnectionTree().removeCustomTreeNode(c);
-        Config.instance().saveConfig();
+        Config.getMain().getListTable().removeUiElement(c);
+        
     }
 
     public void properties() {
@@ -67,7 +68,7 @@ public class UiPopupConnection extends UiPopupAbstract {
 
     public void disconnect() {
         System.out.println("disconnection connection");
-        ConnectionTreeNode cn = getSelectedConnection();
+        UiElementConnection cn = getSelectedConnection();
         cn.reset();
         cn.removeAllChildren();
     }

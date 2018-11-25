@@ -2,12 +2,11 @@ package com.bsptechs.main.dao.impl;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
-import com.bsptechs.main.bean.TableBean;
-import com.bsptechs.main.bean.ui.tree.database.node.TableTreeNode;
+import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
+import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
+import com.bsptechs.main.bean.ui.uielement.UiElementTable;
 import com.bsptechs.main.bean.ui.table.TableCell;
-import com.bsptechs.main.bean.ui.table.CustomTableModel;
+import com.bsptechs.main.bean.ui.table.TableData;
 import com.bsptechs.main.bean.ui.table.TableRow;
 import com.bsptechs.main.dao.inter.AbstractDatabase;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
@@ -19,65 +18,77 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import lombok.SneakyThrows;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
-/** 
+/**
  *
  * @author Penthos
  */
 public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInter {
 
-    @SneakyThrows
     @Override
-    public List<DatabaseBean> getAllDatabases(ConnectionBean connection) {
-        List<DatabaseBean> databasesList = new ArrayList<>();
+    public List<UiElementDatabase> getAllDatabases(UiElementConnection connection) {
+        List<UiElementDatabase> databasesList = new ArrayList<>();
 
-        Connection conn = connect(connection);
-        Statement stmt = conn.createStatement();
-        ResultSet resultset = stmt.executeQuery("SHOW DATABASES;");
+        try {
+            Connection conn = connect(connection);
+            Statement stmt = conn.createStatement();
+            ResultSet resultset = stmt.executeQuery("SHOW DATABASES;");
 
-        if (stmt.execute("SHOW DATABASES;")) {
-            resultset = stmt.getResultSet();
+            if (stmt.execute("SHOW DATABASES;")) {
+                resultset = stmt.getResultSet();
+            }
+
+            while (resultset.next()) {
+                String result = resultset.getString("Database");
+                databasesList.add(new UiElementDatabase(result, connection));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return databasesList;
         }
-
-        while (resultset.next()) {
-            String result = resultset.getString("Database");
-            databasesList.add(new DatabaseBean(result, connection));
-        }
-        return databasesList;
     }
 
     @Override
-    @SneakyThrows
-    public List<TableBean> getAllTables(DatabaseBean database) {
-        List<TableBean> list = new ArrayList<>();
-        Connection conn = connect(database.getConnection());
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM information_schema.tables where table_schema = ?");
-        stmt.setString(1, database.getName());
-        ResultSet resultset = stmt.executeQuery();
-        while (resultset.next()) {
-            String result = resultset.getString("table_name");
-            list.add(new TableBean(result, database));
+    public List<UiElementTable> getAllTables(UiElementDatabase database) {
+        List<UiElementTable> list = new ArrayList<>();
+        try {
+            Connection conn = connect(database.getConnection());
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM information_schema.tables where table_schema = ?");
+            stmt.setString(1, database.getName());
+            ResultSet resultset = stmt.executeQuery();
+            while (resultset.next()) {
+                String result = resultset.getString("table_name");
+                list.add(new UiElementTable(result, database));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        } finally {
+            return list;
         }
-        return list;
     }
 
     @Override
-    @SneakyThrows
-    public boolean renameTable(TableBean table, String newTblName) {
-        Connection conn = connect(table.getDatabase().getConnection());
-        PreparedStatement stmt = conn.prepareStatement(
-                "RENAME "
-                + " TABLE `" + table.getDatabase().getName() + "`.`" + table.getName() + "` "
-                + " TO `" + table.getDatabase().getName() + "`.`" + newTblName + "`");
-        stmt.executeUpdate();
-        table.setName(newTblName);
-        return true;
+    public boolean renameTable(UiElementTable table, String newTblName) {
+        try {
+            Connection conn = connect(table.getDatabaseName().getConnection());
+            PreparedStatement stmt = conn.prepareStatement(
+                    "RENAME "
+                    + " TABLE `" + table.getDatabaseName().getName() + "`.`" + table.getTableName() + "` "
+                    + " TO `" + table.getDatabaseName().getName() + "`.`" + newTblName + "`");
+            stmt.executeUpdate();
+            table.setTableName(newTblName);
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
-    @SneakyThrows
     public static List<String> getColumns(ResultSet rs) throws SQLException {
         ResultSetMetaData metdata = rs.getMetaData();
         int cnt = metdata.getColumnCount();
@@ -90,9 +101,9 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @Override
-    public CustomTableModel runQuery(String query, ConnectionBean connection, DatabaseBean database) throws Exception {
+    public TableData runQuery(String query, UiElementConnection connection, UiElementDatabase database) throws ClassNotFoundException, SQLException {
+        TableData table = null;
         Connection conn = connect(connection);
- 
         Statement stmt = conn.createStatement();
         if (database != null && StringUtils.isNoneEmpty(database.getName())) {
             String setDatabase = "USE " + database.getName() + ";";
@@ -100,85 +111,97 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         }
 
         ResultSet rs = stmt.executeQuery(query);
+
         List<String> columns = getColumns(rs);
         List<TableRow> rows = new ArrayList<>();
-        String databaseName = getDatabaseName(rs, 1);
-
-        String tableName = getTableName(rs, 1);
         while (rs.next()) {
-            TableRow row = new TableRow(databaseName, tableName);
+            List<TableCell> rowCells = new ArrayList<>();
 
-            for (int i = 0; i < columns.size(); i++) {
-                String column = columns.get(i);
+            for (String column : columns) {
                 Object o = rs.getObject(column);
-                String tableNameCell = getTableName(rs, i + 1);
-                String databaseNameCell = getDatabaseName(rs, i + 1);
-                System.out.println("databasenamecell=" + databaseNameCell);
-                row.add(new TableCell(column, o, databaseNameCell, tableNameCell, isPrimaryKey()));
+                rowCells.add(new TableCell(column, o));
             }
 
-            rows.add(row);
+            rows.add(new TableRow(rowCells));
         }
-        CustomTableModel table = new CustomTableModel(rows, columns, databaseName, tableName);
+        table = new TableData(rows, columns);
         return table;
     }
 
-    @SneakyThrows
     @Override
-    public boolean emptyTable(DatabaseBean DBName, String tblName) {
-        Connection conn = connect(DBName.getConnection());
-        PreparedStatement stmt = conn.prepareStatement("delete  from " + DBName + "." + tblName);
+    public boolean emptyTable(UiElementDatabase DBName, String tblName) {
+        try {
+            Connection conn = connect(DBName.getConnection());
+            PreparedStatement stmt = conn.prepareStatement("delete  from " + DBName + "." + tblName);
 
-        stmt.executeUpdate();
+            stmt.executeUpdate();
 
-        return true;
-    }
-
-    @SneakyThrows
-    @Override
-    public boolean truncateTable(DatabaseBean DBName, String tblName) {
-        Connection conn = connect(DBName.getConnection());
-
-        PreparedStatement stmt = conn.prepareStatement("TRUNCATE TABLE " + DBName + "." + tblName);
-
-        stmt.executeUpdate();
-
-        return true;
-    }
-
-    @SneakyThrows
-    @Override
-    public boolean dublicateTable(DatabaseBean DBName, String tbLName) {
-        Connection conn = connect(DBName.getConnection());
-        String newTbLName = tbLName.concat("_copy");
-        PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + newTbLName + " LIKE " + DBName + "." + tbLName);
-        PreparedStatement stmt1 = conn.prepareStatement("INSERT " + DBName + "." + newTbLName + "SELECT * FROM " + DBName + "." + tbLName);
-
-        stmt.executeUpdate();
-        return true;
-    }
-
-    @SneakyThrows
-    @Override
-    public boolean pasteTable(String information, DatabaseBean DBName, String TblName) {
-
-        Connection conn = connect(DBName.getConnection());
-        PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + TblName + " LIKE " + information);
-        PreparedStatement stmt1 = conn.prepareStatement("INSERT " + DBName + "." + TblName + "SELECT * FROM " + information);
-        stmt.executeUpdate();
-
-        return true;
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
 
     }
 
-    @SneakyThrows
-    public boolean dataTransfer(DatabaseBean DBNameWeHave, String tbLNameWeHave, DatabaseBean DBNameWeWant, String tbLNameWeWant) {
-        Connection connWeHave = connect(DBNameWeHave.getConnection());
-        Connection connWeWant = connect(DBNameWeWant.getConnection());
-        String newTbLName1 = tbLNameWeHave;
-        String newTbLName = tbLNameWeWant;
-        PreparedStatement stmtWeHave = connWeHave.prepareStatement("SELECT FROM " + DBNameWeHave);
-        PreparedStatement stmtWeWant = connWeWant.prepareStatement("CREATE DATABASE " + DBNameWeHave);
+    @Override
+    public boolean truncateTable(UiElementDatabase DBName, String tblName) {
+        try {
+            Connection conn = connect(DBName.getConnection());
+
+            PreparedStatement stmt = conn.prepareStatement("TRUNCATE TABLE " + DBName + "." + tblName);
+
+            stmt.executeUpdate();
+
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean dublicateTable(UiElementDatabase DBName, String tbLName) {
+        try {
+            Connection conn = connect(DBName.getConnection());
+            String newTbLName = tbLName.concat("_copy");
+            PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + newTbLName + " LIKE " + DBName + "." + tbLName);
+            PreparedStatement stmt1 = conn.prepareStatement("INSERT " + DBName + "." + newTbLName + "SELECT * FROM " + DBName + "." + tbLName);
+
+            stmt.executeUpdate();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean pasteTable(String information, UiElementDatabase DBName, String TblName) {
+
+        try {
+            Connection conn = connect(DBName.getConnection());
+            PreparedStatement stmt = conn.prepareStatement("CREATE TABLE " + DBName + "." + TblName + " LIKE " + information);
+            PreparedStatement stmt1 = conn.prepareStatement("INSERT " + DBName + "." + TblName + "SELECT * FROM " + information);
+            stmt.executeUpdate();
+
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+    }
+
+    public boolean dataTransfer(UiElementDatabase DBNameWeHave, String tbLNameWeHave, UiElementDatabase DBNameWeWant, String tbLNameWeWant) {
+        try {
+            Connection connWeHave = connect(DBNameWeHave.getConnection());
+            Connection connWeWant = connect(DBNameWeWant.getConnection());
+            String newTbLName1 = tbLNameWeHave;
+            String newTbLName = tbLNameWeWant;
+            PreparedStatement stmtWeHave = connWeHave.prepareStatement("SELECT FROM " + DBNameWeHave);
+            PreparedStatement stmtWeWant = connWeWant.prepareStatement("CREATE DATABASE " + DBNameWeHave);
 //	    ResultSet rs = stmtWeWant.executeQuery();
 //	    ResultSetMetaData rsmd = rs.getMetaData();
 //	    int columnCount = rsmd.getColumnCount();
@@ -204,146 +227,99 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 //	    sb.append(" ) ");
 //	    System.out.println(sb.toString());
 //	    stmt.executeUpdate();
-        return true;
-
-    }
-
-    @SneakyThrows
-    @Override
-    public boolean createDb(ConnectionBean connection, String name, String charset, String collate) {
-
-        Connection conn = connect(connection);
-        com.mysql.jdbc.PreparedStatement stmt = (com.mysql.jdbc.PreparedStatement) conn.createStatement();
-        stmt.execute("CREATE SCHEMA `" + name + "` DEFAULT CHARACTER SET " + charset + " COLLATE " + collate + ";");
-
-        return true;
-    }
-
-    @SneakyThrows
-    @Override
-    public List<Charset> getAllCharsets(ConnectionBean connection) {
-        List<Charset> charset = new ArrayList<>();
-        Connection conn = connect(connection);
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(" SHOW CHARACTER SET;");
-        while (rs.next()) {
-            String name = rs.getString("Charset");
-            charset.add(new Charset(name));
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
         }
-        return charset;
+
     }
 
     @Override
-    @SneakyThrows
-    public List<Collation> getAllCollations(ConnectionBean connection, Charset charset) {
+    public boolean createDb(UiElementConnection ui, String name, String charset, String collate) {
+        Connection conn = null;
+        try {
+            conn = connect(ui);
+            Statement stmt = conn.createStatement();
+            stmt.execute("CREATE SCHEMA `" + name + "` DEFAULT CHARACTER SET " + charset + " COLLATE " + collate + ";");
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DatabaseDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<Charset> getAllCharsets(UiElementConnection connection) {
+        List<Charset> charset = new ArrayList<>();
+        try {
+            Connection conn = connect(connection);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(" SHOW CHARACTER SET;");
+            while (rs.next()) {
+                String name = rs.getString("Charset");
+                charset.add(new Charset(name));
+
+            }
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DatabaseDAOImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseDAOImpl.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            return charset;
+        }
+    }
+
+    @Override
+    public List<Collation> getAllCollations(UiElementConnection connection, Charset charset) {
         if (charset != null && charset.getCollations() != null) {
             return charset.getCollations();
         }
         List<Collation> collations = new ArrayList<>();
-        Connection conn = connect(connection);
-        Statement stmt = conn.createStatement();
-        stmt.execute(" SHOW COLLATION where CHARSET='" + charset + "'");
-        ResultSet rs = stmt.getResultSet();
-        while (rs.next()) {
-            String name = rs.getString("Collation");
+        try {
+            Connection conn = connect(connection);
+            Statement stmt = conn.createStatement();
+            stmt.execute(" SHOW COLLATION where CHARSET='" + charset + "'");
+            ResultSet rs = stmt.getResultSet();
+            while (rs.next()) {
+                String name = rs.getString("Collation");
 
-            collations.add(new Collation(name));
+                collations.add(new Collation(name));
 
+            }
+
+            charset.setCollations(collations);
+            return collations;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-
-        charset.setCollations(collations);
-        return collations;
-    }
-    
-    @SneakyThrows
-    @Override 
-    public boolean deleteRows(ConnectionBean connection, List<TableRow> rows) {
-        for (TableRow row : rows) {
-            deleteRow(connection, row);
-        }
-        return true;
     }
 
-    @SneakyThrows
-    @Override
-    public boolean deleteRow(ConnectionBean connection, TableRow row) {
-        List<TableCell> primaryCells = row.getAllPrimaryCell();
+    public static void main(String[] args) throws Exception {
+        UiElementConnection conn = new UiElementConnection("localhost", "localhost", "3306", "root", "");
 
-        if (primaryCells == null || primaryCells.isEmpty()) {
-            deleteRowByRow(connection, row);
-        } else {
-            TableCell pk = primaryCells.get(0);
-            return deleteRowByCell(connection, pk);
+        TableData data = new DatabaseDAOImpl().runQuery(
+                "SELECT * FROM user;",
+                conn,
+                new UiElementDatabase("filemanagementsystem", conn));
+
+        List<TableRow> rows = data.getRows();
+        for (TableRow r : rows) {
+            System.out.println(r);
+            System.out.println("-------------------");
+            List<TableCell> cells = r.getCells();
+
+            for (TableCell c : cells) {
+                System.out.println(c);
+            }
+            System.out.println("");
         }
-
-        return true;
     }
 
-    @SneakyThrows
-    public boolean deleteRowByRow(ConnectionBean connection, TableRow row) {
-        Connection conn = connect(connection);
-
-        Vector<TableCell> cells = row;
-        String query = "delete "
-                + " from " + row.getDatabaseName() + "." + row.getTableName() + " where ";
-
-        for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            query += cell.getColumnName() + "=?";
-        }
-        System.out.println("query deleteRowByRow=" + query);
-        PreparedStatement stmt = conn.prepareStatement(query);
-
-        for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            stmt.setObject(i + 1, cell.getColumnValue());
-        }
-
-        stmt.executeUpdate();
-        return true;
-    }
-
-    @SneakyThrows
-    private boolean deleteRowByCell(ConnectionBean connection, TableCell cell) {
-        Connection conn = connect(connection);
-        String query = "delete "
-                + " from " + cell.getDatabaseName() + "." + cell.getTable()
-                + " where " + cell.getColumnName() + "=?";
-        PreparedStatement stmt = conn.prepareStatement(query);
-        System.out.println("query deleteRowByCell=" + query);
-        stmt.setObject(1, cell.getColumnValue());
-        stmt.executeUpdate();
-
-        return true;
-    }
-    
-     @SneakyThrows
-     @Override
-     public boolean saveRow(ConnectionBean connection, TableRow row) {
-        Connection conn = connect(connection);
-
-        Vector<TableCell> cells = row;
-        String query = "update "
-                + " " + row.getDatabaseName() + "." + row.getTableName() + " set ";
-
-        for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            if(cell.isUpdateMode())
-                query += cell.getColumnName() + "=?,";
-        }
-        query = query.substring(0,query.length()-1);
-        System.out.println("query deleteRowByRow=" + query);
-        PreparedStatement stmt = conn.prepareStatement(query);
-        int index = 1;
-        for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            if(cell.isUpdateMode())
-                stmt.setObject(index++, cell.getColumnValue());
-        }
-
-        stmt.executeUpdate();
-        return true;
-    }
-
-    
 }

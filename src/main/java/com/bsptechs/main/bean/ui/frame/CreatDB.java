@@ -5,11 +5,10 @@
  */
 package com.bsptechs.main.bean.ui.frame;
 
-import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
 import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.tree.database.node.DatabaseTreeNode;
+import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 public class CreatDB extends javax.swing.JFrame {
 
     DatabaseDAOImpl databaseDAOImpl = new DatabaseDAOImpl();
-    DatabaseTreeNode database;
+    UiElementDatabase database;
 
     /**
      * Creates new form CreatDB
@@ -29,6 +28,7 @@ public class CreatDB extends javax.swing.JFrame {
         initComponents();
         fillCharsetCombo();
         fillCollationCombo();
+
     }
 
     /**
@@ -38,7 +38,8 @@ public class CreatDB extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     private List<Charset> fillCharsetCombo() {
-        List<Charset> list = databaseDAOImpl.getAllCharsets(Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection());
+        System.out.println(Config.getCurrentConnection());
+        List<Charset> list = databaseDAOImpl.getAllCharsets(Config.getCurrentConnection());
         System.out.println(list);
         for (Charset charset : list) {
             charsetCmbo.addItem(charset);
@@ -50,7 +51,7 @@ public class CreatDB extends javax.swing.JFrame {
         Charset selectedCharset = (Charset) charsetCmbo.getSelectedItem();
         System.out.println(selectedCharset);
         collationCombo.removeAllItems();
-        List<Collation> collations = databaseDAOImpl.getAllCollations(Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection(), selectedCharset);
+        List<Collation> collations = databaseDAOImpl.getAllCollations(Config.getCurrentConnection(), selectedCharset);
         for (Collation collation : collations) {
             collationCombo.addItem(collation);
         }
@@ -66,8 +67,14 @@ public class CreatDB extends javax.swing.JFrame {
         charsetCmbo = new javax.swing.JComboBox<>();
         collationCombo = new javax.swing.JComboBox<>();
         cancelBtn = new javax.swing.JButton();
+        errorMessage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         submitCreateDB.setText("OK");
         submitCreateDB.addActionListener(new java.awt.event.ActionListener() {
@@ -100,6 +107,9 @@ public class CreatDB extends javax.swing.JFrame {
             }
         });
 
+        errorMessage.setForeground(new java.awt.Color(204, 0, 0));
+        errorMessage.setText("Take Another One");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,39 +117,40 @@ public class CreatDB extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(errorMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(charsetCmbo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(collationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(collationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(charsetCmbo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(submitCreateDB, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cancelBtn)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(dbName))))
+                        .addComponent(submitCreateDB, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelBtn)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(dbName))
                 .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(64, Short.MAX_VALUE)
+                .addContainerGap(65, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(dbName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(charsetCmbo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(errorMessage)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(charsetCmbo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(collationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
+                    .addComponent(collationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(submitCreateDB)
                     .addComponent(cancelBtn))
@@ -147,6 +158,7 @@ public class CreatDB extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
@@ -155,12 +167,17 @@ public class CreatDB extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void submitCreateDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitCreateDBActionPerformed
-//        try {
-//            databaseDAOImpl.createDb(connection, dbName.getText(), "big5", "big5_bin");
-//        } catch (Exception ex) {
-//            Logger.getLogger(CreatDB.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
+        Charset selectedCharset = (Charset) charsetCmbo.getSelectedItem();
+        Collation selectedCollation = (Collation) collationCombo.getSelectedItem();
+        String databaseName = dbName.getText();
+        if ("".equals(dbName.getText())) {
+            errorMessage.setText("Enter database name");
+            errorMessage.setVisible(true);
+        } else {
+            List<UiElementDatabase> database = databaseDAOImpl.getAllDatabases(Config.getCurrentConnection());
+            databaseDAOImpl.createDb(Config.getCurrentConnection(), databaseName, selectedCharset.getName(), selectedCollation.getName());
+            this.dispose();
+        }
 
     }//GEN-LAST:event_submitCreateDBActionPerformed
 
@@ -171,6 +188,10 @@ public class CreatDB extends javax.swing.JFrame {
     private void charsetCmboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_charsetCmboItemStateChanged
         fillCollationCombo();
     }//GEN-LAST:event_charsetCmboItemStateChanged
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        errorMessage.setVisible(false);
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -212,6 +233,7 @@ public class CreatDB extends javax.swing.JFrame {
     private javax.swing.JComboBox<Charset> charsetCmbo;
     private javax.swing.JComboBox<Collation> collationCombo;
     private javax.swing.JTextField dbName;
+    private javax.swing.JLabel errorMessage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
