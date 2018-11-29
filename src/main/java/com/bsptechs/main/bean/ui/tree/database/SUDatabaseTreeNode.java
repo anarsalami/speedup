@@ -1,7 +1,7 @@
 package com.bsptechs.main.bean.ui.tree.database;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.CustomList;
+import com.bsptechs.main.bean.SUArrayList;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupDatabase;
@@ -21,8 +21,8 @@ public class SUDatabaseTreeNode extends SUAbstractTreeNode {
         return database;
     }
 
-    public CustomList<SUTableBean> getTableBeans() {
-        CustomList<SUTableBean> list = new CustomList<>();
+    public SUArrayList<SUTableBean> getTableBeans() {
+        SUArrayList<SUTableBean> list = new SUArrayList<>();
         List<SUTableTreeNode> l = getChildren(SUTableTreeNode.class);
         for (int i = 0; i < l.size(); i++) {
             list.add(l.get(i).getTable());
@@ -31,7 +31,7 @@ public class SUDatabaseTreeNode extends SUAbstractTreeNode {
     }
 
     public void addTables(List<SUTableBean> tables) {
-        CustomList<SUTableTreeNode> nodes = new CustomList<>();
+        SUArrayList<SUTableTreeNode> nodes = new SUArrayList<>();
         for (SUTableBean table : tables) {
             nodes.add(new SUTableTreeNode(getTree(), table));
         }

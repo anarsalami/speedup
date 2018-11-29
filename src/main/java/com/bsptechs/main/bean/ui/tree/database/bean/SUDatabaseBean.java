@@ -16,7 +16,7 @@ public class SUDatabaseBean {
 
     private String name;
     private SUConnectionBean connection;
-
+    
     @Override
     public String toString() {
         return name;

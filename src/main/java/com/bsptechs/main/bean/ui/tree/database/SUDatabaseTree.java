@@ -7,7 +7,7 @@ package com.bsptechs.main.bean.ui.tree.database;
 
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
-import com.bsptechs.main.bean.CustomList;
+import com.bsptechs.main.bean.SUArrayList;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
 import com.bsptechs.main.bean.ui.tree.SUAbstractTree;
 import com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode;
@@ -32,9 +32,9 @@ public class SUDatabaseTree extends SUAbstractTree {
         this.addCustomTreeNodeToRoot(new SUConnectionTreeNode(this, connection));
     }
 
-    public CustomList<SUConnectionBean> getConnectionBeans() {
-        CustomList<SUConnectionTreeNode> connections = getConnectionNodes();
-        CustomList<SUConnectionBean> connectionBeans = new CustomList<SUConnectionBean>();
+    public SUArrayList<SUConnectionBean> getConnectionBeans() {
+        SUArrayList<SUConnectionTreeNode> connections = getConnectionNodes();
+        SUArrayList<SUConnectionBean> connectionBeans = new SUArrayList<SUConnectionBean>();
         for (SUConnectionTreeNode conn : connections) {
             connectionBeans.add(conn.getConnection());
         }
@@ -53,12 +53,12 @@ public class SUDatabaseTree extends SUAbstractTree {
         return getSelectedCustomTreeNodeGeneric(SUConnectionTreeNode.class);
     }
 
-    public CustomList<SUConnectionTreeNode> getConnectionNodes() {
+    public SUArrayList<SUConnectionTreeNode> getConnectionNodes() {
         DefaultTreeModel treeModel = (DefaultTreeModel) this.getModel();
         DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) treeModel.getRoot();
         Enumeration en = parentNode.children();
 
-        CustomList<SUConnectionTreeNode> list = new CustomList<>();
+        SUArrayList<SUConnectionTreeNode> list = new SUArrayList<>();
         while (en.hasMoreElements()) {
             list.add((SUConnectionTreeNode) en.nextElement());
         }

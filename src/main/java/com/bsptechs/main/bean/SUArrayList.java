@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author sarkhanrasullu
  */
-public class CustomList<T> extends ArrayList<T> {
+public class SUArrayList<T> extends ArrayList<T> {
 
     @Override
     public T get(int index) {
@@ -24,9 +24,9 @@ public class CustomList<T> extends ArrayList<T> {
 
     public T getByName(String name) {
         for (int i = 0; i < size(); i++) {
-            T connection = get(i);
-            if (connection.toString().equalsIgnoreCase(name)) {
-                return connection;
+            T t = get(i);
+            if (t.toString().equalsIgnoreCase(name)) {
+                return t;
             }
         }
         return null;

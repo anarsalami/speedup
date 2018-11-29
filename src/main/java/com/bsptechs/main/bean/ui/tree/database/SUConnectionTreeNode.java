@@ -3,7 +3,7 @@ package com.bsptechs.main.bean.ui.tree.database;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupConnection;
-import com.bsptechs.main.bean.CustomList;
+import com.bsptechs.main.bean.SUArrayList;
 import javax.swing.JPopupMenu;
 import com.bsptechs.main.Main;
 import java.util.List;
@@ -30,15 +30,15 @@ public class SUConnectionTreeNode extends SUAbstractTreeNode<SUConnectionBean>{
     }
 
     public void addDatabases(List<SUDatabaseBean> databases) {
-        CustomList<SUDatabaseTreeNode> dbNodes = new CustomList<>();
+        SUArrayList<SUDatabaseTreeNode> dbNodes = new SUArrayList<>();
         for (SUDatabaseBean db : databases) {
             dbNodes.add(new SUDatabaseTreeNode(getTree(), db));
         }
         super.addChildren(dbNodes);
     }
 
-    public CustomList<SUDatabaseBean> getAllDatabaseBeans() {
-        CustomList<SUDatabaseBean> list = new CustomList<>();
+    public SUArrayList<SUDatabaseBean> getAllDatabaseBeans() {
+        SUArrayList<SUDatabaseBean> list = new SUArrayList<>();
         List<SUDatabaseTreeNode> l = getChildren(SUDatabaseTreeNode.class);
         for (int i = 0; i < l.size(); i++) {
             list.add(l.get(i).getDatabase());
