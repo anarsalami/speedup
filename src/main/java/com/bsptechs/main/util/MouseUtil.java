@@ -13,10 +13,15 @@ import javax.swing.SwingUtilities;
  * @author sarkhanrasullu
  */
 public class MouseUtil {
-     public static boolean isLeftDoubleClicked(MouseEvent evt) {
+
+    public static boolean isLeftDoubleClicked(MouseEvent evt) {
         return evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt);
     }
-    
+
+    public static boolean isLeftClicked(MouseEvent evt) {
+        return SwingUtilities.isLeftMouseButton(evt);
+    }
+
     public static boolean isRightClicked(MouseEvent evt) {
         return SwingUtilities.isRightMouseButton(evt);
     }

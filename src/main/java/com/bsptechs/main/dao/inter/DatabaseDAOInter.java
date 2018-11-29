@@ -2,11 +2,11 @@ package com.bsptechs.main.dao.inter;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
-import com.bsptechs.main.bean.ui.uielement.UiElementDatabase;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
-import com.bsptechs.main.bean.ui.uielement.UiElementTable;
-import com.bsptechs.main.bean.ui.table.TableData;
-import java.sql.SQLException;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
+import com.bsptechs.main.bean.ui.table.CustomTableModel;
+import com.bsptechs.main.bean.ui.table.TableRow;
 import java.util.List;
 
 /**
@@ -15,27 +15,32 @@ import java.util.List;
  */
 public interface DatabaseDAOInter {
 
-    List<UiElementDatabase> getAllDatabases(UiElementConnection connection);
+    List<SUDatabaseBean> getAllDatabases(SUConnectionBean connection);
 
-    List<UiElementTable> getAllTables(UiElementDatabase database);
+    List<SUTableBean> getAllTables(SUDatabaseBean database);
 
-    boolean emptyTable(UiElementDatabase db, String tblName);
+    boolean emptyTable(SUDatabaseBean db, String tblName);
 
-    boolean truncateTable(UiElementDatabase DBName, String tblName);
+    boolean truncateTable(SUDatabaseBean DBName, String tblName);
 
-    boolean dublicateTable(UiElementDatabase DBName, String tbLName);
+    boolean dublicateTable(SUDatabaseBean DBName, String tbLName);
 
-    boolean pasteTable(String information, UiElementDatabase DBName, String tbLName);
+    boolean pasteTable(String information, SUDatabaseBean DBName, String tbLName);
 
-    boolean renameTable(UiElementTable table, String newTblName);
+    boolean renameTable(SUTableBean table, String newTblName);
 
-    public TableData runQuery(String query, UiElementConnection connection, UiElementDatabase database) throws ClassNotFoundException, SQLException;
+    public CustomTableModel runQuery(String query, SUConnectionBean connection, SUDatabaseBean database) throws Exception;
 
-    public boolean createDb(UiElementConnection ui, String name, String charset, String collate);
+    public boolean createDb(SUConnectionBean ui,String query, String name, String charset, String collate);
 
-    public List<Charset> getAllCharsets(UiElementConnection connection);
+    public List<Charset> getAllCharsets(SUConnectionBean connection);
 
-    public List<Collation> getAllCollations(UiElementConnection connection, Charset charset);
+    public List<Collation> getAllCollations(SUConnectionBean connection, Charset charset);
+
+    public boolean deleteRow(SUConnectionBean connection, TableRow row);
+
+    public boolean deleteRows(SUConnectionBean connection, List<TableRow> rows);
     
-    
+    public boolean saveRow(SUConnectionBean connection, TableRow row);
+
 }

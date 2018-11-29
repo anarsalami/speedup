@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bsptechs.main.bean;
+package com.bsptechs.main.bean.ui.tree.database.bean;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.tree.database.node.ConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,7 +20,7 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class ConnectionBean implements Serializable{
+public class SUConnectionBean implements Serializable{
 
     private String name;
     private String ipAdr;
@@ -28,12 +28,12 @@ public class ConnectionBean implements Serializable{
     private String userName;
     private String password;
     private transient Connection parentConnection;
-    private transient List<DatabaseBean> databases;
+    private transient List<SUDatabaseBean> databases;
 
-    public ConnectionBean() {
+    public SUConnectionBean() {
     }
 
-    public ConnectionBean(String name, String ipAdr, String port, String userName, String password) {
+    public SUConnectionBean(String name, String ipAdr, String port, String userName, String password) {
         this.name = name;
         this.ipAdr = ipAdr;
         this.port = port;
@@ -52,7 +52,7 @@ public class ConnectionBean implements Serializable{
             this.databases = null;
             Main.instance().refreshNewQuery();
         } catch (SQLException ex) {
-            Logger.getLogger(ConnectionTreeNode.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SUConnectionTreeNode.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

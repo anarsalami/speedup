@@ -7,29 +7,40 @@ package com.bsptechs.main.bean.ui.table;
 
 import java.util.List;
 
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import lombok.Data;
+
 /**
  *
  * @author sarkhanrasullu
  */
-public class TableRow {
+@Data
+public class TableRow extends Vector<TableCell> {
 
-    private List<TableCell> cells;
-
-    public TableRow(List<TableCell> cells) {
-        this.cells = cells;
+    private String databaseName;
+    private String tableName;
+    private boolean updateMode;
+    
+    public TableRow(String databaseName, String tableName) {
+        this.databaseName = databaseName;
+        this.tableName = tableName;
     }
 
-    public List<TableCell> getCells() {
-        return cells;
-    }
+    public List<TableCell> getAllPrimaryCell() {
+        if (isEmpty()) {
+            return null;
+        }
 
-    public void setCells(List<TableCell> cells) {
-        this.cells = cells;
-    }
-
-    @Override
-    public String toString() {
-        return "TableRow{" + "columns=" + cells + '}';
+        List<TableCell> result = new ArrayList<>();
+        for (TableCell cell : this) {
+            if (cell.isPrimaryKey()) {
+                result.add(cell);
+            }
+        }
+        return result;
     }
 
 }

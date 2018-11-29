@@ -6,10 +6,10 @@
 package com.bsptechs.main.bean.ui.popup;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ui.panel.PanelQuery;
-import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.uielement.UiElementTable;
-import com.bsptechs.main.bean.ui.uielement.UiElement;
+import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
+import com.bsptechs.main.Config;
+import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
+import com.bsptechs.main.bean.ui.tree.SUAbstractTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.util.List;
@@ -43,7 +43,7 @@ public class UiPopupTable extends UiPopupAbstract {
             renameTable();
         });
         addMenuItem("Refresh", () -> {
-            refreshDB();
+            
         });
         addMenuItem("Empty Table", () -> {
             emptyTable();
@@ -85,22 +85,20 @@ public class UiPopupTable extends UiPopupAbstract {
     }
 
     public void viewTable() {
-        Main m = Config.getMain();
 
-        UiElement element = (UiElement) m.getListTable().getSelectionPath().getLastPathComponent();
+        SUTableTreeNode element = Main.instance().getConnectionTree().getSelectedTableNode();
 
-        if (element instanceof UiElementTable) {
-            UiElementTable tb = (UiElementTable) element;
-            PanelQuery.runQuery("select * from " + tb.getTableName());
+        if (element !=null) {
+            Main.instance().prepareNewQuery("select * from "+element.getTable().getName(), true);
         }
     }
 
-    public UiElementTable getSelectedTable() {
-        return (UiElementTable) getSelectedElement();
+    public SUTableTreeNode getSelectedTable() {
+        return (SUTableTreeNode) getSelectedElement();
     }
 
     public void renameTable() {
-        UiElementTable tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
         String newTblName = (String) JOptionPane.showInputDialog(
                 null,
                 "Enter new name:",
@@ -108,38 +106,32 @@ public class UiPopupTable extends UiPopupAbstract {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
-                tb.getTableName()
+                tb.getTable().getName()
         );
-        database.renameTable(tb, newTblName);
+        database.renameTable(tb.getTable(), newTblName);
        tb.nodeChanged();
     }
-
-    private void refreshDB() {
-        UiElementTable tb = getSelectedTable();
-        List<UiElementTable> tbNames = database.getAllTables(tb.getDatabaseName());
-
-        Main m = Config.getMain();
-    }
+ 
 
     private void emptyTable() {
-        UiElementTable tb = getSelectedTable();
-        database.emptyTable(tb.getDatabaseName(), tb.getTableName());
+        SUTableTreeNode tb = getSelectedTable();
+        database.emptyTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
     private void truncateTeable() {
-        UiElementTable tb = getSelectedTable();
-        database.truncateTable(tb.getDatabaseName(), tb.getTableName());
+        SUTableTreeNode tb = getSelectedTable();
+        database.truncateTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
-    private UiElementTable selectedElementForCopy;
+    private SUTableTreeNode selectedElementForCopy;
 
     private void copyTable() {
-        UiElementTable tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
         this.selectedElementForCopy = tb;
     }
 
     private void pasteTable() {
-        UiElementTable tb = getSelectedTable();
+        SUTableTreeNode tb = getSelectedTable();
 
         String newTblName = (String) JOptionPane.showInputDialog(
                 null,
@@ -148,21 +140,19 @@ public class UiPopupTable extends UiPopupAbstract {
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 null,
-                tb.getTableName()
+                tb.getTable().getName()
         );
 
         database.pasteTable(
-                selectedElementForCopy.getDatabaseName() + "." + selectedElementForCopy.getTableName(),
-                tb.getDatabaseName(),
+                selectedElementForCopy.getTable().getDatabase() + "." + selectedElementForCopy.getTable().getName(),
+                tb.getTable().getDatabase(),
                 newTblName
-        );
-        refreshDB();
+        ); 
     }
 
     private void dublicateTable() {
-        UiElementTable tb = getSelectedTable();
-        database.dublicateTable(tb.getDatabaseName(), tb.getTableName());
-        refreshDB();
+        SUTableTreeNode tb = getSelectedTable();
+        database.dublicateTable(tb.getTable().getDatabase(), tb.getTable().getName());
     }
 
     private void dumpSqlFile() {

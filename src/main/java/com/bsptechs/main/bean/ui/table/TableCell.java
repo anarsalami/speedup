@@ -6,40 +6,34 @@
 package com.bsptechs.main.bean.ui.table;
 
 import java.util.List;
+import lombok.Data;
 
 /**
  *
  * @author sarkhanrasullu
  */
+@Data
 public class TableCell {
 
+    private String table;
+    private String databaseName;
     private String columnName;
     private Object columnValue;
-
+    private boolean primaryKey;
+    private boolean editable = true;
+    private boolean updateMode;
+    
     public TableCell() {
     }
 
-    public TableCell(String columnName, Object columnValue) {
+    public TableCell(String columnName, Object columnValue,String databaseName, String table,  boolean primaryKey) {
         this.columnName = columnName;
         this.columnValue = columnValue;
-    }
-
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
-
-    public Object getColumnValue() {
-        return columnValue;
-    }
-
-    public void setColumnValue(Object columnValue) {
-        this.columnValue = columnValue;
-    }
-
+        this.primaryKey = primaryKey;
+        this.table = table;
+        this.databaseName = databaseName;
+    } 
+    
     @Override
     public String toString() {
         if(columnValue==null) return null;

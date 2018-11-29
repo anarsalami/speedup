@@ -5,8 +5,8 @@
  */
 package com.bsptechs.main.bean.ui.panel.queryresult;
 
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.table.CustomTable;
 import com.bsptechs.main.bean.ui.table.CustomTableModel;
 import com.bsptechs.main.bean.ui.table.TableRow;
@@ -138,11 +138,11 @@ public class PanelQueryResult extends javax.swing.JPanel {
     }
 
     private String queryStr;
-    private ConnectionBean connection;
-    private DatabaseBean database;
+    private SUConnectionBean connection;
+    private SUDatabaseBean database;
 
     @SneakyThrows
-    public void runQuery(String queryStr, ConnectionBean connection, DatabaseBean database) {
+    public void runQuery(String queryStr, SUConnectionBean connection, SUDatabaseBean database) {
         this.queryStr = queryStr;
         this.connection = connection;
         this.database = database;

@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bsptechs.main.bean.ui.tree.database.node;
+package com.bsptechs.main.bean.ui.tree.database;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.TableBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.popup.UiPopupTable;
-import com.bsptechs.main.bean.ui.tree.node.CustomTreeNode;
 import javax.swing.JPopupMenu;
 import lombok.Data;
 
@@ -17,11 +16,12 @@ import lombok.Data;
  * @author Goshgar
  */
 @Data
-public class TableTreeNode extends CustomTreeNode {
+public class SUTableTreeNode extends SUAbstractTreeNode {
 
-    private TableBean table;
+    private final SUTableBean table;
 
-    public TableTreeNode(TableBean table) {
+    public SUTableTreeNode(SUDatabaseTree tree, SUTableBean table) {
+        super(tree, table);
         this.table = table;
     }
 

@@ -1,6 +1,5 @@
-package com.bsptechs.main.bean.ui.tree.node;
+package com.bsptechs.main.bean.ui.tree;
 
-import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.CustomList;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
@@ -10,12 +9,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-public abstract class CustomTreeNode extends DefaultMutableTreeNode {
+public abstract class SUAbstractTreeNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = 1L;
-    public DatabaseDAOInter database = new DatabaseDAOImpl();
-
-    public CustomTreeNode() {
+    
+    protected final SUAbstractTree tree;
+    
+    public SUAbstractTreeNode(SUAbstractTree tree) {
+        this.tree = tree;
     }
 
     public abstract void onClick();
@@ -27,12 +28,12 @@ public abstract class CustomTreeNode extends DefaultMutableTreeNode {
 //    public abstract List<? extends CustomTreeNode> getSubList();
     public abstract String getIcon();
 
-    public void addChildren(List<? extends CustomTreeNode> listData) {
+    public void addChildren(List<? extends SUAbstractTreeNode> listData) {
         if (listData == null) {
             return;
         }
 
-        for (CustomTreeNode t : listData) {
+        for (SUAbstractTreeNode t : listData) {
             add(t);
         }
 
@@ -56,15 +57,15 @@ public abstract class CustomTreeNode extends DefaultMutableTreeNode {
     }
 
     public void nodeChanged() {
-        Main.instance().getConnectionTree().getTreeModel().nodeChanged(this);
+        tree.getTreeModel().nodeChanged(this);
     }
 
     public void nodeStructureChanged() {
-        Main.instance().getConnectionTree().getTreeModel().nodeStructureChanged(this);
+        tree.getTreeModel().nodeStructureChanged(this);
     }
 
     public void expand() {
-        Main.instance().getConnectionTree().expandPath(new TreePath(this.getPath()));
+        tree.expandPath(new TreePath(this.getPath()));
     }
 
 }

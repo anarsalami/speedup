@@ -1,8 +1,8 @@
 package com.bsptechs.main.bean.ui.frame;
 
-import com.bsptechs.main.bean.Config;
-import com.bsptechs.main.bean.ui.tree.CustomJTree;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
+import com.bsptechs.main.Main;
+import com.bsptechs.main.Config;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.util.Util;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,7 +27,7 @@ public class ConnectionFrame extends javax.swing.JFrame {
     }
 
     private boolean updateMode = false;
-    private UiElementConnection connection = new UiElementConnection();
+    private SUConnectionBean connection = null;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -335,23 +335,20 @@ public class ConnectionFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
-        UiElementConnection filledConnection = getAllInformFromUser();
+        SUConnectionBean filledConnection = getAllInformFromUser();
         if (!validateFields()) {
             return;
         }
         if (updateMode) {
             updateConnection(filledConnection);
-            connection.nodeChanged();
         } else {
-            Config.instance().appendConnection(filledConnection);
-            CustomJTree tree = Config.getMain().getListTable();
-            tree.addUiElement(filledConnection);
+            Main.instance().getConnectionTree().addConnectionNode(filledConnection);
         }
-        Config.saveConfig();
+        Config.instance().saveConfig();
         this.dispose();
     }//GEN-LAST:event_btnOkActionPerformed
 
-    public void updateConnection(UiElementConnection newConnection) {
+    public void updateConnection(SUConnectionBean newConnection) {
         connection.setName(newConnection.getName());
         connection.setIpAdr(newConnection.getIpAdr());
         connection.setPort(newConnection.getPort());
@@ -394,9 +391,9 @@ public class ConnectionFrame extends javax.swing.JFrame {
     private boolean validateFields() {
         clearErrMsgs();
         boolean res = true;
-        UiElementConnection conn = getAllInformFromUser();
+        SUConnectionBean conn = getAllInformFromUser();
 
-        UiElementConnection c = Config.instance().getConnectionByName(conn.getName());
+        SUConnectionBean c = Main.instance().getConnectionTree().getConnectionBeans().getByName(conn.getName());
         if (c!=null && c != connection) {
             lblConnectionNameErrMsg.setText("connection name already exists");
             res = false;
@@ -435,15 +432,15 @@ public class ConnectionFrame extends javax.swing.JFrame {
         return res;
     }
 
-    public UiElementConnection getAllInformFromUser() {
+    public SUConnectionBean getAllInformFromUser() {
         String name = txtConnectionName.getText();
         String ipAdr = txtHostNameIpAdr.getText().toLowerCase();
         String port = txtPort.getText();
         String username = txtUserName.getText();
         String password = new String(txtPassword.getPassword());
 
-        UiElementConnection connection = new UiElementConnection(name, ipAdr, port, username, password);
-        return connection;
+        SUConnectionBean c = new SUConnectionBean(name, ipAdr, port, username, password);
+        return c;
     }
 
     public static void showAsRegister() {
@@ -451,7 +448,7 @@ public class ConnectionFrame extends javax.swing.JFrame {
         f.setVisible(true);
     }
 
-    private void prepareUpdate(UiElementConnection c) {
+    private void prepareUpdate(SUConnectionBean c) {
         connection = c;
         updateMode = true;
         txtConnectionName.setText(c.getName());
@@ -462,7 +459,7 @@ public class ConnectionFrame extends javax.swing.JFrame {
         this.setVisible(true);
     }
 
-    public static void showAsUpdate(UiElementConnection c) {
+    public static void showAsUpdate(SUConnectionBean c) {
         ConnectionFrame m = new ConnectionFrame();
         m.prepareUpdate(c);
     }

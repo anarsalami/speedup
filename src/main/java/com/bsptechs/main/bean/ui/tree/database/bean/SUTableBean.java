@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.bsptechs.main.bean;
+package com.bsptechs.main.bean.ui.tree.database.bean;
 
 import lombok.Data;
 
@@ -12,13 +12,13 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class TableBean {
+public class SUTableBean {
 
     private String name;
-    private DatabaseBean database;
+    private SUDatabaseBean database;
     
     
-    public TableBean(String name, DatabaseBean database){
+    public SUTableBean(String name, SUDatabaseBean database){
         this.name = name;
         this.database = database;
     }

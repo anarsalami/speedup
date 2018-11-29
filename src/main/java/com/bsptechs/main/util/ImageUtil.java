@@ -24,4 +24,10 @@ public class ImageUtil {
         Image temp = imageIcon.getImage().getScaledInstance(18, 18, Image.SCALE_DEFAULT);
         return new ImageIcon(temp);
     }
+     
+     public static ImageIcon getIconforMysql(String iconName){
+        ImageIcon imageIcon = new ImageIcon(ImageUtil.class.getResource("/icons/"+iconName));
+        Image temp = imageIcon.getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT);
+        return new ImageIcon(temp);
+    }
 }

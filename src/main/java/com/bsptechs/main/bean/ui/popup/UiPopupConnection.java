@@ -5,10 +5,11 @@
  */
 package com.bsptechs.main.bean.ui.popup;
 
+import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
-import com.bsptechs.main.bean.Config;
+import com.bsptechs.main.Config;
 import com.bsptechs.main.bean.ui.frame.CreatDB;
-import com.bsptechs.main.bean.ui.uielement.UiElementConnection;
+import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 
 /**
  *
@@ -32,7 +33,7 @@ public class UiPopupConnection extends UiPopupAbstract {
             connect();
         });
 
-        addMenuItem("Disconnect", () -> {
+        addMenuItem("Disconnect", () -> {   
             disconnect();
         });
         
@@ -42,23 +43,21 @@ public class UiPopupConnection extends UiPopupAbstract {
         
     }
     
-    public UiElementConnection getSelectedConnection(){
-        return (UiElementConnection) getSelectedElement();
+    private SUConnectionTreeNode getSelectedConnection(){
+        return (SUConnectionTreeNode) getSelectedElement();
     }
 
     public void delete() {
         System.out.println("delete connection");
-        UiElementConnection c = getSelectedConnection();
-        Config.instance().getConnections().remove(c);
-        Config.saveConfig();
+        SUConnectionTreeNode c = getSelectedConnection();
         c.reset();
-        Config.getMain().getListTable().removeUiElement(c);
-        
+        Main.instance().getConnectionTree().removeCustomTreeNode(c);
+        Config.instance().saveConfig();
     }
 
     public void properties() {
         System.out.println("properites connection");
-        ConnectionFrame.showAsUpdate(getSelectedConnection());
+        ConnectionFrame.showAsUpdate(getSelectedConnection().getConnection());
     }
 
     public void connect() {
@@ -68,7 +67,7 @@ public class UiPopupConnection extends UiPopupAbstract {
 
     public void disconnect() {
         System.out.println("disconnection connection");
-        UiElementConnection cn = getSelectedConnection();
+        SUConnectionTreeNode cn = getSelectedConnection();
         cn.reset();
         cn.removeAllChildren();
     }

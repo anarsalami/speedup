@@ -6,8 +6,8 @@
 package com.bsptechs.main.bean.ui.panel.queryresult;
 
 import com.bsptechs.main.Main;
-import com.bsptechs.main.bean.ConnectionBean;
-import com.bsptechs.main.bean.DatabaseBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import com.bsptechs.main.util.ImageUtil;
@@ -27,7 +27,7 @@ public class PanelQuery extends javax.swing.JPanel {
 
     private static final DatabaseDAOInter db = new DatabaseDAOImpl();
 
-    public PanelQuery(ConnectionBean connection, DatabaseBean database, String queryStr) throws ClassNotFoundException, SQLException {
+    public PanelQuery(SUConnectionBean connection, SUDatabaseBean database, String queryStr) throws ClassNotFoundException, SQLException {
         initComponents();
         preparePanel(connection, database);
         txtQuery.setText(queryStr);
@@ -46,15 +46,15 @@ public class PanelQuery extends javax.swing.JPanel {
         btnexplain.setIcon(ImageUtil.getIconforQueryPanel("querypanel/explain-.png"));
     }
 
-    public final void preparePanel(ConnectionBean connection, DatabaseBean database) {
+    public final void preparePanel(SUConnectionBean connection, SUDatabaseBean database) {
 //        pnlResult.setVisible(false);
         prepareConnectionCombobox(connection);
         prepareDatabasesCombobox(connection, database);
     }
 
-    public void prepareConnectionCombobox(ConnectionBean connection) {
+    public void prepareConnectionCombobox(SUConnectionBean connection) {
         cbConnections.removeAllItems();
-        List<ConnectionBean> list = Main.instance().getConnectionTree().getConnectionBeans();
+        List<SUConnectionBean> list = Main.instance().getConnectionTree().getConnectionBeans();
         if (list.size() == 0) {
             return;
         }
@@ -69,13 +69,13 @@ public class PanelQuery extends javax.swing.JPanel {
         cbConnections.setSelectedItem(connection);
     }
 
-    public void prepareDatabasesCombobox(ConnectionBean connection, DatabaseBean database) {
+    public void prepareDatabasesCombobox(SUConnectionBean connection, SUDatabaseBean database) {
         if (connection == null) {
             return;
         }
         System.out.println("prepareDatabasesCombobox=" + database);
         cbDatabases.removeAllItems();
-        List<DatabaseBean> databases = connection.getDatabases();
+        List<SUDatabaseBean> databases = connection.getDatabases();
         if (databases == null) {
             databases = db.getAllDatabases(connection);
         }
@@ -365,7 +365,7 @@ public class PanelQuery extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cbConnectionsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbConnectionsItemStateChanged
-        ConnectionBean conn = getSelectedConnection();
+        SUConnectionBean conn = getSelectedConnection();
         System.out.println("selected connnection=" + conn);
         prepareDatabasesCombobox(conn, null);
     }//GEN-LAST:event_cbConnectionsItemStateChanged
@@ -464,14 +464,14 @@ public class PanelQuery extends javax.swing.JPanel {
         btnenter(btnExportResult);
     }//GEN-LAST:event_btnExportResultMouseEntered
 
-    public DatabaseBean getSelectedDatabase() {
+    public SUDatabaseBean getSelectedDatabase() {
         Object obj = cbDatabases.getSelectedItem();
 
-        return (DatabaseBean) obj;
+        return (SUDatabaseBean) obj;
     }
 
-    public ConnectionBean getSelectedConnection() {
-        return (ConnectionBean) cbConnections.getSelectedItem();
+    public SUConnectionBean getSelectedConnection() {
+        return (SUConnectionBean) cbConnections.getSelectedItem();
     }
 //    public static void viewTable(TableTreeNode table) {
 //        runQuery("select * from " + table.getName());
@@ -483,8 +483,8 @@ public class PanelQuery extends javax.swing.JPanel {
 
     public void runQuery() {
         String queryStr = txtQuery.getText();
-        ConnectionBean connection = getSelectedConnection();
-        DatabaseBean database = getSelectedDatabase();
+        SUConnectionBean connection = getSelectedConnection();
+        SUDatabaseBean database = getSelectedDatabase();
         PanelQueryResult pnl = getPanelQueryResult();
         pnl.runQuery(queryStr, connection, database);
     }
@@ -500,8 +500,8 @@ public class PanelQuery extends javax.swing.JPanel {
     private javax.swing.JButton btnText;
     private javax.swing.JButton btnexplain;
     private javax.swing.JButton btnstop;
-    private javax.swing.JComboBox<ConnectionBean> cbConnections;
-    private javax.swing.JComboBox<DatabaseBean> cbDatabases;
+    private javax.swing.JComboBox<SUConnectionBean> cbConnections;
+    private javax.swing.JComboBox<SUDatabaseBean> cbDatabases;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlButtons;
     private javax.swing.JPanel pnlControllBtns;
