@@ -28,31 +28,31 @@ public class SUTableModel extends DefaultTableModel {
             SUArrayList<SUTableRow> rows,
             SUArrayList<SUTableColumn> columns
     ) {
-        super(new Vector(rows), new Vector(columns));
+//        super(new Vector(rows), new Vector(columns));
         setColumnIdentifiers(new Vector(columns));
         this.columnNames = columns;
         this.rows = rows;
     }
 
-//    @Override
-//    public String getColumnName(int column) {
-//        return columnNames != null ? columnNames.get(column).getName() : null;
-//    }
-//
-//    @Override
-//    public Class<?> getColumnClass(int columnIndex) {
-//        return columnNames.get(columnIndex).getClass();
-//    }
-//
-//    @Override
-//    public int getColumnCount() {
-//        return columnNames != null ? columnNames.size() : 0;
-//    }
-//
-//    @Override
-//    public int getRowCount() {
-//        return rows != null ? rows.size() : 0;
-//    }
+    @Override
+    public String getColumnName(int column) {
+        return columnNames != null ? columnNames.get(column).getName() : null;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return columnNames.get(columnIndex).getClass();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames != null ? columnNames.size() : 0;
+    }
+
+    @Override
+    public int getRowCount() {
+        return rows != null ? rows.size() : 0;
+    }
 //
 //    @Override
 //    public boolean isCellEditable(int row, int column) {
@@ -60,13 +60,15 @@ public class SUTableModel extends DefaultTableModel {
 //        return true;
 //    }
 //
-//    @Override
-//    public Object getValueAt(int rowIndex, int columnIndex) {
-//        System.out.println("rowindex=" + rowIndex);
-//        System.out.println("columnIndex=" + columnIndex);
-//        SUTableCell cell = rows != null ? rows.get(rowIndex).get(columnIndex) : null;
-//        return cell;
-//    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        System.out.println("rowindex=" + rowIndex);
+        System.out.println("columnIndex=" + columnIndex);
+        SUTableCell cell = rows != null ? rows.get(rowIndex).get(columnIndex) : null;
+        return cell;
+    }
+
     public SUTableRow addEmptyRow() {
         SUTableRow newRow = new SUTableRow();
 
@@ -108,5 +110,4 @@ public class SUTableModel extends DefaultTableModel {
 //        cell.setUpdateMode(true);
 //        super.setValueAt(cell, rowIndex, colIndex);
 //    }
-
 }

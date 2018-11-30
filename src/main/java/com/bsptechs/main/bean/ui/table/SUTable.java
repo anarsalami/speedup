@@ -79,8 +79,6 @@ public class SUTable extends JTable {
         MyTableColumnModel cM = new MyTableColumnModel(model.getColumnNames());
         setColumnModel(cM);
         super.setModel(model);
-
-//        System.out.println("getColumnCount()=" + cM.getColumnCount());
     }
 
     public SUTableModel getTableModel() {
