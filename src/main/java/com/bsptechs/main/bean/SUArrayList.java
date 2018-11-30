@@ -5,13 +5,13 @@
  */
 package com.bsptechs.main.bean;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  *
  * @author sarkhanrasullu
  */
-public class SUArrayList<T> extends ArrayList<T> {
+public class SUArrayList<T> extends Vector<T> {
 
     @Override
     public T get(int index) {
@@ -30,5 +30,9 @@ public class SUArrayList<T> extends ArrayList<T> {
             }
         }
         return null;
+    }
+    
+    public T getLast(){
+        return get(size()-1);
     }
 }

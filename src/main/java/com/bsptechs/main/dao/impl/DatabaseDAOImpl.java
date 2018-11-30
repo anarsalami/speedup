@@ -2,20 +2,21 @@ package com.bsptechs.main.dao.impl;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
+import com.bsptechs.main.bean.SUArrayList;
+import com.bsptechs.main.bean.SUQueryBean;
+import com.bsptechs.main.bean.SUQueryResult;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
-import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
-import com.bsptechs.main.bean.ui.table.TableCell;
-import com.bsptechs.main.bean.ui.table.CustomTableModel;
-import com.bsptechs.main.bean.ui.table.TableRow;
+import com.bsptechs.main.bean.ui.table.SUTableCell;
+import com.bsptechs.main.bean.ui.table.SUTableColumn;
+import com.bsptechs.main.bean.ui.table.SUTableModel;
+import com.bsptechs.main.bean.ui.table.SUTableRow;
 import com.bsptechs.main.dao.inter.AbstractDatabase;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Vector;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
-/** 
+/**
  *
  * @author Penthos
  */
@@ -31,8 +32,8 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public List<SUDatabaseBean> getAllDatabases(SUConnectionBean connection) {
-        List<SUDatabaseBean> databasesList = new ArrayList<>();
+    public SUArrayList<SUDatabaseBean> getAllDatabases(SUConnectionBean connection) {
+        SUArrayList<SUDatabaseBean> databasesList = new SUArrayList<>();
 
         Connection conn = connect(connection);
         Statement stmt = conn.createStatement();
@@ -51,8 +52,8 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @Override
     @SneakyThrows
-    public List<SUTableBean> getAllTables(SUDatabaseBean database) {
-        List<SUTableBean> list = new ArrayList<>();
+    public SUArrayList<SUTableBean> getAllTables(SUDatabaseBean database) {
+        SUArrayList<SUTableBean> list = new SUArrayList<>();
         Connection conn = connect(database.getConnection());
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM information_schema.tables where table_schema = ?");
         stmt.setString(1, database.getName());
@@ -78,49 +79,42 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    public static List<String> getColumns(ResultSet rs) throws SQLException {
-        ResultSetMetaData metdata = rs.getMetaData();
-        int cnt = metdata.getColumnCount();
-        List<String> columns = new ArrayList<>();
-        for (int i = 0; i < cnt; i++) {
-            String columnName = metdata.getColumnName(i + 1);
-            columns.add(columnName);
-        }
-        return columns;
-    }
-
     @Override
-    public CustomTableModel runQuery(String query, SUConnectionBean connection, SUDatabaseBean database) throws Exception {
-        Connection conn = connect(connection);
- 
+    public SUQueryResult runQuery(SUQueryBean queryBean){
+        SUConnectionBean connectionBean = queryBean.getConnection();
+        SUDatabaseBean database = queryBean.getDatabase();
+        String queryStr = queryBean.getQuery();
+
+        Connection conn = connect(connectionBean);
+
         Statement stmt = conn.createStatement();
         if (database != null && StringUtils.isNoneEmpty(database.getName())) {
             String setDatabase = "USE " + database.getName() + ";";
             stmt.executeQuery(setDatabase);
         }
 
-        ResultSet rs = stmt.executeQuery(query);
-        List<String> columns = getColumns(rs);
-        List<TableRow> rows = new ArrayList<>();
-        String databaseName = getDatabaseName(rs, 1);
+        ResultSet rs = stmt.executeQuery(queryStr);
 
-        String tableName = getTableName(rs, 1);
+        SUDatabaseBean db = getDatabase(connectionBean, rs, 1);
+
+        SUArrayList<SUTableColumn> columns = getColumns(rs, connectionBean);
+
+        SUArrayList<SUTableRow> rows = new SUArrayList<>();
+
         while (rs.next()) {
-            TableRow row = new TableRow(databaseName, tableName);
+            SUTableRow row = new SUTableRow();
 
             for (int i = 0; i < columns.size(); i++) {
-                String column = columns.get(i);
-                Object o = rs.getObject(column);
-                String tableNameCell = getTableName(rs, i + 1);
-                String databaseNameCell = getDatabaseName(rs, i + 1);
-                System.out.println("databasenamecell=" + databaseNameCell);
-                row.add(new TableCell(column, o, databaseNameCell, tableNameCell, isPrimaryKey()));
+                SUTableColumn column = columns.get(i);
+                Object value = rs.getObject(column.getName());
+
+                row.add(new SUTableCell(column, value));
             }
 
             rows.add(row);
         }
-        CustomTableModel table = new CustomTableModel(rows, columns, databaseName, tableName);
-        return table;
+        SUQueryResult result = new SUQueryResult(columns, rows);
+        return result;
     }
 
     @SneakyThrows
@@ -138,11 +132,8 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     @Override
     public boolean truncateTable(SUDatabaseBean DBName, String tblName) {
         Connection conn = connect(DBName.getConnection());
-
         PreparedStatement stmt = conn.prepareStatement("TRUNCATE TABLE " + DBName + "." + tblName);
-
         stmt.executeUpdate();
-
         return true;
     }
 
@@ -254,11 +245,11 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         charset.setCollations(collations);
         return collations;
     }
-    
+
     @SneakyThrows
-    @Override 
-    public boolean deleteRows(SUConnectionBean connection, List<TableRow> rows) {
-        for (TableRow row : rows) {
+    @Override
+    public boolean deleteRows(SUConnectionBean connection, List<SUTableRow> rows) {
+        for (SUTableRow row : rows) {
             deleteRow(connection, row);
         }
         return true;
@@ -266,37 +257,37 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public boolean deleteRow(SUConnectionBean connection, TableRow row) {
-        List<TableCell> primaryCells = row.getAllPrimaryCell();
+    public boolean deleteRow(SUConnectionBean connection, SUTableRow row) {
+        List<SUTableCell> primaryCells = row.getAllPrimaryCell();
 
         if (primaryCells == null || primaryCells.isEmpty()) {
             deleteRowByRow(connection, row);
         } else {
-            TableCell pk = primaryCells.get(0);
+            SUTableCell pk = primaryCells.get(0);
             return deleteRowByCell(connection, pk);
         }
 
         return true;
-    }
+    } 
 
     @SneakyThrows
-    public boolean deleteRowByRow(SUConnectionBean connection, TableRow row) {
+    public boolean deleteRowByRow(SUConnectionBean connection, SUTableRow row) {
         Connection conn = connect(connection);
 
-        Vector<TableCell> cells = row;
+        Vector<SUTableCell> cells = row;
         String query = "delete "
-                + " from " + row.getDatabaseName() + "." + row.getTableName() + " where ";
+                + " from " + row.getTable().getDatabase().getName() + "." + row.getTable().getName() + " where ";
 
         for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            query += cell.getColumnName() + "=?";
+            SUTableCell cell = cells.get(i);
+            query += cell.getColumn().getName() + "=?";
         }
         System.out.println("query deleteRowByRow=" + query);
         PreparedStatement stmt = conn.prepareStatement(query);
 
         for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            stmt.setObject(i + 1, cell.getColumnValue());
+            SUTableCell cell = cells.get(i);
+            stmt.setObject(i + 1, cell.getValue());
         }
 
         stmt.executeUpdate();
@@ -304,46 +295,49 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    private boolean deleteRowByCell(SUConnectionBean connection, TableCell cell) {
+    private boolean deleteRowByCell(SUConnectionBean connection, SUTableCell cell) {
         Connection conn = connect(connection);
+
+        SUTableBean table = cell.getColumn().getTable();
         String query = "delete "
-                + " from " + cell.getDatabaseName() + "." + cell.getTable()
-                + " where " + cell.getColumnName() + "=?";
+                + " from " + table.getDatabase().getName() + "." + table.getName()
+                + " where " + cell.getColumn().getName() + "=?";
         PreparedStatement stmt = conn.prepareStatement(query);
         System.out.println("query deleteRowByCell=" + query);
-        stmt.setObject(1, cell.getColumnValue());
+        stmt.setObject(1, cell.getValue());
         stmt.executeUpdate();
 
         return true;
     }
-    
-     @SneakyThrows
-     @Override
-     public boolean saveRow(SUConnectionBean connection, TableRow row) {
+
+    @SneakyThrows
+    @Override
+    public boolean saveRow(SUConnectionBean connection, SUTableRow row) {
         Connection conn = connect(connection);
 
-        Vector<TableCell> cells = row;
+        Vector<SUTableCell> cells = row;
         String query = "update "
-                + " " + row.getDatabaseName() + "." + row.getTableName() + " set ";
+                + " " + row.getTable().getDatabase().getName() + "." + row.getTable().getName() + " set ";
 
         for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            if(cell.isUpdateMode())
-                query += cell.getColumnName() + "=?,";
+            SUTableCell cell = cells.get(i);
+            if (cell.isUpdateMode()) {
+                query += cell.getColumn().getName() + "=?,";
+            }
         }
-        query = query.substring(0,query.length()-1);
-        System.out.println("query deleteRowByRow=" + query);
+        query = query.substring(0, query.length() - 1);
+        System.out.println("query updateRow=" + query);
         PreparedStatement stmt = conn.prepareStatement(query);
         int index = 1;
         for (int i = 0; i < cells.size(); i++) {
-            TableCell cell = cells.get(i);
-            if(cell.isUpdateMode())
-                stmt.setObject(index++, cell.getColumnValue());
+            SUTableCell cell = cells.get(i);
+            if (cell.isUpdateMode()) {
+                stmt.setObject(index++, cell.getValue());
+            }
         }
 
         stmt.executeUpdate();
         return true;
     }
 
-    
 }

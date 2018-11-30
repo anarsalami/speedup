@@ -6,6 +6,7 @@
 package com.bsptechs.main.bean.ui.panel.queryresult;
 
 import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
@@ -486,7 +487,7 @@ public class PanelQuery extends javax.swing.JPanel {
         SUConnectionBean connection = getSelectedConnection();
         SUDatabaseBean database = getSelectedDatabase();
         PanelQueryResult pnl = getPanelQueryResult();
-        pnl.runQuery(queryStr, connection, database);
+        pnl.runQuery(new SUQueryBean(connection, database, queryStr));
     }
 
 
