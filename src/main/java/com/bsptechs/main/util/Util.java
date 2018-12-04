@@ -5,7 +5,11 @@
  */
 package com.bsptechs.main.util;
 
+import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
+import java.io.File;
 import java.util.regex.Pattern;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -44,6 +48,27 @@ public class Util {
         frame.setLocationRelativeTo(null);
 //        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 //        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+    }
+
+    public static boolean backUpDb() {
+        SUDatabaseBean element = (SUDatabaseBean) Main.instance().getConnectionTree().getCurrentDatabaseNode().getDatabase();
+        String dbName = element.getName();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("/Users/Goshgar/Documents/"));
+        int retrival = chooser.showSaveDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+            try {
+                String source = chooser.getSelectedFile().getAbsolutePath() + "\\" + chooser.getSelectedFile().getName();
+                String executeCmd = "C:\\Program Files\\MySQL\\MySQL Server 5.5\\bin\\mysql -u " + Main.instance().getConnectionTree().getSelectedConnectionNode().getConnection().getUserName() + " -p " + Main.instance().getConnectionTree().getSelectedConnectionNode().getConnection().getPassword() + " " + element.getName() + " <" + chooser.getSelectedFile().getAbsolutePath();
+                Runtime runtime = Runtime.getRuntime();
+                runtime.exec(executeCmd, null);
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return false;
     }
 
 }

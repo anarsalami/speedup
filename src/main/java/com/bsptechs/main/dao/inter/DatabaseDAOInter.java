@@ -42,7 +42,11 @@ public interface DatabaseDAOInter {
     public boolean deleteRow(SUConnectionBean connection, SUTableRow row);
 
     public boolean deleteRows(SUConnectionBean connection, List<SUTableRow> rows);
-    
+
     public boolean saveRow(SUConnectionBean connection, SUTableRow row);
+
+    public boolean createDbGeneral(SUConnectionBean ui, String query);
+
+    public boolean createDbOptions(SUConnectionBean ui, String name, String charset, String collate);
 
 }
