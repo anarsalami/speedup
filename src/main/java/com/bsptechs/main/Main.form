@@ -591,8 +591,8 @@
                             </Property>
                           </Properties>
                           <Events>
-                            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="connectionTreeTreeExpanded"/>
                             <EventHandler event="treeCollapsed" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="connectionTreeTreeCollapsed"/>
+                            <EventHandler event="treeExpanded" listener="javax.swing.event.TreeExpansionListener" parameters="javax.swing.event.TreeExpansionEvent" handler="connectionTreeTreeExpanded"/>
                           </Events>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.bsptechs.main.bean.ui.tree.database.SUDatabaseTree()"/>

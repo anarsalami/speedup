@@ -6,7 +6,9 @@ import com.bsptechs.main.bean.ui.popup.UiPopupConnection;
 import com.bsptechs.main.bean.SUArrayList;
 import javax.swing.JPopupMenu;
 import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.ui.panel.PanelSavedQuery;
 import java.util.List;
+import javax.swing.JTabbedPane;
 import lombok.Data;
 
 @Data
@@ -61,7 +63,13 @@ public class SUConnectionTreeNode extends SUAbstractTreeNode<SUConnectionBean>{
     @Override
     public void onDoubleClick() {
         connect();
-    }
+        JTabbedPane tabbedPaneCenter= Main.instance().getTabbedPaneCenter();
+        tabbedPaneCenter.setEnabled(true);
+        tabbedPaneCenter.removeAll();
+        Main.instance().getTabbedPaneCenter().add("Queries",new PanelSavedQuery());
+        
+        
+   }
 
     @Override
     public JPopupMenu getPopup() {

@@ -9,7 +9,6 @@ import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import com.bsptechs.main.util.Util;
 import java.awt.Color;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -19,6 +18,9 @@ import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.SneakyThrows;
 
 public class Main extends javax.swing.JFrame {
@@ -31,10 +33,19 @@ public class Main extends javax.swing.JFrame {
         menuNewQuery.setEnabled(false);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIcons();
+        System.out.println(getTabPanesTableName());
     }
 
     public PanelUiElementInformation getInformationPanel() {
         return (PanelUiElementInformation) pnlUiElementInformation;
+    }
+
+    public JTabbedPane getTabbedPane() {
+        return tabTables;
+    }
+
+    public JTabbedPane getTabbedPaneCenter() {
+        return tabbedPaneCenter;
     }
 
     public void setIcons() {
@@ -63,8 +74,22 @@ public class Main extends javax.swing.JFrame {
         getConnectionTree().addConnectionNodes(Config.getConnectionBeans());
     }
 
-    public JTabbedPane getTabPaneTable() {
-        return tabTables;
+    public List<JTabbedPane> getTabPanesTable() {
+        List<JTabbedPane> tabbList = new ArrayList<>();
+        tabbList.add(tabQuery);
+        tabbList.add(tabDesignTable);
+        tabbList.add(tabNewTable);
+        tabbList.add(tabTables);
+
+        return tabbList;
+    }
+
+    public List<String> getTabPanesTableName() {
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < tabbedPaneCenter.getTabCount(); i++) {
+          names.add(tabbedPaneCenter.getTitleAt(i));   
+        }
+       return names;
     }
 
     public SUDatabaseTree getConnectionTree() {
@@ -424,11 +449,11 @@ public class Main extends javax.swing.JFrame {
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("connections");
         connectionTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         connectionTree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
-            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
-                connectionTreeTreeExpanded(evt);
-            }
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
                 connectionTreeTreeCollapsed(evt);
+            }
+            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
+                connectionTreeTreeExpanded(evt);
             }
         });
         jScrollPane3.setViewportView(connectionTree);
@@ -502,12 +527,12 @@ public class Main extends javax.swing.JFrame {
 
         jMenu1.setText("File");
         jMenu1.addMenuDragMouseListener(new javax.swing.event.MenuDragMouseListener() {
+            public void menuDragMouseDragged(javax.swing.event.MenuDragMouseEvent evt) {
+            }
             public void menuDragMouseEntered(javax.swing.event.MenuDragMouseEvent evt) {
                 jMenu1MenuDragMouseEntered(evt);
             }
             public void menuDragMouseExited(javax.swing.event.MenuDragMouseEvent evt) {
-            }
-            public void menuDragMouseDragged(javax.swing.event.MenuDragMouseEvent evt) {
             }
             public void menuDragMouseReleased(javax.swing.event.MenuDragMouseEvent evt) {
             }
