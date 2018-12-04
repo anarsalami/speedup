@@ -8,8 +8,13 @@ package com.bsptechs.main.bean.ui.popup;
 import com.bsptechs.main.Main;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import javax.swing.JList;
+import com.bsptechs.main.Config;
+import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTree;
 import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
-import java.io.IOException;
+import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,7 +25,6 @@ public class UiPopupDatabase extends UiPopupAbstract {
     DatabaseDAOImpl database = new DatabaseDAOImpl();
 
     JList list;
-      SUConnectionTreeNode connection=(SUConnectionTreeNode) Main.instance().getConnectionTree().getSelectedNode();;
 
     public UiPopupDatabase() {
         addMenuItem("Database Properties", () -> {
@@ -49,26 +53,5 @@ public class UiPopupDatabase extends UiPopupAbstract {
         System.out.println("new query");
         Main.instance().prepareNewQuery(null, false);
     }
-  private void dumpSQLFile() throws IOException {
-      
 
-//        
-//        SUDatabaseBean  element=;
-//        String dbName = element.getName();
-//        JFileChooser chooser = new JFileChooser();
-//        chooser.setCurrentDirectory(new File("/Users/Goshgar/Documents/" + dbName));
-//        int retrival = chooser.showSaveDialog(null);
-//        if (retrival == JFileChooser.APPROVE_OPTION) {
-//            try {
-//                String source = chooser.getCurrentDirectory() + "//" + chooser.getSelectedFile().getName();
-//                String executeCmd = "";
-//                executeCmd = "C:\\Program Files\\MySQL\\MySQL Server 5.5\\bin\\mysqldump -u " + connection. + " -p" + Config.getCurrentConnection().getPassword() + " " + dbName + " -r " + source + ".sql";
-//                Runtime runtime = Runtime.getRuntime();
-//                runtime.exec(executeCmd, null);
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-    }
-  
 }

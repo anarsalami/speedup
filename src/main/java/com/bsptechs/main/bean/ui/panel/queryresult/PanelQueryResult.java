@@ -5,11 +5,11 @@
  */
 package com.bsptechs.main.bean.ui.panel.queryresult;
 
-import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
-import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
-import com.bsptechs.main.bean.ui.table.CustomTable;
-import com.bsptechs.main.bean.ui.table.CustomTableModel;
-import com.bsptechs.main.bean.ui.table.TableRow;
+import com.bsptechs.main.bean.SUQueryBean;
+import com.bsptechs.main.bean.SUQueryResult;
+import com.bsptechs.main.bean.ui.table.SUTable;
+import com.bsptechs.main.bean.ui.table.SUTableModel;
+import com.bsptechs.main.bean.ui.table.SUTableRow;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import lombok.SneakyThrows;
@@ -44,7 +44,7 @@ public class PanelQueryResult extends javax.swing.JPanel {
         btnDelete = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        tblQueryResult = new CustomTable();
+        tblQueryResult = new com.bsptechs.main.bean.ui.table.SUTable();
 
         btnAdd.setText("+");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -68,19 +68,24 @@ public class PanelQueryResult extends javax.swing.JPanel {
         });
 
         btnCancel.setText("X");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSaveChangesForTable, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSaveChangesForTable, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -94,14 +99,7 @@ public class PanelQueryResult extends javax.swing.JPanel {
                     .addComponent(btnCancel)))
         );
 
-        tblQueryResult.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null}
-            },
-            new String [] {
-
-            }
-        ));
+        tblQueryResult.setModel(new SUTableModel());
         tblQueryResult.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tblQueryResultFocusGained(evt);
@@ -133,63 +131,75 @@ public class PanelQueryResult extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private CustomTable getTable() {
-        return (CustomTable) tblQueryResult;
+    private SUTable getTable() {
+        return (SUTable) tblQueryResult;
     }
 
-    private String queryStr;
-    private SUConnectionBean connection;
-    private SUDatabaseBean database;
+    private SUQueryBean query;
 
     @SneakyThrows
-    public void runQuery(String queryStr, SUConnectionBean connection, SUDatabaseBean database) {
-        this.queryStr = queryStr;
-        this.connection = connection;
-        this.database = database;
+    public void runQuery(SUQueryBean query) {
+        this.query = query;
 
-        CustomTable tbl = getTable();
-        CustomTableModel model = db.runQuery(queryStr, connection, database);
-        tbl.setModel(model);
+        SUTable tbl = getTable();
+        SUQueryResult rs = db.runQuery(query);
+        tbl.refreshData(rs);
     }
 
-    private void runQuery() {
-        runQuery(queryStr, connection, database);
+    private enum SU_TABLE_MODE {
+        UPDATE_ENABLE, UPDATE_DISABLE, ADD_ENABLE, ADD_DISABLE
     }
+
+    private void setAddMode(SU_TABLE_MODE mode) {
+        if (mode == SU_TABLE_MODE.ADD_ENABLE) {
+            btnAdd.setEnabled(false);
+            btnDelete.setEnabled(false);
+        } else if (mode == SU_TABLE_MODE.ADD_DISABLE) {
+            btnAdd.setEnabled(true);
+            btnDelete.setEnabled(true);
+            getTable().getTableModel().removeLastRow();
+        }
+    }
+
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        CustomTable tbl = getTable();
-        TableRow addedRow = tbl.addEmptyRow();
+        SUTable tbl = getTable();
+        SUTableRow addedRow = tbl.getTableModel().addEmptyRow();
         System.out.println("row added");
-        btnAdd.setEnabled(false);
+        setAddMode(SU_TABLE_MODE.ADD_ENABLE);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSaveChangesForTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesForTableActionPerformed
-        CustomTable table = getTable();
-        TableRow row = table.getSelectedTableRow();
-        db.saveRow(table.getConnection(), row);
-        runQuery(table.getQuery(), table.getConnection(), table.getDatabase());
+        SUTable table = getTable();
+        SUTableRow row = table.getSelectedTableRow();
+        db.saveRow(query.getConnection(), row);
+        runQuery(table.getQuery());
     }//GEN-LAST:event_btnSaveChangesForTableActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        CustomTable tbl = getTable();
-        db.deleteRow(connection, tbl.getSelectedTableRow());
-        runQuery();
+        SUTable tbl = getTable();
+        db.deleteRow(query.getConnection(), tbl.getSelectedTableRow());
+        runQuery(query);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void tblQueryResultFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblQueryResultFocusGained
-        CustomTable table = getTable();
-        TableRow row = table.getSelectedTableRow();
+        SUTable table = getTable();
+        SUTableRow row = table.getSelectedTableRow();
         System.out.println("tblQueryResultFocusGained=" + row);
     }//GEN-LAST:event_tblQueryResultFocusGained
 
     private void tblQueryResultFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblQueryResultFocusLost
-        CustomTable table = getTable();
-        TableRow row = table.getSelectedTableRow();
+        SUTable table = getTable();
+        SUTableRow row = table.getSelectedTableRow();
         System.out.println("tblQueryResultFocusLost=" + row);
     }//GEN-LAST:event_tblQueryResultFocusLost
 
     private void tblQueryResultPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tblQueryResultPropertyChange
         // TODO add your handling code here:
     }//GEN-LAST:event_tblQueryResultPropertyChange
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        setAddMode(SU_TABLE_MODE.ADD_DISABLE);
+    }//GEN-LAST:event_btnCancelActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

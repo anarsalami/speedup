@@ -1,8 +1,6 @@
 package com.bsptechs.main.bean.ui.tree;
 
-import com.bsptechs.main.bean.CustomList;
-import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
-import com.bsptechs.main.dao.inter.DatabaseDAOInter;
+import com.bsptechs.main.bean.SUArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.JPopupMenu;
@@ -25,7 +23,6 @@ public abstract class SUAbstractTreeNode extends DefaultMutableTreeNode {
 
     public abstract JPopupMenu getPopup();
 
-//    public abstract List<? extends CustomTreeNode> getSubList();
     public abstract String getIcon();
 
     public void addChildren(List<? extends SUAbstractTreeNode> listData) {
@@ -43,7 +40,7 @@ public abstract class SUAbstractTreeNode extends DefaultMutableTreeNode {
 
     public <T> List<T> getChildren(Class<T> clazz) {
         Enumeration en = this.children();
-        CustomList<T> list = new CustomList<>();
+        SUArrayList<T> list = new SUArrayList<>();
         while (en.hasMoreElements()) {
             list.add((T)en.nextElement());
         }

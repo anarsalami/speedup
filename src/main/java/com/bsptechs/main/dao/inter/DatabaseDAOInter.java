@@ -2,11 +2,13 @@ package com.bsptechs.main.dao.inter;
 
 import com.bsptechs.main.bean.Charset;
 import com.bsptechs.main.bean.Collation;
+import com.bsptechs.main.bean.SUArrayList;
+import com.bsptechs.main.bean.SUQueryBean;
+import com.bsptechs.main.bean.SUQueryResult;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
-import com.bsptechs.main.bean.ui.table.CustomTableModel;
-import com.bsptechs.main.bean.ui.table.TableRow;
+import com.bsptechs.main.bean.ui.table.SUTableRow;
 import java.util.List;
 
 /**
@@ -15,9 +17,9 @@ import java.util.List;
  */
 public interface DatabaseDAOInter {
 
-    List<SUDatabaseBean> getAllDatabases(SUConnectionBean connection);
+    SUArrayList<SUDatabaseBean> getAllDatabases(SUConnectionBean connection);
 
-    List<SUTableBean> getAllTables(SUDatabaseBean database);
+    SUArrayList<SUTableBean> getAllTables(SUDatabaseBean database);
 
     boolean emptyTable(SUDatabaseBean db, String tblName);
 
@@ -29,20 +31,18 @@ public interface DatabaseDAOInter {
 
     boolean renameTable(SUTableBean table, String newTblName);
 
-    public CustomTableModel runQuery(String query, SUConnectionBean connection, SUDatabaseBean database) throws Exception;
+    public SUQueryResult runQuery(SUQueryBean query) throws Exception;
 
-    public boolean createDbGeneral(SUConnectionBean ui, String query);
-
-    public boolean createDbOptions(SUConnectionBean ui, String name, String charset, String collate);
+    public boolean createDb(SUConnectionBean ui, String name, String charset, String collate);
 
     public List<Charset> getAllCharsets(SUConnectionBean connection);
 
     public List<Collation> getAllCollations(SUConnectionBean connection, Charset charset);
 
-    public boolean deleteRow(SUConnectionBean connection, TableRow row);
+    public boolean deleteRow(SUConnectionBean connection, SUTableRow row);
 
-    public boolean deleteRows(SUConnectionBean connection, List<TableRow> rows);
-
-    public boolean saveRow(SUConnectionBean connection, TableRow row);
+    public boolean deleteRows(SUConnectionBean connection, List<SUTableRow> rows);
+    
+    public boolean saveRow(SUConnectionBean connection, SUTableRow row);
 
 }

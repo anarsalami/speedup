@@ -1,7 +1,7 @@
 package com.bsptechs.main;
 
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
-import com.bsptechs.main.bean.CustomList;
+import com.bsptechs.main.bean.SUArrayList;
 import com.bsptechs.main.util.FileUtility;
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ public final class Config implements Serializable {
     public static final String FILE_NAME = "mySql.txt";
     private static Config config = null;
 
-    private CustomList<SUConnectionBean> connectionBeans = new CustomList<>();
+    private SUArrayList<SUConnectionBean> connectionBeans = new SUArrayList<>();
 
     public static void initialize() {
         config = readConfig();
@@ -21,7 +21,7 @@ public final class Config implements Serializable {
         return config;
     }
 
-    public static CustomList<SUConnectionBean> getConnectionBeans() {
+    public static SUArrayList<SUConnectionBean> getConnectionBeans() {
         return instance().connectionBeans;
     }
 
