@@ -20,6 +20,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
@@ -208,23 +210,19 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     }
 
-    @SneakyThrows
-    @Override
-    public boolean createDb(SUConnectionBean connection, String query, String name, String charset, String collate) {
-        if ("".equals(query) && query == null) {
-            Connection conn = connect(connection);
-            Statement stmt = conn.createStatement();
-            stmt.execute("CREATE SCHEMA `" + name + "` DEFAULT CHARACTER SET " + charset + " COLLATE " + collate + ";");
-            return true;
-
-        } else {
-            Connection conn = connect(connection);
-            Statement stmt = conn.createStatement();
-            stmt.execute(query);
-            return true;
-        }
-    }
-
+//    @SneakyThrows
+//    @Override
+//    public boolean createDb(SUConnectionBean connection, String query, String name, String charset, String collate) {
+//        if ("".equals(query) && query == null) {
+//            
+//
+//        } else {
+//            Connection conn = connect(connection);
+//            Statement stmt = conn.createStatement();
+//            stmt.execute(query);
+//            return true;
+//        }
+//    }
     @SneakyThrows
     @Override
     public List<Charset> getAllCharsets(SUConnectionBean connection) {
@@ -349,6 +347,31 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         }
 
         stmt.executeUpdate();
+        return true;
+    }
+
+    @SneakyThrows
+    @Override
+    public boolean createDbGeneral(SUConnectionBean ui, String query) {
+        Connection conn = connect(ui);
+        Statement stmt = conn.createStatement();
+        stmt.execute(query);
+        return true;
+    }
+
+    @Override
+    public boolean createDbOptions(SUConnectionBean ui, String name, String charset, String collate) {
+        try {
+            Connection conn = connect(ui);
+            Statement stmt = conn.createStatement();
+            stmt.execute("CREATE SCHEMA `" + name + "` DEFAULT CHARACTER SET " + charset + " COLLATE " + collate + ";");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DatabaseDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return true;
     }
 

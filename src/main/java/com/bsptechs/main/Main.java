@@ -9,7 +9,6 @@ import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import com.bsptechs.main.util.Util;
 import java.awt.Color;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -37,6 +36,7 @@ public class Main extends javax.swing.JFrame {
         return (PanelUiElementInformation) pnlUiElementInformation;
     }
 
+    
     public void setIcons() {
         btnNewConnection.setIcon(ImageUtil.getIcon("mainframe/connection.png"));
         btnNewQuery.setIcon(ImageUtil.getIcon("mainframe/newquery.png"));
@@ -237,6 +237,11 @@ public class Main extends javax.swing.JFrame {
                 btnBackupMouseExited(evt);
             }
         });
+        btnBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackupActionPerformed(evt);
+            }
+        });
 
         btnReport.setText("Report");
         btnReport.setBorder(null);
@@ -424,11 +429,11 @@ public class Main extends javax.swing.JFrame {
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("connections");
         connectionTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         connectionTree.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
-            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
-                connectionTreeTreeExpanded(evt);
-            }
             public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
                 connectionTreeTreeCollapsed(evt);
+            }
+            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
+                connectionTreeTreeExpanded(evt);
             }
         });
         jScrollPane3.setViewportView(connectionTree);
@@ -502,12 +507,12 @@ public class Main extends javax.swing.JFrame {
 
         jMenu1.setText("File");
         jMenu1.addMenuDragMouseListener(new javax.swing.event.MenuDragMouseListener() {
+            public void menuDragMouseDragged(javax.swing.event.MenuDragMouseEvent evt) {
+            }
             public void menuDragMouseEntered(javax.swing.event.MenuDragMouseEvent evt) {
                 jMenu1MenuDragMouseEntered(evt);
             }
             public void menuDragMouseExited(javax.swing.event.MenuDragMouseEvent evt) {
-            }
-            public void menuDragMouseDragged(javax.swing.event.MenuDragMouseEvent evt) {
             }
             public void menuDragMouseReleased(javax.swing.event.MenuDragMouseEvent evt) {
             }
@@ -798,6 +803,10 @@ public class Main extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_menuDataTransferActionPerformed
+
+    private void btnBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackupActionPerformed
+        Util.backUpDb();
+    }//GEN-LAST:event_btnBackupActionPerformed
 
     @SneakyThrows
     public PanelQuery prepareNewQuery(String queryStr, boolean run) {

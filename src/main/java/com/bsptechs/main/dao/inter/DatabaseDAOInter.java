@@ -31,7 +31,9 @@ public interface DatabaseDAOInter {
 
     public CustomTableModel runQuery(String query, SUConnectionBean connection, SUDatabaseBean database) throws Exception;
 
-    public boolean createDb(SUConnectionBean ui,String query, String name, String charset, String collate);
+    public boolean createDbGeneral(SUConnectionBean ui, String query);
+
+    public boolean createDbOptions(SUConnectionBean ui, String name, String charset, String collate);
 
     public List<Charset> getAllCharsets(SUConnectionBean connection);
 
@@ -40,7 +42,7 @@ public interface DatabaseDAOInter {
     public boolean deleteRow(SUConnectionBean connection, TableRow row);
 
     public boolean deleteRows(SUConnectionBean connection, List<TableRow> rows);
-    
+
     public boolean saveRow(SUConnectionBean connection, TableRow row);
 
 }
