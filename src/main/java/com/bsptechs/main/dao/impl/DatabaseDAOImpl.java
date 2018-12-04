@@ -340,4 +340,23 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         return true;
     }
 
+    
+    @SneakyThrows
+    @Override
+    public boolean createDbGeneral(SUConnectionBean ui, String query) {
+        Connection conn = connect(ui);
+        Statement stmt = conn.createStatement();
+        stmt.execute(query);
+        return true;
+    }
+
+    @SneakyThrows
+    @Override
+    public boolean createDbOptions(SUConnectionBean ui, String name, String charset, String collate) {
+        Connection conn = connect(ui);
+        Statement stmt = conn.createStatement();
+        stmt.execute("CREATE SCHEMA `" + name + "` DEFAULT CHARACTER SET " + charset + " COLLATE " + collate + ";");
+        return true;
+
+    }
 }
