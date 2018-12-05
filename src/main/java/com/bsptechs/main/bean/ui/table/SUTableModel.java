@@ -102,12 +102,8 @@ public class SUTableModel extends DefaultTableModel {
         return removeRow(row);
     }
 
-//    @Override
-//    public void setValueAt(Object value, int rowIndex, int colIndex) {
-//        SUTableRow row = (SUTableRow) rows.get(rowIndex);
-//        SUTableCell cell = row.get(colIndex);
-//        cell.setValue(value);
-//        cell.setUpdateMode(true);
-//        super.setValueAt(cell, rowIndex, colIndex);
-//    }
+    @Override
+    public void setValueAt(Object value, int rowIndex, int colIndex) {
+        //don't remove this method. Method must be empty and override super method
+    }
 }

@@ -24,6 +24,9 @@ public class SUTableCell {
     }
 
     public SUTableCell(SUTableColumn column, Object value) {
+        if(value == this){
+            throw new RuntimeException("sssame");
+        }
         this.column = column;
         this.value = value;
         this.primaryKey = primaryKey;

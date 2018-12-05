@@ -44,12 +44,12 @@ import lombok.Data;
 //}
 class MyTableColumnModel extends DefaultTableColumnModel {
 
-    public MyTableColumnModel(SUArrayList<SUTableColumn> columns) {
-//        super.tableColumns = new Vector(columns);
-//        for (int i = 0; i < columns.size(); i++) {
-//            super.addColumn(columns.get(i));
-//        }
-    }
+//    public MyTableColumnModel(SUArrayList<SUTableColumn> columns) {
+////        super.tableColumns = new Vector(columns);
+////        for (int i = 0; i < columns.size(); i++) {
+////            super.addColumn(columns.get(i));
+////        }
+//    }
 
     public void addColumn(TableColumn aColumn) {
         aColumn.setCellEditor(new SUTableCellEditor());
@@ -69,16 +69,13 @@ public class SUTable extends JTable {
 
     public SUTable() {
         super(new SUTableModel());
+        setColumnModel(new MyTableColumnModel());
         this.setRowHeight(25);
     }  
 
     @Override
     public void setModel(TableModel m) {
-        SUTableModel model = (SUTableModel) m;
-
-        MyTableColumnModel cM = new MyTableColumnModel(model.getColumnNames());
-        setColumnModel(cM);
-        super.setModel(model);
+        super.setModel((SUTableModel) m);
     }
 
     public SUTableModel getTableModel() {

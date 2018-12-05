@@ -60,14 +60,15 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
     }
 
     private String getValue() {
+        String str = null;
         if (component instanceof JTextField) {
             JTextField txt = (JTextField) component;
-            return txt.getText();
+            str = txt.getText();
         } else if (component instanceof JComboBox) {
             JComboBox cb = (JComboBox) component;
-            return cb.getModel().getSelectedItem() + "";
+            str = cb.getModel().getSelectedItem() + "";
         }
-        return null;
+        return str;
     }
 
     @Override
