@@ -5,6 +5,8 @@
  */
 package com.bsptechs.main.bean.ui.table;
 
+import java.awt.Color;
+import javax.swing.JLabel;
 import lombok.Data;
 
 /**
@@ -12,12 +14,12 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class SUTableCell {
+public class SUTableCell extends JLabel{
 
     private SUTableColumn column;
     private Object value;
     private boolean primaryKey;
-    private boolean editable = true;
+    private boolean editing = false;
     private boolean updateMode;
 
     public SUTableCell() {

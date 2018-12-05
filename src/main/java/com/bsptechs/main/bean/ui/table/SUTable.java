@@ -69,8 +69,10 @@ public class SUTable extends JTable {
 
     public SUTable() {
         super(new SUTableModel());
+        setDefaultRenderer(SUTableColumn.class, new SUTableCellRenderer());
         setColumnModel(new MyTableColumnModel());
         this.setRowHeight(25);
+         
     }  
 
     @Override

@@ -36,6 +36,7 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
         System.out.println("getTableCellEditorComponent=" + value);
 
         cell = (SUTableCell) value;
+
         SUTableColumn column = cell.getColumn();
         SUTableBean tableBean = column.getTable();
         if (column.getReferencedColumn() != null) {
@@ -56,6 +57,7 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
             JTextField textField = (JTextField) component;
             textField.setText(cell.getValue() + "");
         }
+
         return component;
     }
 
@@ -73,7 +75,17 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
 
     @Override
     public Object getCellEditorValue() {
+
+        cell.setEditing(false);
+        System.out.println("class name="+cell.getValue().getClass().getName());
+        if (!cell.getValue().toString().equals(getValue())) {
+            System.out.println("cell old getValue()=" + cell.getValue());
+            System.out.println("cell new getValue()=" + getValue());
+            System.out.println("cell is editing mode");
+            cell.setEditing(true);
+        }
         cell.setValue(getValue());
+//        cell.setEditing(false);
 //        stopCellEditing();
         return cell;
     }
