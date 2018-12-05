@@ -69,7 +69,9 @@ public abstract class AbstractDatabase {
         SUArrayList<SUTableColumn> columns = new SUArrayList<>();
         for (int i = 0; i < cnt; i++) {
             int columnIndex = i + 1;
-            String name = metadata.getColumnName(columnIndex);
+            String name = metadata.getColumnLabel(columnIndex);
+            String label = metadata.getColumnLabel(columnIndex);
+//            System.out.println("label="+label);
             SUTableBean tableBean = getTable(connection, rs, columnIndex);
             SUTableColumn column = new SUTableColumn(tableBean, name, false, getColumnType(rs, connection, columnIndex));
 
