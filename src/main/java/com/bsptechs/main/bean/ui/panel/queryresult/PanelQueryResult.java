@@ -5,9 +5,12 @@
  */
 package com.bsptechs.main.bean.ui.panel.queryresult;
 
+import com.bsptechs.main.bean.SUArrayList;
 import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.bean.SUQueryResult;
 import com.bsptechs.main.bean.ui.table.SUTable;
+import com.bsptechs.main.bean.ui.table.SUTableCell;
+import com.bsptechs.main.bean.ui.table.SUTableListener;
 import com.bsptechs.main.bean.ui.table.SUTableModel;
 import com.bsptechs.main.bean.ui.table.SUTableRow;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
@@ -27,6 +30,7 @@ public class PanelQueryResult extends javax.swing.JPanel {
      */
     public PanelQueryResult() {
         initComponents();
+        setTableMode(SU_TABLE_MODE.ADD_DISABLE);
     }
 
     /**
@@ -99,7 +103,6 @@ public class PanelQueryResult extends javax.swing.JPanel {
                     .addComponent(btnCancel)))
         );
 
-        tblQueryResult.setModel(new SUTableModel());
         tblQueryResult.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tblQueryResultFocusGained(evt);
@@ -144,13 +147,26 @@ public class PanelQueryResult extends javax.swing.JPanel {
         SUTable tbl = getTable();
         SUQueryResult rs = db.runQuery(query);
         tbl.refreshData(rs);
+        tbl.getTableModel().setOnCellEditing(new SUTableListener<SUTableCell>() {
+            @Override
+            public void action(SUTableCell cell) {
+                setTableMode(cell.isEditing() ? SU_TABLE_MODE.UPDATE_ENABLE : SU_TABLE_MODE.UPDATE_DISABLE);
+            }
+        });
+
+        tbl.getTableModel().setOnRowAdd(new SUTableListener<SUTableRow>() {
+            @Override
+            public void action(SUTableRow row) {
+                setTableMode(SU_TABLE_MODE.ADD_ENABLE);
+            }
+        });
     }
 
     private enum SU_TABLE_MODE {
         UPDATE_ENABLE, UPDATE_DISABLE, ADD_ENABLE, ADD_DISABLE
     }
 
-    private void setAddMode(SU_TABLE_MODE mode) {
+    private void setTableMode(SU_TABLE_MODE mode) {
         if (mode == SU_TABLE_MODE.ADD_ENABLE) {
             btnAdd.setEnabled(false);
             btnDelete.setEnabled(false);
@@ -158,6 +174,12 @@ public class PanelQueryResult extends javax.swing.JPanel {
             btnAdd.setEnabled(true);
             btnDelete.setEnabled(true);
             getTable().getTableModel().removeLastRow();
+        } else if (mode == SU_TABLE_MODE.UPDATE_ENABLE) {
+            btnAdd.setEnabled(false);
+            btnDelete.setEnabled(false);
+        } else if (mode == SU_TABLE_MODE.UPDATE_DISABLE) {
+            btnAdd.setEnabled(true);
+            btnDelete.setEnabled(true);
         }
     }
 
@@ -165,14 +187,15 @@ public class PanelQueryResult extends javax.swing.JPanel {
         SUTable tbl = getTable();
         SUTableRow addedRow = tbl.getTableModel().addEmptyRow();
         System.out.println("row added");
-        setAddMode(SU_TABLE_MODE.ADD_ENABLE);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSaveChangesForTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesForTableActionPerformed
         SUTable table = getTable();
-        SUTableRow row = table.getSelectedTableRow();
-        db.saveRow(query.getConnection(), row);
-        runQuery(table.getQuery());
+        SUArrayList<SUTableRow> rows = table.getTableModel().getEditingRows();
+        for (SUTableRow row : rows) {
+            db.saveRow(query.getConnection(), row);
+        }
+        table.getTableModel().fireTableDataChanged();
     }//GEN-LAST:event_btnSaveChangesForTableActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -198,7 +221,7 @@ public class PanelQueryResult extends javax.swing.JPanel {
     }//GEN-LAST:event_tblQueryResultPropertyChange
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        setAddMode(SU_TABLE_MODE.ADD_DISABLE);
+        setTableMode(SU_TABLE_MODE.ADD_DISABLE);
     }//GEN-LAST:event_btnCancelActionPerformed
 
 

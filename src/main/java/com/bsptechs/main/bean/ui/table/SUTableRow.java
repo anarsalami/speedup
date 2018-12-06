@@ -27,7 +27,7 @@ public class SUTableRow extends SUArrayList<SUTableCell> {
 
         List<SUTableCell> result = new ArrayList<>();
         for (SUTableCell cell : this) {
-            if (cell.isPrimaryKey()) {
+            if (cell.getColumn().isPrimaryKey()) {
                 result.add(cell);
             }
         }
@@ -47,6 +47,25 @@ public class SUTableRow extends SUArrayList<SUTableCell> {
     public boolean add(SUTableCell cell) {
         table = cell.getColumn().getTable();
         return super.add(cell);
+    }
+    
+    public boolean isEditing(){
+        for(SUTableCell cell: this){
+            if(cell.isEditing()){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public SUArrayList<SUTableCell> getAllEditingCell(){
+        SUArrayList<SUTableCell> res = new SUArrayList<>();
+         for(SUTableCell cell: this){
+            if(cell.isEditing()){
+               res.add(cell);
+            }
+        }
+         return res;
     }
     
     @Override

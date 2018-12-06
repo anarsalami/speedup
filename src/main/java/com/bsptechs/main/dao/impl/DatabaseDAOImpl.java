@@ -80,7 +80,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
     @SneakyThrows
     @Override
-    public SUQueryResult runQuery(SUQueryBean queryBean){
+    public SUQueryResult runQuery(SUQueryBean queryBean) {
         SUConnectionBean connectionBean = queryBean.getConnection();
         SUDatabaseBean database = queryBean.getDatabase();
         String queryStr = queryBean.getQuery();
@@ -108,7 +108,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
                 SUTableColumn column = columns.get(i);
                 Object value = rs.getObject(column.getName());
 
-                row.add(new SUTableCell(column, value));
+                row.add(new SUTableCell(column, value+""));
             }
 
             rows.add(row);
@@ -261,17 +261,17 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         List<SUTableCell> primaryCells = row.getAllPrimaryCell();
 
         if (primaryCells == null || primaryCells.isEmpty()) {
-            deleteRowByRow(connection, row);
+            deleteRowByAllCell(connection, row);
         } else {
             SUTableCell pk = primaryCells.get(0);
-            return deleteRowByCell(connection, pk);
+            return deleteRowByPrimaryCell(connection, pk);
         }
 
         return true;
-    } 
+    }
 
     @SneakyThrows
-    public boolean deleteRowByRow(SUConnectionBean connection, SUTableRow row) {
+    public boolean deleteRowByAllCell(SUConnectionBean connection, SUTableRow row) {
         Connection conn = connect(connection);
 
         Vector<SUTableCell> cells = row;
@@ -295,7 +295,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     }
 
     @SneakyThrows
-    private boolean deleteRowByCell(SUConnectionBean connection, SUTableCell cell) {
+    private boolean deleteRowByPrimaryCell(SUConnectionBean connection, SUTableCell cell) {
         Connection conn = connect(connection);
 
         SUTableBean table = cell.getColumn().getTable();
@@ -313,25 +313,43 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     @SneakyThrows
     @Override
     public boolean saveRow(SUConnectionBean connection, SUTableRow row) {
+        List<SUTableCell> primaryCells = row.getAllPrimaryCell();
+
+        if (primaryCells == null || primaryCells.isEmpty()) {
+            saveRowByAllCell(connection, row);
+        } else {
+            SUTableCell pk = primaryCells.get(0);
+            return saveRowByPrimaryCell(connection, row, pk);
+        }
+
+        return true;
+    }
+
+    @SneakyThrows
+    private boolean saveRowByAllCell(SUConnectionBean connection, SUTableRow row) {
         Connection conn = connect(connection);
 
-        Vector<SUTableCell> cells = row;
+        SUArrayList<SUTableCell> cells = row;
         String query = "update "
                 + " " + row.getTable().getDatabase().getName() + "." + row.getTable().getName() + " set ";
 
         for (int i = 0; i < cells.size(); i++) {
             SUTableCell cell = cells.get(i);
-            if (cell.isUpdateMode()) {
-                query += cell.getColumn().getName() + "=?,";
-            }
+            query += cell.getColumn().getName() + "=?,";
         }
         query = query.substring(0, query.length() - 1);
+
+        query += " where 1=1 ";
+        for (int i = 0; i < cells.size(); i++) {
+            SUTableCell cell = cells.get(i);
+            query += " and " + cell.getColumn().getName() + "=? ";
+        }
         System.out.println("query updateRow=" + query);
         PreparedStatement stmt = conn.prepareStatement(query);
         int index = 1;
-        for (int i = 0; i < cells.size(); i++) {
-            SUTableCell cell = cells.get(i);
-            if (cell.isUpdateMode()) {
+        for (int j = 0; j < 2; j++) {
+            for (int i = 0; i < cells.size(); i++) {
+                SUTableCell cell = cells.get(i);
                 stmt.setObject(index++, cell.getValue());
             }
         }
@@ -340,7 +358,39 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         return true;
     }
 
-    
+    @SneakyThrows
+    private boolean saveRowByPrimaryCell(SUConnectionBean connection, SUTableRow row, SUTableCell primaryCell) {
+        Connection conn = connect(connection);
+
+        SUArrayList<SUTableCell> cells = row.getAllEditingCell();
+        String query = "update "
+                + " " + row.getTable().getDatabase().getName() + "." + row.getTable().getName() + " set ";
+
+        for (int i = 0; i < cells.size(); i++) {
+            SUTableCell cell = cells.get(i);
+
+            query += cell.getColumn().getName() + "=?,";
+        }
+        query = query.substring(0, query.length() - 1);
+
+        query += " where " + primaryCell.getColumn().getName() + "=" + primaryCell.getValue();
+
+        System.out.println("query updateRow=" + query);
+        PreparedStatement stmt = conn.prepareStatement(query);
+        int index = 1;
+        for (int i = 0; i < cells.size(); i++) {
+            SUTableCell cell = cells.get(i);
+            stmt.setObject(index++, cell.getValue());
+        }
+
+        stmt.executeUpdate();
+        for (int i = 0; i < cells.size(); i++) {
+            SUTableCell cell = cells.get(i);
+            cell.setEditing(false);
+        }
+        return true;
+    }
+
     @SneakyThrows
     @Override
     public boolean createDbGeneral(SUConnectionBean ui, String query) {
@@ -359,9 +409,8 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         return true;
 
     }
-    
-    
-    public boolean saveQuery(SUQueryBean query){
+
+    public boolean saveQuery(SUQueryBean query) {
         //Goshgar ichini dolduracaq
         return true;
     }

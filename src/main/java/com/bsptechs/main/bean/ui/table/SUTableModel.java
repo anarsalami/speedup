@@ -6,6 +6,7 @@
 package com.bsptechs.main.bean.ui.table;
 
 import com.bsptechs.main.bean.SUArrayList;
+import com.bsptechs.main.bean.SUQueryResult;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import lombok.Data;
@@ -14,14 +15,17 @@ import lombok.Data;
  *
  * @author sarkhanrasullu
  */
-@Data
+//@Data
 public class SUTableModel extends DefaultTableModel {
 
-    private SUArrayList<SUTableColumn> columnNames = new SUArrayList<>();
-    private SUArrayList<SUTableRow> rows = new SUArrayList<>();
+    private final SUArrayList<SUTableColumn> columns;
+    private final SUArrayList<SUTableRow> rows;
+    private SUTableListener<SUTableRow> onRowAdd;
+    private SUTableListener<SUTableCell> onCellEditing;
 
     public SUTableModel() {
-
+        columns = new SUArrayList<>();
+        rows = new SUArrayList<>();
     }
 
     public SUTableModel(
@@ -30,29 +34,30 @@ public class SUTableModel extends DefaultTableModel {
     ) {
 //        super(new Vector(rows), new Vector(columns));
         setColumnIdentifiers(new Vector(columns));
-        this.columnNames = columns;
+        this.columns = columns;
         this.rows = rows;
     }
 
     @Override
-    public String getColumnName(int column) {
-        return columnNames != null ? columnNames.get(column).getName() : null;
+    public String getColumnName(int index) {
+        return columns != null ? columns.get(index).getName() : null;
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return columnNames.get(columnIndex).getClass();
+        return columns.get(columnIndex).getClass();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames != null ? columnNames.size() : 0;
+        return columns != null ? columns.size() : 0;
     }
 
     @Override
     public int getRowCount() {
         return rows != null ? rows.size() : 0;
     }
+
 //
 //    @Override
 //    public boolean isCellEditable(int row, int column) {
@@ -60,7 +65,6 @@ public class SUTableModel extends DefaultTableModel {
 //        return true;
 //    }
 //
-
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         System.out.println("rowindex=" + rowIndex);
@@ -72,24 +76,52 @@ public class SUTableModel extends DefaultTableModel {
     public SUTableRow addEmptyRow() {
         SUTableRow newRow = new SUTableRow();
 
-        for (int i = 0; i < columnNames.size(); i++) {
-            newRow.add(new SUTableCell(columnNames.get(i), ""));
+        for (int i = 0; i < columns.size(); i++) {
+            newRow.add(new SUTableCell(columns.get(i), ""));
         }
-        this.addRow(newRow);
 
+        this.addRow(newRow);
+        if (onRowAdd != null) {
+            onRowAdd.action(newRow);
+        }
         return newRow;
     }
 
+//    public void refreshData(SUArrayList<SUTableColumn> columns, SUArrayList<SUTableRow> rows) {
+////        setColumnIdentifiers(new Vector(columns));
+//        rows.clear();
+//        columns.clear();
+//        this.rows.addAll(rows);
+//        this.columns.addAll(columns);
+//        fireTableStructureChanged();
+//        fireTableDataChanged();
+//    }
+
     public void addRow(SUTableRow row) {
         rows.add(row);
+        for (SUTableCell cell : row) {
+            cell.setOnCellEditing(onCellEditing);
+        }
+
         fireTableDataChanged();
-//        super.addRow(dataVector);
+    }
+
+    public void setOnRowAdd(SUTableListener<SUTableRow> listener) {
+        onRowAdd = listener;
+    }
+
+    public void setOnCellEditing(SUTableListener<SUTableCell> listener) {
+        this.onCellEditing = listener;
+        for (SUTableRow row : rows) {
+            for (SUTableCell cell : row) {
+                cell.setOnCellEditing(listener);
+            }
+        }
     }
 
     public SUTableRow removeRow(SUTableRow row) {
         rows.remove(row);
         fireTableDataChanged();
-//        super.addRow(dataVector);
         return row;
     }
 
@@ -100,6 +132,16 @@ public class SUTableModel extends DefaultTableModel {
     public SUTableRow removeLastRow() {
         SUTableRow row = rows.getLast();
         return removeRow(row);
+    }
+
+    public SUArrayList<SUTableRow> getEditingRows() {
+        SUArrayList<SUTableRow> editingRows = new SUArrayList<>();
+        for (SUTableRow row : rows) {
+            if (row.isEditing()) {
+                editingRows.add(row);
+            }
+        }
+        return editingRows;
     }
 
     @Override

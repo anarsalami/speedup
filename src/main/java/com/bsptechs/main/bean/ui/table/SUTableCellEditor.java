@@ -22,7 +22,7 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
 
     private DatabaseDAOImpl dao = new DatabaseDAOImpl();
 
-    private JComponent component = new JTextField();
+    private JComponent component;
     private SUTableCell cell = null;
 
     @Override
@@ -33,14 +33,11 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
             int rowIndex,
             int vColIndex
     ) {
-        System.out.println("getTableCellEditorComponent=" + value);
-
         cell = (SUTableCell) value;
 
         SUTableColumn column = cell.getColumn();
         SUTableBean tableBean = column.getTable();
         if (column.getReferencedColumn() != null) {
-            System.out.println("column.getReferencedColumn()=" + column.getReferencedColumn());
 
             SUQueryResult rs = dao.runQuery(new SUQueryBean(
                     tableBean.getDatabase().getConnection(), tableBean.getDatabase(),
@@ -54,6 +51,7 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
             }
             component = new JComboBox<SUTableCell>(cells);
         } else {
+            component = new JTextField();
             JTextField textField = (JTextField) component;
             textField.setText(cell.getValue() + "");
         }
@@ -75,18 +73,17 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
 
     @Override
     public Object getCellEditorValue() {
-
         cell.setEditing(false);
-        System.out.println("class name="+cell.getValue().getClass().getName());
-        if (!cell.getValue().toString().equals(getValue())) {
-            System.out.println("cell old getValue()=" + cell.getValue());
-            System.out.println("cell new getValue()=" + getValue());
-            System.out.println("cell is editing mode");
+//        System.out.println("cell.getValue()="+cell.getValue());
+//        System.out.println("getValue()="+getValue());
+//        System.out.println("getValue() class="+getValue().getClass().getName());
+        if (!cell.getValue().equals(getValue())) {
+//            System.out.println("setediting true");
             cell.setEditing(true);
         }
         cell.setValue(getValue());
-//        cell.setEditing(false);
-//        stopCellEditing();
         return cell;
     }
+
+
 }

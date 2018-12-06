@@ -7,11 +7,14 @@ import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.List;
+import static javax.swing.UIManager.get;
 import lombok.SneakyThrows;
 
 /**
@@ -37,8 +40,16 @@ public abstract class AbstractDatabase {
         return c;
     }
 
-    public boolean isPrimaryKey() {
-        return true;
+    @SneakyThrows
+    private SUArrayList<SUTableColumn> getAllPrimaryKey(SUTableBean table) {
+        Connection c = table.getDatabase().getConnection().getParentConnection();
+        DatabaseMetaData databaseMetaData = c.getMetaData();
+        ResultSet rs = databaseMetaData.getPrimaryKeys(table.getDatabase().getName(), null, table.getName());
+        SUArrayList<SUTableColumn> columns = new SUArrayList<>();
+        while (rs.next()) {
+            columns.add(new SUTableColumn(table, rs.getString(4), true, null));
+        }
+        return columns;
     }
 
     public SUTableBean getTable(SUConnectionBean connection, ResultSet rs, int columnIndex) throws Exception {
@@ -48,14 +59,14 @@ public abstract class AbstractDatabase {
         return new SUTableBean(name, databaseBean);
     }
 
-    public SUDatabaseBean getDatabase(SUConnectionBean connection, ResultSet rs, int columnIndex) throws Exception {
+    protected SUDatabaseBean getDatabase(SUConnectionBean connection, ResultSet rs, int columnIndex) throws Exception {
         ResultSetMetaData metadata = rs.getMetaData();
         String name = metadata.getCatalogName(columnIndex);
         return new SUDatabaseBean(name, connection);
     }
 
     @SneakyThrows
-    public SUTableColumnType getColumnType(ResultSet rs, SUConnectionBean connection, int columnIndex) {
+    private SUTableColumnType getColumnType(ResultSet rs, SUConnectionBean connection, int columnIndex) {
         ResultSetMetaData metadata = rs.getMetaData();
         int columnTypeId = metadata.getColumnType(columnIndex);
         String columnTypeName = metadata.getColumnTypeName(columnIndex);
@@ -67,6 +78,7 @@ public abstract class AbstractDatabase {
         ResultSetMetaData metadata = rs.getMetaData();
         int cnt = metadata.getColumnCount();
         SUArrayList<SUTableColumn> columns = new SUArrayList<>();
+
         for (int i = 0; i < cnt; i++) {
             int columnIndex = i + 1;
             String name = metadata.getColumnLabel(columnIndex);
@@ -74,10 +86,11 @@ public abstract class AbstractDatabase {
 //            System.out.println("label="+label);
             SUTableBean tableBean = getTable(connection, rs, columnIndex);
             SUTableColumn column = new SUTableColumn(tableBean, name, false, getColumnType(rs, connection, columnIndex));
-
+            column.setPrimaryKey(true);
             columns.add(column);
         }
         fillReferencedColumns(columns, connection);
+        fillPrimaryKeys(columns, connection);
         return columns;
     }
 
@@ -94,8 +107,22 @@ public abstract class AbstractDatabase {
         return res;
     }
 
+    private void fillPrimaryKeys(SUArrayList<SUTableColumn> columns, SUConnectionBean connection) {
+        SUTableBean table = getTable(columns);
+        if (table == null) {
+            return;
+        }
+        SUArrayList<SUTableColumn> pkColumns = getAllPrimaryKey(table);
+        for (SUTableColumn column : columns) {
+            column.setPrimaryKey(pkColumns.getByName(column.getName()) != null);
+            if (column.isPrimaryKey()) {
+                System.out.println("primary key=" + column);
+            }
+        }
+    }
+
     @SneakyThrows
-    private void fillReferencedColumns(SUArrayList<SUTableColumn> columns, SUConnectionBean connection) throws SQLException {
+    private void fillReferencedColumns(SUArrayList<SUTableColumn> columns, SUConnectionBean connection) {
         SUTableBean table = getTable(columns);
         if (table == null) {
             System.out.println("table is not unique");
@@ -110,7 +137,7 @@ public abstract class AbstractDatabase {
                 + " where table_name = ? and referenced_table_name is not null";
 
         PreparedStatement stmt = conn.prepareStatement(sqlQuery);
-        System.out.println("table.getName()="+table.getName());
+        System.out.println("table.getName()=" + table.getName());
         stmt.setString(1, table.getName());
 
         ResultSet rs = stmt.executeQuery();

@@ -5,8 +5,6 @@
  */
 package com.bsptechs.main.bean.ui.table;
 
-import java.awt.Color;
-import javax.swing.JLabel;
 import lombok.Data;
 
 /**
@@ -14,32 +12,35 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class SUTableCell extends JLabel{
+public class SUTableCell {
 
     private SUTableColumn column;
-    private Object value;
-    private boolean primaryKey;
+    private String value;
     private boolean editing = false;
-    private boolean updateMode;
+    private SUTableListener<SUTableCell> onCellEditing;
 
     public SUTableCell() {
     }
 
-    public SUTableCell(SUTableColumn column, Object value) {
-        if(value == this){
-            throw new RuntimeException("sssame");
+    public void setOnCellEditing(SUTableListener<SUTableCell> listener) {
+        this.onCellEditing = listener;
+    }
+
+    public void setEditing(boolean editing) {
+        this.editing = editing;
+        if (onCellEditing != null) {
+            this.onCellEditing.action(this);
         }
+    }
+
+    public SUTableCell(SUTableColumn column, String value) {
         this.column = column;
         this.value = value;
-        this.primaryKey = primaryKey;
     }
 
     @Override
     public String toString() {
-        if (value == null) {
-            return null;
-        }
-        return value.toString();
+        return value;
     }
 
 }

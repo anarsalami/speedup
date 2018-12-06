@@ -6,78 +6,52 @@
 package com.bsptechs.main.bean.ui.table;
 
 import com.bsptechs.main.bean.SUArrayList;
-import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.bean.SUQueryResult;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.AbstractAction;
+import java.awt.Color;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import lombok.Data;
+import lombok.SneakyThrows;
 
 /**
  *
  * @author sarkhanrasullu
  */
-//class MyTableCellEditor extends AbstractCellEditor implements TableCellEditor {
-//
-//    JComponent component = new JTextField();
-//
-//    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-//            int rowIndex, int vColIndex) {
-//
-//        ((JTextField) component).setText((String) value);
-//
-//        return component;
-//    }
-//
-//    public Object getCellEditorValue() {
-//        return ((JTextField) component).getText();
-//    }
-//}
 class MyTableColumnModel extends DefaultTableColumnModel {
 
-//    public MyTableColumnModel(SUArrayList<SUTableColumn> columns) {
-////        super.tableColumns = new Vector(columns);
-////        for (int i = 0; i < columns.size(); i++) {
-////            super.addColumn(columns.get(i));
-////        }
-//    }
+    private SUTableCellEditor cellEditor;
 
-    public void addColumn(TableColumn aColumn) {
-        aColumn.setCellEditor(new SUTableCellEditor());
-        super.addColumn(aColumn);
+    public MyTableColumnModel(SUTableCellEditor cellEditor) {
+        this.cellEditor = cellEditor;
+    }
 
-        System.out.println("aColumn.getModelIndex()=" + aColumn.getModelIndex());
-        System.out.println("addColumn=" + aColumn);
-        System.out.println("identifier=" + aColumn.getIdentifier());
-        System.out.println("identifier class =" + aColumn.getIdentifier().getClass().getName());
+    @Override
+    public void addColumn(TableColumn column) {
+        column.setCellEditor(cellEditor);
+        super.addColumn(column);
     }
 }
 
 @Data
 public class SUTable extends JTable {
 
-    private SUQueryBean query;
-
     public SUTable() {
         super(new SUTableModel());
         setDefaultRenderer(SUTableColumn.class, new SUTableCellRenderer());
-        setColumnModel(new MyTableColumnModel());
+        setColumnModel(new MyTableColumnModel(new SUTableCellEditor()));
         this.setRowHeight(25);
-         
-    }  
+        setShowVerticalLines(true);
+        setShowHorizontalLines(true);
+        setGridColor(new Color(239, 239, 239));
+    }
 
     @Override
     public void setModel(TableModel m) {
-        super.setModel((SUTableModel) m);
+        super.setModel(m);
+//        throw new RuntimeException("can not use setModel");
     }
 
     public SUTableModel getTableModel() {
@@ -112,13 +86,13 @@ public class SUTable extends JTable {
         return row.get(columnIndex);
     }
 
-    public List<SUTableRow> getSelectedTableRows() {
+    public SUArrayList<SUTableRow> getSelectedTableRows() {
         int[] selectedRowIndexes = this.getSelectedRows();
         if (selectedRowIndexes.length <= 0) {
             return null;
         }
         DefaultTableModel model = (DefaultTableModel) this.getModel();
-        List<SUTableRow> rows = new ArrayList<>();
+        SUArrayList<SUTableRow> rows = new SUArrayList<>();
         for (int selectedRowIndex : selectedRowIndexes) {
             SUTableRow row = (SUTableRow) model.getDataVector().get(selectedRowIndex);
             rows.add(row);
@@ -129,7 +103,10 @@ public class SUTable extends JTable {
     public void refreshData(SUQueryResult rs) {
         SUArrayList<SUTableColumn> columns = rs.getColumns();
         SUArrayList<SUTableRow> rows = rs.getRows();
-        setModel(new SUTableModel(rows, columns));
+        SUTableModel model =new SUTableModel(rows, columns);
+         
+        setModel(model);
+//        getTableModel().refreshData(columns, rows);
     }
 
     @Override

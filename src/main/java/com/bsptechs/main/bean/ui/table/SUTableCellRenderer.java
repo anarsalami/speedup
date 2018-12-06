@@ -7,8 +7,10 @@ package com.bsptechs.main.bean.ui.table;
 
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
@@ -21,6 +23,12 @@ public class SUTableCellRenderer extends DefaultTableCellRenderer {
     private boolean isSelected;
     private SUTableCell cell;
     private boolean hasFocus = false;
+
+    public SUTableCellRenderer() {
+        Border b = BorderFactory.createLineBorder(Color.GREEN);
+        setBorder(b);
+    }
+
     public Component getTableCellRendererComponent(JTable table,
             Object value,
             boolean isSelected,
@@ -35,7 +43,7 @@ public class SUTableCellRenderer extends DefaultTableCellRenderer {
         this.hasFocus = hasFocus;
 
         // Allow superclass to return rendering component.
-        Component cmp = super.getTableCellRendererComponent(table, value,
+        JComponent cmp = (JComponent) super.getTableCellRendererComponent(table, value,
                 isSelected, hasFocus,
                 row, column);
 
@@ -48,11 +56,11 @@ public class SUTableCellRenderer extends DefaultTableCellRenderer {
             return super.getBackground();
         }
         if (cell.isEditing()) {
-            return new Color(255, 221, 238);
+            return new Color(255, 242, 251);
         }
 
         if (hasFocus) {
-            return super.getBackground();
+            return new Color(66,134,244);
         }
 
         return Color.WHITE;
