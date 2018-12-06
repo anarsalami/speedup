@@ -11,6 +11,7 @@ import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
+import com.bsptechs.main.util.FileUtility;
 import com.bsptechs.main.util.ImageUtil;
 import java.awt.Color;
 import java.sql.SQLException;
@@ -224,11 +225,16 @@ public class PanelQuery extends javax.swing.JPanel {
         btnSave.setMinimumSize(new java.awt.Dimension(39, 17));
         btnSave.setPreferredSize(new java.awt.Dimension(44, 17));
         btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSaveMouseEntered(evt);
+            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnSaveMouseExited(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnSaveMouseEntered(evt);
+        });
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
             }
         });
 
@@ -465,6 +471,15 @@ public class PanelQuery extends javax.swing.JPanel {
         btnenter(btnExportResult);
     }//GEN-LAST:event_btnExportResultMouseEntered
 
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        String query = txtQuery.getText();
+        SUDatabaseBean database=getSelectedDatabase();
+        SUConnectionBean connection=Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection();
+        SUQueryBean savedQuery=new SUQueryBean(connection,database, query,"SecondQuery");
+        FileUtility.writeObjectToFile(savedQuery, "queries.txt");
+       
+    }//GEN-LAST:event_btnSaveActionPerformed
+
     public SUDatabaseBean getSelectedDatabase() {
         Object obj = cbDatabases.getSelectedItem();
 
@@ -501,8 +516,8 @@ public class PanelQuery extends javax.swing.JPanel {
     private javax.swing.JButton btnText;
     private javax.swing.JButton btnexplain;
     private javax.swing.JButton btnstop;
-    private javax.swing.JComboBox<SUConnectionBean> cbConnections;
-    private javax.swing.JComboBox<SUDatabaseBean> cbDatabases;
+    private javax.swing.JComboBox<com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean> cbConnections;
+    private javax.swing.JComboBox<com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean> cbDatabases;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlButtons;
     private javax.swing.JPanel pnlControllBtns;
