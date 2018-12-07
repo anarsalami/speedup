@@ -5,6 +5,15 @@
  */
 package com.bsptechs.main.bean.ui.panel;
 
+import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.SUQueryBean;
+import com.bsptechs.main.util.FileUtility;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+
 /**
  *
  * @author Goshgar
@@ -16,6 +25,17 @@ public class PanelSavedQuery extends javax.swing.JPanel {
      */
     public PanelSavedQuery() {
         initComponents();
+        fillQueryTree();
+    }
+
+    private void fillQueryTree() {
+        List<SUQueryBean> queryList=FileUtility.readObjectsAsList("queries.txt");
+         DefaultListModel model=new DefaultListModel();
+        for (SUQueryBean queries : queryList) {
+           model.addElement(queries.getName());
+        }
+       savedQueriesJList.setModel(model);
+      
     }
 
     /**
@@ -28,9 +48,14 @@ public class PanelSavedQuery extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        SavedQueriesJList = new javax.swing.JList<>();
+        savedQueriesJList = new javax.swing.JList<>();
 
-        jScrollPane1.setViewportView(SavedQueriesJList);
+        savedQueriesJList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                savedQueriesJListValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(savedQueriesJList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -54,9 +79,14 @@ public class PanelSavedQuery extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void savedQueriesJListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_savedQueriesJListValueChanged
+    
+//        Main.instance().prepareNewQuery(queryBean.getQuery(), true);
+    }//GEN-LAST:event_savedQueriesJListValueChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList<String> SavedQueriesJList;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<SUQueryBean> savedQueriesJList;
     // End of variables declaration//GEN-END:variables
 }

@@ -36,16 +36,16 @@ public class SUTableTreeNode extends SUAbstractTreeNode {
     @Override
     public void onDoubleClick() {
         JTabbedPane tabbedPaneCenter = Main.instance().getTabbedPaneCenter();
-        
-         tabbedPaneCenter.setEnabled(true);
+
+        tabbedPaneCenter.setEnabled(true);
         tabbedPaneCenter.removeAll();
         List<String> names = new ArrayList<>();
-            names.add("Query");
-            names.add("Design Table");
-            names.add("New Table");
-            names.add("Tables");
+        names.add("Query");
+        names.add("Design Table");
+        names.add("New Table");
+        names.add("Tables");
         List<JTabbedPane> tabbedList = Main.instance().getTabPanesTable();
-System.out.println("names=" + names);
+        System.out.println("names=" + names);
         for (int i = 0; i < tabbedList.size(); i++) {
             tabbedPaneCenter.add(names.get(i), tabbedList.get(i));
         }

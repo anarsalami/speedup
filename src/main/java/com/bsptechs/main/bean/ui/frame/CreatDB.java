@@ -26,8 +26,6 @@ public class CreatDB extends javax.swing.JFrame {
     SUDatabaseTreeNode database;
     SUConnectionTreeNode connection = (SUConnectionTreeNode) Main.instance().getConnectionTree().getSelectedNode();
 
-    ;
-
     /**
      * Creates new form CreatDB
      */
