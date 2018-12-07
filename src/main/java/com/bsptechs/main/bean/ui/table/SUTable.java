@@ -6,15 +6,19 @@
 package com.bsptechs.main.bean.ui.table;
 
 import com.bsptechs.main.bean.SUArrayList;
+import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.bean.SUQueryResult;
+import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
+import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.awt.Color;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import lombok.Data;
-import lombok.SneakyThrows;
 
 /**
  *
@@ -42,18 +46,39 @@ public class SUTable extends JTable {
         super(new SUTableModel());
         setDefaultRenderer(SUTableColumn.class, new SUTableCellRenderer());
         setColumnModel(new MyTableColumnModel(new SUTableCellEditor()));
+
         this.setRowHeight(25);
         setShowVerticalLines(true);
         setShowHorizontalLines(true);
         setGridColor(new Color(239, 239, 239));
+
+        this.setCellSelectionEnabled(true);
+        ListSelectionModel cellSelectionModel = this.getSelectionModel();
+        cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                SUTableCell selectedData = null;
+
+                int[] selectedRow = getSelectedRows();
+                int[] selectedColumns = getSelectedColumns();
+
+                for (int i = 0; i < selectedRow.length; i++) {
+                    for (int j = 0; j < selectedColumns.length; j++) {
+                        selectedData = (SUTableCell) getValueAt(selectedRow[i], selectedColumns[j]);
+                    }
+                }
+                System.out.println("Selected: " + selectedData);
+            }
+
+        });
     }
 
-    @Override
-    public void setModel(TableModel m) {
-        super.setModel(m);
-//        throw new RuntimeException("can not use setModel");
-    }
-
+//    @Override
+//    public void setModel(TableModel m) {
+//        super.setModel(m);
+////        throw new RuntimeException("can not use setModel");
+//    }
     public SUTableModel getTableModel() {
         return (SUTableModel) super.getModel();
     }
@@ -100,13 +125,27 @@ public class SUTable extends JTable {
         return rows;
     }
 
+    private SUQueryResult rs;
+
     public void refreshData(SUQueryResult rs) {
+        this.rs = rs;
         SUArrayList<SUTableColumn> columns = rs.getColumns();
         SUArrayList<SUTableRow> rows = rs.getRows();
-        SUTableModel model =new SUTableModel(rows, columns);
-         
+        SUTableModel model = new SUTableModel(rows, columns);
         setModel(model);
-//        getTableModel().refreshData(columns, rows);
+    }
+    private static final DatabaseDAOInter db = new DatabaseDAOImpl();
+
+    public void saveEditingRow() {
+        SUTableRow row = getTableModel().getEditingRow();
+        if (row == null) {
+            return;
+        }
+        SUQueryBean query = rs.getQuery();
+        System.out.println("editing row=" + row);
+        db.saveRow(query.getConnection(), row);
+        row.discardChanges();
+        getTableModel().fireTableDataChanged();
     }
 
     @Override

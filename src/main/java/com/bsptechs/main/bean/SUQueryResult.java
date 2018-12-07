@@ -18,10 +18,12 @@ public class SUQueryResult {
 
     private SUArrayList<SUTableColumn> columns;
     private SUArrayList<SUTableRow> rows;
-
-    public SUQueryResult(SUArrayList<SUTableColumn> columns, SUArrayList<SUTableRow> rows) {
+    private SUQueryBean query;
+    
+    public SUQueryResult(SUQueryBean query, SUArrayList<SUTableColumn> columns, SUArrayList<SUTableRow> rows) {
         this.columns = columns;
         this.rows = rows;
+        this.query = query;
     }
 
 }

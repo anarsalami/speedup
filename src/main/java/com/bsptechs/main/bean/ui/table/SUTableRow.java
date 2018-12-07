@@ -20,6 +20,10 @@ public class SUTableRow extends SUArrayList<SUTableCell> {
 
     private SUTableBean table;
 
+    public SUTableRow() {
+        System.out.println("SUTableRow constr");
+    }
+
     public List<SUTableCell> getAllPrimaryCell() {
         if (isEmpty()) {
             return null;
@@ -33,10 +37,10 @@ public class SUTableRow extends SUArrayList<SUTableCell> {
         }
         return result;
     }
-    
-    public SUTableCell getByColumnName(String columnName){
-        for(SUTableCell cell: this){
-            if(cell.getColumn().getName().equals(columnName)){
+
+    public SUTableCell getByColumnName(String columnName) {
+        for (SUTableCell cell : this) {
+            if (cell.getColumn().getName().equals(columnName)) {
                 return cell;
             }
         }
@@ -48,32 +52,40 @@ public class SUTableRow extends SUArrayList<SUTableCell> {
         table = cell.getColumn().getTable();
         return super.add(cell);
     }
-    
-    public boolean isEditing(){
-        for(SUTableCell cell: this){
-            if(cell.isEditing()){
+
+    public boolean isEditing() {
+        for (SUTableCell cell : this) {
+            if (cell.isEditing()) {
                 return true;
             }
         }
         return false;
     }
-    
-    public SUArrayList<SUTableCell> getAllEditingCell(){
+
+    public SUArrayList<SUTableCell> getAllEditingCell() {
         SUArrayList<SUTableCell> res = new SUArrayList<>();
-         for(SUTableCell cell: this){
-            if(cell.isEditing()){
-               res.add(cell);
+        for (SUTableCell cell : this) {
+            if (cell.isEditing()) {
+                res.add(cell);
             }
         }
-         return res;
+        return res;
     }
-    
+
+    public void discardChanges() {
+        forEach(s -> {
+            s.setValue(s.getOldValue());
+            s.setEditing(false);
+        });
+        
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         String str = "";
-        for(int i=0;i<size();i++){
-            str+=get(i).getValue()+" ";
-        } 
+        for (int i = 0; i < size(); i++) {
+            str += get(i).getValue() + " ";
+        }
         return str;
     }
 }

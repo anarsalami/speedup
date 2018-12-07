@@ -25,14 +25,16 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
     private JComponent component;
     private SUTableCell cell = null;
 
+
     @Override
     public Component getTableCellEditorComponent(
             JTable table,
             Object value,
             boolean isSelected,
             int rowIndex,
-            int vColIndex
+            int colIndex
     ) {
+        
         cell = (SUTableCell) value;
 
         SUTableColumn column = cell.getColumn();
@@ -73,17 +75,9 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
 
     @Override
     public Object getCellEditorValue() {
-        cell.setEditing(false);
-//        System.out.println("cell.getValue()="+cell.getValue());
-//        System.out.println("getValue()="+getValue());
-//        System.out.println("getValue() class="+getValue().getClass().getName());
-        if (!cell.getValue().equals(getValue())) {
-//            System.out.println("setediting true");
-            cell.setEditing(true);
-        }
         cell.setValue(getValue());
+        System.out.println("cell editor value="+cell);
         return cell;
     }
-
 
 }

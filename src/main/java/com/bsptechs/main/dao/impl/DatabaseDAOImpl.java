@@ -108,12 +108,12 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
                 SUTableColumn column = columns.get(i);
                 Object value = rs.getObject(column.getName());
 
-                row.add(new SUTableCell(column, value+""));
+                row.add(new SUTableCell(column, value + ""));
             }
 
             rows.add(row);
         }
-        SUQueryResult result = new SUQueryResult(columns, rows);
+        SUQueryResult result = new SUQueryResult(queryBean, columns, rows);
         return result;
     }
 

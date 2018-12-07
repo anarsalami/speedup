@@ -6,10 +6,10 @@
 package com.bsptechs.main.bean.ui.table;
 
 import com.bsptechs.main.bean.SUArrayList;
-import com.bsptechs.main.bean.SUQueryResult;
 import java.util.Vector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.table.DefaultTableModel;
-import lombok.Data;
 
 /**
  *
@@ -21,18 +21,18 @@ public class SUTableModel extends DefaultTableModel {
     private final SUArrayList<SUTableColumn> columns;
     private final SUArrayList<SUTableRow> rows;
     private SUTableListener<SUTableRow> onRowAdd;
-    private SUTableListener<SUTableCell> onCellEditing;
+    private SUTableListener<SUTableCell> onChange;
 
     public SUTableModel() {
         columns = new SUArrayList<>();
         rows = new SUArrayList<>();
+        setColumnIdentifiers(new Vector(columns));
     }
 
     public SUTableModel(
             SUArrayList<SUTableRow> rows,
             SUArrayList<SUTableColumn> columns
     ) {
-//        super(new Vector(rows), new Vector(columns));
         setColumnIdentifiers(new Vector(columns));
         this.columns = columns;
         this.rows = rows;
@@ -67,15 +67,15 @@ public class SUTableModel extends DefaultTableModel {
 //
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        System.out.println("rowindex=" + rowIndex);
-        System.out.println("columnIndex=" + columnIndex);
+//        System.out.println("rowindex=" + rowIndex);
+//        System.out.println("columnIndex=" + columnIndex);
         SUTableCell cell = rows != null ? rows.get(rowIndex).get(columnIndex) : null;
         return cell;
     }
 
     public SUTableRow addEmptyRow() {
         SUTableRow newRow = new SUTableRow();
-
+ 
         for (int i = 0; i < columns.size(); i++) {
             newRow.add(new SUTableCell(columns.get(i), ""));
         }
@@ -88,19 +88,16 @@ public class SUTableModel extends DefaultTableModel {
     }
 
 //    public void refreshData(SUArrayList<SUTableColumn> columns, SUArrayList<SUTableRow> rows) {
-////        setColumnIdentifiers(new Vector(columns));
-//        rows.clear();
-//        columns.clear();
+//        System.out.println("columns="+columns);
 //        this.rows.addAll(rows);
 //        this.columns.addAll(columns);
 //        fireTableStructureChanged();
 //        fireTableDataChanged();
 //    }
-
     public void addRow(SUTableRow row) {
         rows.add(row);
         for (SUTableCell cell : row) {
-            cell.setOnCellEditing(onCellEditing);
+            cell.setOnChange(onChange);
         }
 
         fireTableDataChanged();
@@ -111,12 +108,12 @@ public class SUTableModel extends DefaultTableModel {
     }
 
     public void setOnCellEditing(SUTableListener<SUTableCell> listener) {
-        this.onCellEditing = listener;
-        for (SUTableRow row : rows) {
-            for (SUTableCell cell : row) {
-                cell.setOnCellEditing(listener);
-            }
-        }
+        this.onChange = listener;
+        rows.forEach((row) -> {
+            row.forEach((cell) -> {
+                cell.setOnChange(listener);
+            });
+        });
     }
 
     public SUTableRow removeRow(SUTableRow row) {
@@ -134,14 +131,17 @@ public class SUTableModel extends DefaultTableModel {
         return removeRow(row);
     }
 
-    public SUArrayList<SUTableRow> getEditingRows() {
-        SUArrayList<SUTableRow> editingRows = new SUArrayList<>();
-        for (SUTableRow row : rows) {
-            if (row.isEditing()) {
-                editingRows.add(row);
+    public SUTableRow getEditingRow() {
+        for(SUTableRow row: rows){
+            if(row.isEditing()){
+                return row;
             }
         }
-        return editingRows;
+//        SUArrayList<SUTableRow> editingRows = rows
+//                        .stream()
+//                        .filter(row -> row.isEditing())
+//                        .collect(Collectors.toCollection(SUArrayList::new));
+        return null;
     }
 
     @Override
