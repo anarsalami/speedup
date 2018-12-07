@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Vector;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author Penthos
@@ -193,7 +193,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 //		}
 //	    } // for columns
 //	    sb.append(" ) ");
-//	    System.out.println(sb.toString());
+//	    LogUtil.log(sb.toString());
 //	    stmt.executeUpdate();
         return true;
 
@@ -282,7 +282,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
             SUTableCell cell = cells.get(i);
             query += cell.getColumn().getName() + "=?";
         }
-        System.out.println("query deleteRowByRow=" + query);
+        LogUtil.log("query deleteRowByRow=" + query);
         PreparedStatement stmt = conn.prepareStatement(query);
 
         for (int i = 0; i < cells.size(); i++) {
@@ -303,7 +303,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
                 + " from " + table.getDatabase().getName() + "." + table.getName()
                 + " where " + cell.getColumn().getName() + "=?";
         PreparedStatement stmt = conn.prepareStatement(query);
-        System.out.println("query deleteRowByCell=" + query);
+        LogUtil.log("query deleteRowByCell=" + query);
         stmt.setObject(1, cell.getValue());
         stmt.executeUpdate();
 
@@ -313,6 +313,10 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
     @SneakyThrows
     @Override
     public boolean saveRow(SUConnectionBean connection, SUTableRow row) {
+        LogUtil.log("row.getAllEditingCell().size()="+row.getAllEditingCell().size());
+        if(row.getAllEditingCell().size()==0){
+            return false;
+        }
         List<SUTableCell> primaryCells = row.getAllPrimaryCell();
 
         if (primaryCells == null || primaryCells.isEmpty()) {
@@ -344,7 +348,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
             SUTableCell cell = cells.get(i);
             query += " and " + cell.getColumn().getName() + "=? ";
         }
-        System.out.println("query updateRow=" + query);
+        LogUtil.log("query updateRow=" + query);
         PreparedStatement stmt = conn.prepareStatement(query);
         int index = 1;
         for (int j = 0; j < 2; j++) {
@@ -363,6 +367,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         Connection conn = connect(connection);
 
         SUArrayList<SUTableCell> cells = row.getAllEditingCell();
+        if(cells.size()==0) return false;
         String query = "update "
                 + " " + row.getTable().getDatabase().getName() + "." + row.getTable().getName() + " set ";
 
@@ -375,7 +380,7 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
 
         query += " where " + primaryCell.getColumn().getName() + "=" + primaryCell.getValue();
 
-        System.out.println("query updateRow=" + query);
+        LogUtil.log("query updateRow=" + query);
         PreparedStatement stmt = conn.prepareStatement(query);
         int index = 1;
         for (int i = 0; i < cells.size(); i++) {

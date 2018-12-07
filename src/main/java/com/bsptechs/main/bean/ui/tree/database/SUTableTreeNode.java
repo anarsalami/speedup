@@ -13,7 +13,7 @@ import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import lombok.Data;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author Goshgar
@@ -45,7 +45,7 @@ public class SUTableTreeNode extends SUAbstractTreeNode {
         names.add("New Table");
         names.add("Tables");
         List<JTabbedPane> tabbedList = Main.instance().getTabPanesTable();
-        System.out.println("names=" + names);
+        LogUtil.log("names=" + names);
         for (int i = 0; i < tabbedList.size(); i++) {
             tabbedPaneCenter.add(names.get(i), tabbedList.get(i));
         }

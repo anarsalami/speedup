@@ -11,6 +11,7 @@ import com.bsptechs.main.bean.SUQueryResult;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.awt.Color;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -19,7 +20,7 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import lombok.Data;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -53,25 +54,32 @@ public class SUTable extends JTable {
         setGridColor(new Color(239, 239, 239));
 
         this.setCellSelectionEnabled(true);
-        ListSelectionModel cellSelectionModel = this.getSelectionModel();
-        cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
+        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        selectionModel.addListSelectionListener(new ListSelectionListener() {
+            int prev = 0;
+            int i = 0;
 
-        cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent e) {
-                SUTableCell selectedData = null;
+                LogUtil.log("prev="+prev);
+                if(getSelectedRow()<0) return;
+                i++;
+                
+//                LogUtil.log("i="+i);
+                SUTableRow selectedRow = getTableModel().getTableRows().get(prev);
+                prev = getSelectedRow();
 
-                int[] selectedRow = getSelectedRows();
-                int[] selectedColumns = getSelectedColumns();
-
-                for (int i = 0; i < selectedRow.length; i++) {
-                    for (int j = 0; j < selectedColumns.length; j++) {
-                        selectedData = (SUTableCell) getValueAt(selectedRow[i], selectedColumns[j]);
-                    }
-                }
-                System.out.println("Selected: " + selectedData);
+//                if (i == 1) {
+                    LogUtil.log("Selected: " + selectedRow);
+                    saveRow(selectedRow);
+//                } else {
+//                    i = 0;
+//                }
             }
 
         });
+        this.setSelectionModel(selectionModel);
     }
 
 //    @Override
@@ -138,19 +146,23 @@ public class SUTable extends JTable {
 
     public void saveEditingRow() {
         SUTableRow row = getTableModel().getEditingRow();
+        saveRow(row);
+    }
+
+    public void saveRow(SUTableRow row) {
         if (row == null) {
             return;
         }
         SUQueryBean query = rs.getQuery();
-        System.out.println("editing row=" + row);
+        LogUtil.log("editing row=" + row);
         db.saveRow(query.getConnection(), row);
-        row.discardChanges();
-        getTableModel().fireTableDataChanged();
+        row.discardEditing();
+//        getTableModel().fireTableDataChanged();
     }
 
     @Override
     public boolean isCellEditable(int row, int column) {
-        System.out.println("Table is cell editable");
+        LogUtil.log("Table is cell editable");
         return true;
     }
 

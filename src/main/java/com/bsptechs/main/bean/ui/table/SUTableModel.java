@@ -33,6 +33,7 @@ public class SUTableModel extends DefaultTableModel {
             SUArrayList<SUTableRow> rows,
             SUArrayList<SUTableColumn> columns
     ) {
+//        super(rows,columns);
         setColumnIdentifiers(new Vector(columns));
         this.columns = columns;
         this.rows = rows;
@@ -58,24 +59,28 @@ public class SUTableModel extends DefaultTableModel {
         return rows != null ? rows.size() : 0;
     }
 
+    public SUArrayList<SUTableRow> getTableRows() {
+        return this.rows;
+    }
 //
 //    @Override
 //    public boolean isCellEditable(int row, int column) {
-//        System.out.println("model is cell editable");
+//        LogUtil.log("model is cell editable");
 //        return true;
 //    }
 //
+
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-//        System.out.println("rowindex=" + rowIndex);
-//        System.out.println("columnIndex=" + columnIndex);
+//        LogUtil.log("rowindex=" + rowIndex);
+//        LogUtil.log("columnIndex=" + columnIndex);
         SUTableCell cell = rows != null ? rows.get(rowIndex).get(columnIndex) : null;
         return cell;
     }
 
     public SUTableRow addEmptyRow() {
         SUTableRow newRow = new SUTableRow();
- 
+
         for (int i = 0; i < columns.size(); i++) {
             newRow.add(new SUTableCell(columns.get(i), ""));
         }
@@ -88,7 +93,7 @@ public class SUTableModel extends DefaultTableModel {
     }
 
 //    public void refreshData(SUArrayList<SUTableColumn> columns, SUArrayList<SUTableRow> rows) {
-//        System.out.println("columns="+columns);
+//        LogUtil.log("columns="+columns);
 //        this.rows.addAll(rows);
 //        this.columns.addAll(columns);
 //        fireTableStructureChanged();
@@ -132,8 +137,8 @@ public class SUTableModel extends DefaultTableModel {
     }
 
     public SUTableRow getEditingRow() {
-        for(SUTableRow row: rows){
-            if(row.isEditing()){
+        for (SUTableRow row : rows) {
+            if (row.isEditing()) {
                 return row;
             }
         }

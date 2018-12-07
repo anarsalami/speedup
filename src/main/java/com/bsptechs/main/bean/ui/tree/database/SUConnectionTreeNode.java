@@ -10,7 +10,7 @@ import com.bsptechs.main.bean.ui.panel.PanelSavedQuery;
 import java.util.List;
 import javax.swing.JTabbedPane;
 import lombok.Data;
-
+import com.bsptechs.main.util.LogUtil;
 @Data
 public class SUConnectionTreeNode extends SUAbstractTreeNode<SUConnectionBean>{
 
@@ -21,7 +21,7 @@ public class SUConnectionTreeNode extends SUAbstractTreeNode<SUConnectionBean>{
     }
     public void connect() { 
         if (connection.getDatabases() == null) {
-            System.out.println("connection connect");
+            LogUtil.log("connection connect");
             connection.setDatabases(dao.getAllDatabases(connection));
             getTree().setCurrentConnectionNode(this);
             addDatabases(connection.getDatabases());

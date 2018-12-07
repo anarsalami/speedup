@@ -15,7 +15,7 @@ import com.bsptechs.main.util.FileUtility;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JFileChooser;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -44,17 +44,17 @@ public class UiPopupDatabase extends UiPopupAbstract {
     }
 
     public void delete() {
-        System.out.println("delete database");
+        LogUtil.log("delete database");
         //Tebriz burani dolduracaq
     }
 
     public void properties() {
-        System.out.println("properites database");
+        LogUtil.log("properites database");
         //Tebriz burani dolduracaq
     }
 
     public void newQuery() {
-        System.out.println("new query");
+        LogUtil.log("new query");
         Main.instance().prepareNewQuery(null, false);
     }
 

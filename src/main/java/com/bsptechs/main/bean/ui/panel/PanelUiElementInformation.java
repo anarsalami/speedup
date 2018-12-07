@@ -11,6 +11,7 @@ import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
+import com.bsptechs.main.util.LogUtil;
 
 /**
  *
@@ -29,13 +30,13 @@ public class PanelUiElementInformation extends javax.swing.JPanel {
     }
 
     public void preparePanel(Object element) {
-        System.out.println("element="+element);
+        LogUtil.log("element="+element);
         if (element == null) {
             return;
         }
 
         if (element instanceof SUConnectionBean) {
-            System.out.println("connection");
+            LogUtil.log("connection");
             SUConnectionBean el = (SUConnectionBean) element;
             String name = el.getName();
             String port = el.getPort();

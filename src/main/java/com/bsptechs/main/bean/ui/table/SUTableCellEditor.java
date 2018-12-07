@@ -23,8 +23,9 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
     private DatabaseDAOImpl dao = new DatabaseDAOImpl();
 
     private JComponent component;
-    private SUTableCell cell = null;
-
+    private SUTableCell cell;
+    private SUTable table;
+    private int rowIndex, colIndex;
 
     @Override
     public Component getTableCellEditorComponent(
@@ -34,8 +35,10 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
             int rowIndex,
             int colIndex
     ) {
-        
-        cell = (SUTableCell) value;
+        this.table = (SUTable) table;
+        this.cell = (SUTableCell) value;
+        this.rowIndex = rowIndex;
+        this.colIndex = colIndex;
 
         SUTableColumn column = cell.getColumn();
         SUTableBean tableBean = column.getTable();
@@ -76,7 +79,15 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
     @Override
     public Object getCellEditorValue() {
         cell.setValue(getValue());
-        System.out.println("cell editor value="+cell);
+        int selectedRowIndex = table.getSelectedRow();
+//        LogUtil.log("cell editor value=" + cell);
+//        LogUtil.log("cell is editing=" + cell.isEditing());
+//        if (rowIndex != selectedRowIndex) {
+//            LogUtil.log("row changed");
+//            SUTableRow row = table.getTableRow(rowIndex);
+//            table.saveRow(row);
+//        }
+//        table.getTableModel().fireTableCellUpdated(rowIndex, colIndex);
         return cell;
     }
 

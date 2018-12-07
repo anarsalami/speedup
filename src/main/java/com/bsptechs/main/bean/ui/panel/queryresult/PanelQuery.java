@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import com.bsptechs.main.util.LogUtil;
 
 /**
  *
@@ -75,7 +76,7 @@ public class PanelQuery extends javax.swing.JPanel {
         if (connection == null) {
             return;
         }
-        System.out.println("prepareDatabasesCombobox=" + database);
+        LogUtil.log("prepareDatabasesCombobox=" + database);
         cbDatabases.removeAllItems();
         List<SUDatabaseBean> databases = connection.getDatabases();
         if (databases == null) {
@@ -373,7 +374,7 @@ public class PanelQuery extends javax.swing.JPanel {
 
     private void cbConnectionsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbConnectionsItemStateChanged
         SUConnectionBean conn = getSelectedConnection();
-        System.out.println("selected connnection=" + conn);
+        LogUtil.log("selected connnection=" + conn);
         prepareDatabasesCombobox(conn, null);
     }//GEN-LAST:event_cbConnectionsItemStateChanged
 
@@ -440,7 +441,7 @@ public class PanelQuery extends javax.swing.JPanel {
     private void btnBeautfySQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeautfySQLActionPerformed
         String s[] = txtQuery.getText().split("\\r?\\n");
         ArrayList<String> arrList = new ArrayList<>(Arrays.asList(s));
-        System.out.println(arrList.size());
+        LogUtil.log(arrList.size());
     }//GEN-LAST:event_btnBeautfySQLActionPerformed
 
     private void btnCodeSnippedMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCodeSnippedMouseExited

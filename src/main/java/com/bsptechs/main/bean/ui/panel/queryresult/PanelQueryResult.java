@@ -12,11 +12,8 @@ import com.bsptechs.main.bean.ui.table.SUTableRow;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.awt.event.KeyEvent;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import lombok.SneakyThrows;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -173,11 +170,11 @@ public class PanelQueryResult extends javax.swing.JPanel {
 //                    int anchIndex = lsm.getAnchorSelectionIndex();
 //                    int minIndex = lsm.getMinSelectionIndex();
 //                    int maxIndex = lsm.getMaxSelectionIndex();
-//                    System.out.println("min0 index="+tbl.getSelectionModel().getMinSelectionIndex());
-//                    System.out.println("min index="+minIndex);
-//                    System.out.println("max index="+maxIndex);
-//                    System.out.println("lead index="+leadIndex);
-//                    System.out.println("anch index="+anchIndex);
+//                    LogUtil.log("min0 index="+tbl.getSelectionModel().getMinSelectionIndex());
+//                    LogUtil.log("min index="+minIndex);
+//                    LogUtil.log("max index="+maxIndex);
+//                    LogUtil.log("lead index="+leadIndex);
+//                    LogUtil.log("anch index="+anchIndex);
 ////                    saveEditingRow();
 //                }
 //            }
@@ -214,7 +211,7 @@ public class PanelQueryResult extends javax.swing.JPanel {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         SUTable tbl = getTable();
         SUTableRow addedRow = tbl.getTableModel().addEmptyRow();
-        System.out.println("row added");
+        LogUtil.log("row added");
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnSaveChangesForTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesForTableActionPerformed
@@ -232,13 +229,13 @@ public class PanelQueryResult extends javax.swing.JPanel {
     private void tblQueryResultFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblQueryResultFocusGained
 //        SUTable table = getTable();
 //        SUTableRow row = table.getSelectedTableRow();
-//        System.out.println("tblQueryResultFocusGained=" + row);
+//        LogUtil.log("tblQueryResultFocusGained=" + row);
     }//GEN-LAST:event_tblQueryResultFocusGained
 
     private void tblQueryResultFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblQueryResultFocusLost
 //        SUTable table = getTable();
 //        SUTableRow row = table.getSelectedTableRow();
-//        System.out.println("tblQueryResultFocusLost=" + row);
+//        LogUtil.log("tblQueryResultFocusLost=" + row);
     }//GEN-LAST:event_tblQueryResultFocusLost
 
     private void tblQueryResultPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tblQueryResultPropertyChange
@@ -253,9 +250,9 @@ public class PanelQueryResult extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void tblQueryResultKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblQueryResultKeyTyped
-        System.out.println("evt.getKeyCode()="+evt.getKeyCode());
+        LogUtil.log("evt.getKeyCode()="+evt.getKeyCode());
         if (evt.getKeyCode() == KeyEvent.VK_DOWN || evt.getKeyCode() == KeyEvent.VK_UP) {
-            System.out.println("row changed");
+            LogUtil.log("row changed");
         }
     }//GEN-LAST:event_tblQueryResultKeyTyped
 

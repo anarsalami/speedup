@@ -14,7 +14,7 @@ import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.util.List;
 import javax.swing.JOptionPane;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -70,17 +70,17 @@ public class UiPopupTable extends UiPopupAbstract {
     }
 
     public void delete() {
-        System.out.println("table delete");
+        LogUtil.log("table delete");
         //Tebriz burani dolduracaq
     }
 
     public void properties() {
-        System.out.println("table properties");
+        LogUtil.log("table properties");
         //Tebriz burani dolduracaq
     }
 
     public void newQuery() {
-        System.out.println("new query");
+        LogUtil.log("new query");
         //Tebriz burani dolduracaq
     }
 

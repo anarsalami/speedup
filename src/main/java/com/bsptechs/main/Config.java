@@ -4,6 +4,7 @@ import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.SUArrayList;
 import com.bsptechs.main.util.FileUtility;
 import java.io.Serializable;
+import com.bsptechs.main.util.LogUtil;
 
 public final class Config implements Serializable {
 
@@ -35,10 +36,10 @@ public final class Config implements Serializable {
         Config cnf;
         if (configObj == null) {
             cnf = new Config();
-            System.out.println("null");
+            LogUtil.log("null");
         } else {
             cnf = (Config) configObj;
-            System.out.println("else");
+            LogUtil.log("else");
         }
         return cnf;
     }

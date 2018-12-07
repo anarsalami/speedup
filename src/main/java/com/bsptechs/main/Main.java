@@ -21,7 +21,8 @@ import com.bsptechs.main.util.ImageUtil;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
-
+import com.bsptechs.main.util.LogUtil;
+ 
 public class Main extends javax.swing.JFrame {
 
     SUConnectionTreeNode conn = null;
@@ -32,7 +33,7 @@ public class Main extends javax.swing.JFrame {
         menuNewQuery.setEnabled(false);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         setIcons();
-        System.out.println(getTabPanesTableName());
+        LogUtil.log(getTabPanesTableName());
     }
 
     public PanelUiElementInformation getInformationPanel() {

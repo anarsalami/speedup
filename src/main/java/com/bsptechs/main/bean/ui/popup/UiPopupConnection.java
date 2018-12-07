@@ -10,7 +10,7 @@ import com.bsptechs.main.bean.ui.frame.ConnectionFrame;
 import com.bsptechs.main.Config;
 import com.bsptechs.main.bean.ui.frame.CreatDB;
 import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -48,7 +48,7 @@ public class UiPopupConnection extends UiPopupAbstract {
     }
 
     public void delete() {
-        System.out.println("delete connection");
+        LogUtil.log("delete connection");
         SUConnectionTreeNode c = getSelectedConnection();
         c.reset();
         Main.instance().getConnectionTree().removeCustomTreeNode(c);
@@ -56,17 +56,17 @@ public class UiPopupConnection extends UiPopupAbstract {
     }
 
     public void properties() {
-        System.out.println("properites connection");
+        LogUtil.log("properites connection");
         ConnectionFrame.showAsUpdate(getSelectedConnection().getConnection());
     }
 
     public void connect() {
-        System.out.println("connection connection");
+        LogUtil.log("connection connection");
         getSelectedConnection().connect();
     }
 
     public void disconnect() {
-        System.out.println("disconnection connection");
+        LogUtil.log("disconnection connection");
         SUConnectionTreeNode cn = getSelectedConnection();
         cn.reset();
         cn.removeAllChildren();
@@ -74,7 +74,7 @@ public class UiPopupConnection extends UiPopupAbstract {
 
     
     public void createDb() {
-        System.out.println("create database");
+        LogUtil.log("create database");
         CreatDB create = new CreatDB();
         create.setVisible(true);
     }

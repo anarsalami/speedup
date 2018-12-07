@@ -30,7 +30,7 @@ public class FileUtility {
     public static void writeDBAndTblNameFile(String text, String fileName) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             bw.write(text);
-            System.out.println("Done");
+            LogUtil.log("Done");
         } catch (IOException e) {
             e.printStackTrace();
 

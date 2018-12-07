@@ -8,6 +8,7 @@ import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.dao.inter.DatabaseDAOInter;
 import java.util.List;
+import com.bsptechs.main.util.LogUtil;
 
 public class PanelDataTransferGeneral extends javax.swing.JPanel {
 
@@ -39,7 +40,7 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 
     public void prepareConnectionCombobox(SUConnectionTreeNode connection) {
 
-	System.out.println("prepareConnectionCombobox=" + connection);
+	LogUtil.log("prepareConnectionCombobox=" + connection);
 	comboboxConnectionSource.removeAllItems();
 	List<SUConnectionTreeNode> list = Main.instance().getConnectionTree().getConnectionNodes();
 	if (list == null) {
@@ -49,7 +50,7 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 	for (int i = 0; i < list.size(); i++) {
 	    comboboxConnectionSource.addItem(list.get(i).getConnection());
 	}
-	System.out.println("Config.getCurrentConnection()=" + connection);
+	LogUtil.log("Config.getCurrentConnection()=" + connection);
 	if (connection != null) {
 	    comboboxConnectionSource.setSelectedItem(connection);
 	}
@@ -59,7 +60,7 @@ public class PanelDataTransferGeneral extends javax.swing.JPanel {
 	if (connection == null) {
 	    return;
 	}
-	System.out.println("prepareDatabasesCombobox=" + database);
+	LogUtil.log("prepareDatabasesCombobox=" + database);
 	comboboxDatabaseSource.removeAllItems();
 	List<SUDatabaseBean> databases = connection.getAllDatabaseBeans();
 	if (databases == null) {

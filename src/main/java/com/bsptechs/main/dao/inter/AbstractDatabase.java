@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.List;
 import static javax.swing.UIManager.get;
 import lombok.SneakyThrows;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -25,7 +25,7 @@ public abstract class AbstractDatabase {
 
     public Connection connect(SUConnectionBean connection) throws ClassNotFoundException, SQLException {
         if (connection.getParentConnection() != null) {
-            System.out.println(connection.getName() + " is using its own connection which created before");
+            LogUtil.log(connection.getName() + " is using its own connection which created before");
             return connection.getParentConnection();
         }
 
@@ -83,7 +83,7 @@ public abstract class AbstractDatabase {
             int columnIndex = i + 1;
             String name = metadata.getColumnLabel(columnIndex);
             String label = metadata.getColumnLabel(columnIndex);
-//            System.out.println("label="+label);
+//            LogUtil.log("label="+label);
             SUTableBean tableBean = getTable(connection, rs, columnIndex);
             SUTableColumn column = new SUTableColumn(tableBean, name, false, getColumnType(rs, connection, columnIndex));
             column.setPrimaryKey(true);
@@ -116,7 +116,7 @@ public abstract class AbstractDatabase {
         for (SUTableColumn column : columns) {
             column.setPrimaryKey(pkColumns.getByName(column.getName()) != null);
             if (column.isPrimaryKey()) {
-                System.out.println("primary key=" + column);
+                LogUtil.log("primary key=" + column);
             }
         }
     }
@@ -125,7 +125,7 @@ public abstract class AbstractDatabase {
     private void fillReferencedColumns(SUArrayList<SUTableColumn> columns, SUConnectionBean connection) {
         SUTableBean table = getTable(columns);
         if (table == null) {
-            System.out.println("table is not unique");
+            LogUtil.log("table is not unique");
             return;
         }
         Connection conn = connect(connection);
@@ -137,7 +137,7 @@ public abstract class AbstractDatabase {
                 + " where table_name = ? and referenced_table_name is not null";
 
         PreparedStatement stmt = conn.prepareStatement(sqlQuery);
-        System.out.println("table.getName()=" + table.getName());
+        LogUtil.log("table.getName()=" + table.getName());
         stmt.setString(1, table.getName());
 
         ResultSet rs = stmt.executeQuery();
@@ -153,9 +153,9 @@ public abstract class AbstractDatabase {
             SUTableColumn refColumnBean = new SUTableColumn(new SUTableBean(refTableName, null), refColumnName, true, getColumnType(rs, connection, 4));
 
             ownerColumn.setReferencedColumn(refColumnBean);
-            System.out.println("owner column=" + ownerColumn);
-            System.out.println("referenced column=" + refColumnBean);
-            System.out.println("-------");
+            LogUtil.log("owner column=" + ownerColumn);
+            LogUtil.log("referenced column=" + refColumnBean);
+            LogUtil.log("-------");
         }
 
     }

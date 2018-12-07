@@ -10,6 +10,8 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import com.bsptechs.main.util.LogUtil;
+import com.bsptechs.main.util.LogUtil;
 
 /**
  *
@@ -83,11 +85,11 @@ public class NewTableFrame extends javax.swing.JFrame {
     private void removeRow() {
         int selectedRow = tblFieldPane.getSelectedRow();
         if (selectedRow != -1) {
-            System.out.println("selectedROW " + selectedRow);
+            LogUtil.log("selectedROW " + selectedRow);
             dm.removeRow(selectedRow);
         } else {
             int sonuncuCount = tblFieldPane.getModel().getRowCount() - 1;
-            System.out.println("sonuncuCount " + sonuncuCount);
+            LogUtil.log("sonuncuCount " + sonuncuCount);
             dm.removeRow(sonuncuCount);
         }
     }

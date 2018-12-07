@@ -10,7 +10,7 @@ import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -21,7 +21,7 @@ public class SUTableRow extends SUArrayList<SUTableCell> {
     private SUTableBean table;
 
     public SUTableRow() {
-        System.out.println("SUTableRow constr");
+        LogUtil.log("SUTableRow constr");
     }
 
     public List<SUTableCell> getAllPrimaryCell() {
@@ -74,7 +74,14 @@ public class SUTableRow extends SUArrayList<SUTableCell> {
 
     public void discardChanges() {
         forEach(s -> {
-            s.setValue(s.getOldValue());
+            s.setValue(s.getOriginalValue());
+            s.setEditing(false);
+        });
+        
+    }
+    
+    public void discardEditing() {
+        forEach(s -> {
             s.setEditing(false);
         });
         

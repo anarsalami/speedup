@@ -14,7 +14,7 @@ import com.bsptechs.main.bean.ui.tree.database.SUDatabaseTreeNode;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import java.util.List;
 import lombok.Data;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author Goshgar
@@ -54,7 +54,7 @@ public class CreatDB extends javax.swing.JFrame {
 
     private void fillCollationCombo() {
         Charset selectedCharset = (Charset) charsetCmbo.getSelectedItem();
-        System.out.println(selectedCharset);
+        LogUtil.log(selectedCharset);
         collationCombo.removeAllItems();
         List<Collation> collations = databaseDAOImpl.getAllCollations(Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection(), selectedCharset);
         for (Collation collation : collations) {

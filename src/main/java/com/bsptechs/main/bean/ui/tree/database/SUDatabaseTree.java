@@ -17,7 +17,7 @@ import java.util.Enumeration;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
+import com.bsptechs.main.util.LogUtil;
 /**
  *
  * @author sarkhanrasullu
@@ -28,7 +28,7 @@ public class SUDatabaseTree extends SUAbstractTree {
     private SUDatabaseTreeNode currentDatabaseNode = null;
 
     public void addConnectionNode(SUConnectionBean connection) {
-        System.out.println(connection);
+        LogUtil.log(connection);
         this.addCustomTreeNodeToRoot(new SUConnectionTreeNode(this, connection));
     }
 
@@ -128,7 +128,7 @@ public class SUDatabaseTree extends SUAbstractTree {
                 }
 
                 if (MouseUtil.isLeftClicked(evt)) {
-                    System.out.println("left clicked");
+                    LogUtil.log("left clicked");
                     PanelUiElementInformation pnlInfor = Main.instance().getInformationPanel();
                     pnlInfor.preparePanel(element);
                 }
