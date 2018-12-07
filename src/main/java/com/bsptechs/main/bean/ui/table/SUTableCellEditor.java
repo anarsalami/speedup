@@ -5,6 +5,7 @@ import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.bean.SUQueryResult;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUTableBean;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
+import com.bsptechs.main.util.LogUtil;
 import java.awt.Component;
 import java.util.Vector;
 import javax.swing.AbstractCellEditor;
@@ -54,7 +55,10 @@ class SUTableCellEditor extends AbstractCellEditor implements TableCellEditor {
                 SUTableCell cell = row.getByColumnName(column.getReferencedColumn().getName());
                 cells.add(cell);
             }
-            component = new JComboBox<SUTableCell>(cells);
+           JComboBox cb = new JComboBox<SUTableCell>(cells);
+           cb.setSelectedItem(cell);
+           LogUtil.log("cell value="+cell.getValue());
+           component = cb;
         } else {
             component = new JTextField();
             JTextField textField = (JTextField) component;

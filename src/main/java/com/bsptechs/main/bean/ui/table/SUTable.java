@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import lombok.Data;
 import com.bsptechs.main.util.LogUtil;
+
 /**
  *
  * @author sarkhanrasullu
@@ -62,31 +63,23 @@ public class SUTable extends JTable {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                LogUtil.log("prev="+prev);
-                if(getSelectedRow()<0) return;
+                LogUtil.log("prev=" + prev);
+                if (getSelectedRow() < 0) {
+                    return;
+                }
                 i++;
-                
-//                LogUtil.log("i="+i);
+
                 SUTableRow selectedRow = getTableModel().getTableRows().get(prev);
                 prev = getSelectedRow();
 
-//                if (i == 1) {
-                    LogUtil.log("Selected: " + selectedRow);
-                    saveRow(selectedRow);
-//                } else {
-//                    i = 0;
-//                }
+                LogUtil.log("Selected: " + selectedRow);
+                saveRow(selectedRow);
             }
 
         });
         this.setSelectionModel(selectionModel);
     }
 
-//    @Override
-//    public void setModel(TableModel m) {
-//        super.setModel(m);
-////        throw new RuntimeException("can not use setModel");
-//    }
     public SUTableModel getTableModel() {
         return (SUTableModel) super.getModel();
     }
@@ -157,7 +150,6 @@ public class SUTable extends JTable {
         LogUtil.log("editing row=" + row);
         db.saveRow(query.getConnection(), row);
         row.discardEditing();
-//        getTableModel().fireTableDataChanged();
     }
 
     @Override

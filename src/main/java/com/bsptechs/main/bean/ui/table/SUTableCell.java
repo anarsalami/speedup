@@ -7,6 +7,7 @@ package com.bsptechs.main.bean.ui.table;
 
 import lombok.Data;
 import com.bsptechs.main.util.LogUtil;
+import java.util.Objects;
 /**
  *
  * @author sarkhanrasullu
@@ -56,6 +57,27 @@ public class SUTableCell {
         this.value = value;
         this.onChange.action(this);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SUTableCell)) {
+            return false;
+        }
+        
+        final SUTableCell other = (SUTableCell) obj;
+        if (!Objects.equals(this.value, other.value)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
     @Override
     public String toString() {

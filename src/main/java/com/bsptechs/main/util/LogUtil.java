@@ -11,11 +11,11 @@ package com.bsptechs.main.util;
  */
 public class LogUtil {
 
-    private static boolean developmentMode = false;
+    private static boolean developmentMode = true;
 
     public static void log(Object txt) {
         if (developmentMode) {
-            LogUtil.log(txt);
+            System.out.println(txt);
         }
     }
 
