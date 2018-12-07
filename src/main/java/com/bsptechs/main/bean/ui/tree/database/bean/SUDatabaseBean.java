@@ -5,6 +5,8 @@
  */
 package com.bsptechs.main.bean.ui.tree.database.bean;
 
+import java.beans.Transient;
+import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -12,9 +14,10 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class SUDatabaseBean {
+public class SUDatabaseBean implements Serializable{
 
     private String name;
+  
     private SUConnectionBean connection;
     
     @Override

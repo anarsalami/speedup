@@ -18,7 +18,6 @@ import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -46,6 +45,7 @@ public class Main extends javax.swing.JFrame {
 
     public JTabbedPane getTabbedPaneCenter() {
         return tabbedPaneCenter;
+        
     }
 
     public void setIcons() {
@@ -87,9 +87,9 @@ public class Main extends javax.swing.JFrame {
     public List<String> getTabPanesTableName() {
         List<String> names = new ArrayList<>();
         for (int i = 0; i < tabbedPaneCenter.getTabCount(); i++) {
-          names.add(tabbedPaneCenter.getTitleAt(i));   
+            names.add(tabbedPaneCenter.getTitleAt(i));
         }
-       return names;
+        return names;
     }
 
     public SUDatabaseTree getConnectionTree() {
