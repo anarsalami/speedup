@@ -7,6 +7,8 @@ package com.bsptechs.main.bean.ui.panel.queryresult;
 
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.SUQueryBean;
+import com.bsptechs.main.bean.ui.frame.SetQueryLocation;
+import com.bsptechs.main.bean.ui.panel.PanelSetQueryLocation;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
@@ -473,12 +475,13 @@ public class PanelQuery extends javax.swing.JPanel {
     }//GEN-LAST:event_btnExportResultMouseEntered
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        String query = txtQuery.getText();
-        SUDatabaseBean database=getSelectedDatabase();
-        SUConnectionBean connection=Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection();
-        SUQueryBean savedQuery=new SUQueryBean(connection,database, query,"SecondQuery");
-        FileUtility.writeObjectToFile(savedQuery, "queries.txt");
-       
+        new SetQueryLocation().setVisible(true);
+        //        String query = txtQuery.getText();
+        //        SUDatabaseBean database=getSelectedDatabase();
+        //        SUConnectionBean connection=Main.instance().getConnectionTree().getCurrentConnectionNode().getConnection();
+        //        SUQueryBean savedQuery=new SUQueryBean(connection,database, query,"SecondQuery");
+        //        FileUtility.writeObjectToFile(savedQuery, "queries.txt");
+
     }//GEN-LAST:event_btnSaveActionPerformed
 
     public SUDatabaseBean getSelectedDatabase() {
