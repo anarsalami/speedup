@@ -29,12 +29,12 @@ public class PanelSavedQuery extends javax.swing.JPanel {
     }
 
     private void fillQueryTree() {
-        List<SUQueryBean> queryList=FileUtility.readObjectsAsList("queries.txt");
-         DefaultListModel model=new DefaultListModel();
-        for (SUQueryBean queries : queryList) {
-           model.addElement(queries.getName());
-        }
-       savedQueriesJList.setModel(model);
+//        List<SUQueryBean> queryList=FileUtility.readObjectsAsList("queries.txt");
+//         DefaultListModel model=new DefaultListModel();
+//        for (SUQueryBean queries : queryList) {
+//           model.addElement(queries.getName());
+//        }
+//       savedQueriesJList.setModel(model);
       
     }
 

@@ -5,9 +5,19 @@
  */
 package com.bsptechs.main.bean.ui.frame;
 
+import com.bsptechs.main.Config;
+import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.SUArrayList;
+import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
+import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
+import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
+import com.bsptechs.main.util.LogUtil;
 import com.bsptechs.main.util.Util;
+import java.util.List;
+import javax.swing.tree.DefaultMutableTreeNode;
+
 /**
  *
  * @author Goshgar
@@ -17,9 +27,12 @@ public class SetQueryLocation extends javax.swing.JFrame {
     /**
      * Creates new form SetQueryLocation
      */
+    SUTableTreeNode table = (SUTableTreeNode) Main.instance().getConnectionTree().getSelectedNode();
+    DatabaseDAOImpl dao=new DatabaseDAOImpl();
     public SetQueryLocation() {
         initComponents();
-       
+        frameFirstOpened();
+        fillConnectionCombo();
     }
 
     /**
@@ -31,21 +44,36 @@ public class SetQueryLocation extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        cmbConnection = new javax.swing.JComboBox<>();
+        pnlUserAgre = new javax.swing.JPanel();
         txtQueryName = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lblQueryLocation = new javax.swing.JLabel();
         jToggleButton1 = new javax.swing.JToggleButton();
-        jPanel2 = new javax.swing.JPanel();
+        pnlUserChoice = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        cmbConnection = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         cmbDatabase = new javax.swing.JComboBox<>();
-        cancelBtn3 = new javax.swing.JButton();
-        submitCreateDB = new javax.swing.JButton();
+        connectionCmbo = new javax.swing.JComboBox<>();
+        btnCancel = new javax.swing.JButton();
+        btnSubmit = new javax.swing.JButton();
+
+        cmbConnection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbConnectionActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         txtQueryName.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0, 0, 153)));
 
@@ -57,37 +85,42 @@ public class SetQueryLocation extends javax.swing.JFrame {
 
         jToggleButton1.setText(">");
         jToggleButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlUserAgreLayout = new javax.swing.GroupLayout(pnlUserAgre);
+        pnlUserAgre.setLayout(pnlUserAgreLayout);
+        pnlUserAgreLayout.setHorizontalGroup(
+            pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserAgreLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtQueryName)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(pnlUserAgreLayout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(121, 121, 121))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUserAgreLayout.createSequentialGroup()
                         .addComponent(lblQueryLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
                         .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        pnlUserAgreLayout.setVerticalGroup(
+            pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserAgreLayout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtQueryName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblQueryLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jToggleButton1))
                 .addGap(7, 7, 7))
@@ -97,45 +130,56 @@ public class SetQueryLocation extends javax.swing.JFrame {
 
         jLabel4.setText("Schema");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbDatabase, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmbConnection, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
-        );
-
-        cancelBtn3.setText("Cancel");
-        cancelBtn3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelBtn3ActionPerformed(evt);
+        cmbDatabase.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbDatabaseItemStateChanged(evt);
             }
         });
 
-        submitCreateDB.setText("OK");
-        submitCreateDB.addActionListener(new java.awt.event.ActionListener() {
+        connectionCmbo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                connectionCmboItemStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlUserChoiceLayout = new javax.swing.GroupLayout(pnlUserChoice);
+        pnlUserChoice.setLayout(pnlUserChoiceLayout);
+        pnlUserChoiceLayout.setHorizontalGroup(
+            pnlUserChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserChoiceLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlUserChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmbDatabase, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlUserChoiceLayout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(connectionCmbo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        pnlUserChoiceLayout.setVerticalGroup(
+            pnlUserChoiceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlUserChoiceLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(connectionCmbo, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmbDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                submitCreateDBActionPerformed(evt);
+                btnCancelActionPerformed(evt);
+            }
+        });
+
+        btnSubmit.setText("OK");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
             }
         });
 
@@ -143,41 +187,109 @@ public class SetQueryLocation extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlUserAgre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(142, 142, 142)
-                .addComponent(submitCreateDB, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelBtn3)
+                .addComponent(btnCancel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(pnlUserChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlUserAgre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlUserChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(submitCreateDB)
-                    .addComponent(cancelBtn3))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(btnSubmit)
+                    .addComponent(btnCancel))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+    int pnlUserChoiceHeight;
 
-    private void cancelBtn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtn3ActionPerformed
+    private void frameFirstOpened() {
+        pnlUserChoiceHeight = pnlUserChoice.getHeight();
+        int thisSizeWithoutUserChooice = this.getHeight() - pnlUserChoice.getHeight();
+        this.setSize(this.getWidth(), thisSizeWithoutUserChooice);
+        pnlUserChoice.setVisible(false);
+        lblQueryLocation.setText(table.getTable().getDatabase().getConnection().getName());
+
+    }
+
+    private List<SUConnectionBean> fillConnectionCombo() {
+        Config.initialize();
+        List<SUConnectionBean> connections = Config.getConnectionBeans();
+        for (SUConnectionBean connection : connections) {
+            connectionCmbo.addItem(connection);
+        }
+        return connections;
+    }
+
+    private void fillDatabaseCmbo() {
+        SUConnectionBean selectedConnection=(SUConnectionBean)connectionCmbo.getSelectedItem();
+        SUArrayList<SUDatabaseBean> databases=dao.getAllDatabases(selectedConnection);
+       for(SUDatabaseBean database:databases){
+       cmbDatabase.addItem(database);
+       }
         
-        
-    }//GEN-LAST:event_cancelBtn3ActionPerformed
+    }
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelActionPerformed
 
-    private void submitCreateDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitCreateDBActionPerformed
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
 
-    }//GEN-LAST:event_submitCreateDBActionPerformed
+    }//GEN-LAST:event_btnSubmitActionPerformed
+    int key = 0;
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        key++;
+
+        if (key % 2 == 1) {
+            this.setSize(this.getWidth(), this.getHeight() + pnlUserChoiceHeight);
+            btnCancel.setVisible(false);
+            btnSubmit.setVisible(false);
+            pnlUserChoice.setVisible(true);
+            btnCancel.setVisible(true);
+            btnSubmit.setVisible(true);
+        }
+        if (key % 2 == 0) {
+            this.setSize(this.getWidth(), this.getHeight() - pnlUserChoiceHeight);
+            btnCancel.setVisible(true);
+            btnSubmit.setVisible(true);
+            pnlUserChoice.setVisible(false);
+            btnCancel.setVisible(true);
+            btnSubmit.setVisible(true);
+
+        }
+
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void cmbConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbConnectionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbConnectionActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formWindowActivated
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+
+    }//GEN-LAST:event_formWindowOpened
+
+    private void cmbDatabaseItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbDatabaseItemStateChanged
+       
+    }//GEN-LAST:event_cmbDatabaseItemStateChanged
+
+    private void connectionCmboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_connectionCmboItemStateChanged
+        fillDatabaseCmbo();
+    }//GEN-LAST:event_connectionCmboItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -215,18 +327,19 @@ public class SetQueryLocation extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelBtn3;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JComboBox<SUConnectionBean> cmbConnection;
     private javax.swing.JComboBox<SUDatabaseBean> cmbDatabase;
+    private javax.swing.JComboBox<SUConnectionBean> connectionCmbo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel lblQueryLocation;
-    private javax.swing.JButton submitCreateDB;
+    private javax.swing.JPanel pnlUserAgre;
+    private javax.swing.JPanel pnlUserChoice;
     private javax.swing.JTextField txtQueryName;
     // End of variables declaration//GEN-END:variables
 }

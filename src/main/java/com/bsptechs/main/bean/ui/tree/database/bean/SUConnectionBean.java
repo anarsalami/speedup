@@ -20,7 +20,7 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class SUConnectionBean implements Serializable{
+public class SUConnectionBean implements Serializable {
 
     private String name;
     private String ipAdr;
@@ -40,8 +40,6 @@ public class SUConnectionBean implements Serializable{
         this.userName = userName;
         this.password = password;
     }
-     
- 
 
     public void reset() {
         try {
@@ -56,5 +54,8 @@ public class SUConnectionBean implements Serializable{
         }
     }
 
-  
+    @Override
+    public String toString() {
+        return name;
+    }
 }
