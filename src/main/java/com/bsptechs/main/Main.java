@@ -263,6 +263,11 @@ public class Main extends javax.swing.JFrame {
                 btnBackupMouseExited(evt);
             }
         });
+        btnBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackupActionPerformed(evt);
+            }
+        });
 
         btnReport.setText("Report");
         btnReport.setBorder(null);
@@ -298,6 +303,11 @@ public class Main extends javax.swing.JFrame {
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnQueryMouseExited(evt);
+            }
+        });
+        btnQuery.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQueryActionPerformed(evt);
             }
         });
 
@@ -824,6 +834,14 @@ public class Main extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_menuDataTransferActionPerformed
+
+    private void btnQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueryActionPerformed
+        //Goshgar Dolduracaq
+    }//GEN-LAST:event_btnQueryActionPerformed
+
+    private void btnBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackupActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBackupActionPerformed
 
     @SneakyThrows
     public PanelQuery prepareNewQuery(String queryStr, boolean run) {

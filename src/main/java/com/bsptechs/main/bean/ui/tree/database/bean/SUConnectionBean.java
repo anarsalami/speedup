@@ -6,6 +6,7 @@
 package com.bsptechs.main.bean.ui.tree.database.bean;
 
 import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -29,6 +30,8 @@ public class SUConnectionBean implements Serializable {
     private String password;
     private transient Connection parentConnection;
     private transient List<SUDatabaseBean> databases;
+    private List<SUQueryBean> queries;
+    
 
     public SUConnectionBean() {
     }

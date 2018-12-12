@@ -8,15 +8,14 @@ package com.bsptechs.main.bean.ui.frame;
 import com.bsptechs.main.Config;
 import com.bsptechs.main.Main;
 import com.bsptechs.main.bean.SUArrayList;
-import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
+import com.bsptechs.main.bean.SUQueryBean;
+import com.bsptechs.main.bean.ui.panel.queryresult.PanelQuery;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.ui.tree.database.bean.SUDatabaseBean;
 import com.bsptechs.main.dao.impl.DatabaseDAOImpl;
 import com.bsptechs.main.util.LogUtil;
-import com.bsptechs.main.util.Util;
 import java.util.List;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -28,7 +27,13 @@ public class SetQueryLocation extends javax.swing.JFrame {
      * Creates new form SetQueryLocation
      */
     SUTableTreeNode table = (SUTableTreeNode) Main.instance().getConnectionTree().getSelectedNode();
-    DatabaseDAOImpl dao=new DatabaseDAOImpl();
+    DatabaseDAOImpl dao = new DatabaseDAOImpl();
+    private String queryBody;
+
+    public void setQueryBody(String queryBody) {
+        this.queryBody = queryBody;
+    }
+
     public SetQueryLocation() {
         initComponents();
         frameFirstOpened();
@@ -50,7 +55,7 @@ public class SetQueryLocation extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lblQueryLocation = new javax.swing.JLabel();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        userChoice = new javax.swing.JToggleButton();
         pnlUserChoice = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -83,11 +88,11 @@ public class SetQueryLocation extends javax.swing.JFrame {
 
         lblQueryLocation.setText("localhost");
 
-        jToggleButton1.setText(">");
-        jToggleButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+        userChoice.setText(">");
+        userChoice.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        userChoice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
+                userChoiceActionPerformed(evt);
             }
         });
 
@@ -98,17 +103,19 @@ public class SetQueryLocation extends javax.swing.JFrame {
             .addGroup(pnlUserAgreLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtQueryName)
                     .addGroup(pnlUserAgreLayout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(121, 121, 121))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUserAgreLayout.createSequentialGroup()
-                        .addComponent(lblQueryLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)))
-                .addContainerGap())
+                        .addGroup(pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(pnlUserAgreLayout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(121, 121, 121))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlUserAgreLayout.createSequentialGroup()
+                                .addComponent(lblQueryLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(userChoice, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)))
+                        .addContainerGap())))
         );
         pnlUserAgreLayout.setVerticalGroup(
             pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,13 +129,13 @@ public class SetQueryLocation extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(pnlUserAgreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblQueryLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButton1))
+                    .addComponent(userChoice))
                 .addGap(7, 7, 7))
         );
 
-        jLabel3.setText("Connection");
+        jLabel3.setText("Connection:");
 
-        jLabel4.setText("Schema");
+        jLabel4.setText("Schema:");
 
         cmbDatabase.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -233,24 +240,39 @@ public class SetQueryLocation extends javax.swing.JFrame {
     }
 
     private void fillDatabaseCmbo() {
-        SUConnectionBean selectedConnection=(SUConnectionBean)connectionCmbo.getSelectedItem();
-        SUArrayList<SUDatabaseBean> databases=dao.getAllDatabases(selectedConnection);
-       for(SUDatabaseBean database:databases){
-       cmbDatabase.addItem(database);
-       }
-        
+        cmbDatabase.removeAllItems();
+        SUDatabaseBean firstDatabase = null;
+        cmbDatabase.addItem(firstDatabase);
+        SUConnectionBean selectedConnection = (SUConnectionBean) connectionCmbo.getSelectedItem();
+        SUArrayList<SUDatabaseBean> databases = dao.getAllDatabases(selectedConnection);
+        for (SUDatabaseBean database : databases) {
+            cmbDatabase.addItem(database);
+        }
+
+    }
+
+    private void saveQuery() {
+        String queryName = txtQueryName.getText();
+        SUConnectionBean selectedConnection = (SUConnectionBean) connectionCmbo.getSelectedItem();
+        SUDatabaseBean selectedDatabase = (SUDatabaseBean) cmbDatabase.getSelectedItem();
+        SUQueryBean savedQuery = new SUQueryBean(selectedConnection, selectedDatabase, queryBody, queryName);
+        SUArrayList<SUQueryBean> queries = new SUArrayList<>();
+        queries.add(savedQuery);
+        Config.instance().setQueryBeans(queries);
+        Config.instance().saveConfig();
     }
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        saveQuery();
+        this.dispose();
 
     }//GEN-LAST:event_btnSubmitActionPerformed
     int key = 0;
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+    private void userChoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userChoiceActionPerformed
         key++;
-
         if (key % 2 == 1) {
             this.setSize(this.getWidth(), this.getHeight() + pnlUserChoiceHeight);
             btnCancel.setVisible(false);
@@ -269,7 +291,7 @@ public class SetQueryLocation extends javax.swing.JFrame {
 
         }
 
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
+    }//GEN-LAST:event_userChoiceActionPerformed
 
     private void cmbConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbConnectionActionPerformed
         // TODO add your handling code here:
@@ -284,11 +306,12 @@ public class SetQueryLocation extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void cmbDatabaseItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbDatabaseItemStateChanged
-       
+
     }//GEN-LAST:event_cmbDatabaseItemStateChanged
 
     private void connectionCmboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_connectionCmboItemStateChanged
         fillDatabaseCmbo();
+        lblQueryLocation.setText(connectionCmbo.getSelectedItem().toString());
     }//GEN-LAST:event_connectionCmboItemStateChanged
 
     /**
@@ -336,10 +359,10 @@ public class SetQueryLocation extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JLabel lblQueryLocation;
     private javax.swing.JPanel pnlUserAgre;
     private javax.swing.JPanel pnlUserChoice;
     private javax.swing.JTextField txtQueryName;
+    private javax.swing.JToggleButton userChoice;
     // End of variables declaration//GEN-END:variables
 }

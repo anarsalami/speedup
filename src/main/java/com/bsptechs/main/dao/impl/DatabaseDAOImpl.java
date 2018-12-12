@@ -414,9 +414,5 @@ public class DatabaseDAOImpl extends AbstractDatabase implements DatabaseDAOInte
         return true;
 
     }
-
-    public boolean saveQuery(SUQueryBean query) {
-        //Goshgar ichini dolduracaq
-        return true;
-    }
+   
 }
