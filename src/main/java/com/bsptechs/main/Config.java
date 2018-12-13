@@ -2,6 +2,7 @@ package com.bsptechs.main;
 
 import com.bsptechs.main.bean.ui.tree.database.bean.SUConnectionBean;
 import com.bsptechs.main.bean.SUArrayList;
+import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.util.FileUtility;
 import java.io.Serializable;
 import com.bsptechs.main.util.LogUtil;
@@ -13,6 +14,7 @@ public final class Config implements Serializable {
     private static Config config = null;
 
     private SUArrayList<SUConnectionBean> connectionBeans = new SUArrayList<>();
+    private SUArrayList<SUQueryBean> queryBeans = new SUArrayList<SUQueryBean>();
 
     public static void initialize() {
         config = readConfig();
@@ -24,6 +26,14 @@ public final class Config implements Serializable {
 
     public static SUArrayList<SUConnectionBean> getConnectionBeans() {
         return instance().connectionBeans;
+    }
+
+    public void setQueryBeans(SUArrayList<SUQueryBean> queryBeans) {
+        this.queryBeans = queryBeans;
+    }
+
+    public static SUArrayList<SUQueryBean> getQueryBeans() {
+        return instance().queryBeans;
     }
 
     public void saveConfig() {

@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import com.bsptechs.main.bean.ui.frame.DataTransferFrame;
+import com.bsptechs.main.bean.ui.frame.SignInFrom;
 import com.bsptechs.main.bean.ui.panel.PanelUiElementInformation;
 import com.bsptechs.main.bean.ui.tree.database.SUTableTreeNode;
 import com.bsptechs.main.util.ImageUtil;
@@ -132,6 +133,7 @@ public class Main extends javax.swing.JFrame {
         tabNewTable = new javax.swing.JTabbedPane();
         tabTables = new javax.swing.JTabbedPane();
         pnlUiElementInformation = new com.bsptechs.main.bean.ui.panel.PanelUiElementInformation();
+        signIn = new javax.swing.JToggleButton();
         menuBarTop = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuNewConnection = new javax.swing.JMenuItem();
@@ -263,6 +265,11 @@ public class Main extends javax.swing.JFrame {
                 btnBackupMouseExited(evt);
             }
         });
+        btnBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackupActionPerformed(evt);
+            }
+        });
 
         btnReport.setText("Report");
         btnReport.setBorder(null);
@@ -298,6 +305,11 @@ public class Main extends javax.swing.JFrame {
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnQueryMouseExited(evt);
+            }
+        });
+        btnQuery.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQueryActionPerformed(evt);
             }
         });
 
@@ -419,7 +431,7 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(btnAutomation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(btnModel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 184, Short.MAX_VALUE))
         );
         pnlMainTopLayout.setVerticalGroup(
             pnlMainTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -469,7 +481,7 @@ public class Main extends javax.swing.JFrame {
         );
         panelLeftLayout.setVerticalGroup(
             panelLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
         );
 
         splitPaneCenter.setLeftComponent(panelLeft);
@@ -511,18 +523,31 @@ public class Main extends javax.swing.JFrame {
             .addComponent(splitPaneCenter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        signIn.setText("Sign In");
+        signIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signInActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelWrapperLayout = new javax.swing.GroupLayout(panelWrapper);
         panelWrapper.setLayout(panelWrapperLayout);
         panelWrapperLayout.setHorizontalGroup(
             panelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMainTop, javax.swing.GroupLayout.DEFAULT_SIZE, 1431, Short.MAX_VALUE)
             .addComponent(panelCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(panelWrapperLayout.createSequentialGroup()
+                .addComponent(pnlMainTop, javax.swing.GroupLayout.PREFERRED_SIZE, 1208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(signIn, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(67, 67, 67))
         );
         panelWrapperLayout.setVerticalGroup(
             panelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWrapperLayout.createSequentialGroup()
-                .addComponent(pnlMainTop, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelWrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlMainTop, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(signIn, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
                 .addComponent(panelCenter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -825,6 +850,18 @@ public class Main extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuDataTransferActionPerformed
 
+    private void btnQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQueryActionPerformed
+        //Goshgar Dolduracaq
+    }//GEN-LAST:event_btnQueryActionPerformed
+
+    private void btnBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackupActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBackupActionPerformed
+
+    private void signInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInActionPerformed
+       new SignInFrom().setVisible(true);
+    }//GEN-LAST:event_signInActionPerformed
+
     @SneakyThrows
     public PanelQuery prepareNewQuery(String queryStr, boolean run) {
         SUDatabaseTree tree = getConnectionTree();
@@ -950,6 +987,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel panelWrapper;
     private javax.swing.JPanel pnlMainTop;
     private com.bsptechs.main.bean.ui.panel.PanelUiElementInformation pnlUiElementInformation;
+    private javax.swing.JToggleButton signIn;
     private javax.swing.JSplitPane splitPaneCenter;
     private javax.swing.JTabbedPane tabDesignTable;
     private javax.swing.JTabbedPane tabNewTable;

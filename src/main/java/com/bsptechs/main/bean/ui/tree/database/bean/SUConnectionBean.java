@@ -6,6 +6,7 @@
 package com.bsptechs.main.bean.ui.tree.database.bean;
 
 import com.bsptechs.main.Main;
+import com.bsptechs.main.bean.SUQueryBean;
 import com.bsptechs.main.bean.ui.tree.database.SUConnectionTreeNode;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -20,7 +21,7 @@ import lombok.Data;
  * @author sarkhanrasullu
  */
 @Data
-public class SUConnectionBean implements Serializable{
+public class SUConnectionBean implements Serializable {
 
     private String name;
     private String ipAdr;
@@ -29,6 +30,8 @@ public class SUConnectionBean implements Serializable{
     private String password;
     private transient Connection parentConnection;
     private transient List<SUDatabaseBean> databases;
+    private List<SUQueryBean> queries;
+    
 
     public SUConnectionBean() {
     }
@@ -40,8 +43,6 @@ public class SUConnectionBean implements Serializable{
         this.userName = userName;
         this.password = password;
     }
-     
- 
 
     public void reset() {
         try {
@@ -56,5 +57,8 @@ public class SUConnectionBean implements Serializable{
         }
     }
 
-  
+    @Override
+    public String toString() {
+        return name;
+    }
 }

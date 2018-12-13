@@ -60,23 +60,14 @@ public class FileUtility {
     }
 
     public static boolean writeObjectToFile(Object object, String name) throws RuntimeException {
-        if (name.equalsIgnoreCase("queries.txt")) {
-            try (FileOutputStream fout = new FileOutputStream(name, true);
+       try (FileOutputStream fout = new FileOutputStream(name);
                     ObjectOutputStream oos = new ObjectOutputStream(fout);) {
                 oos.writeObject(object);
                 return true;
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-        } else {
-            try (FileOutputStream fout = new FileOutputStream(name);
-                    ObjectOutputStream oos = new ObjectOutputStream(fout);) {
-                oos.writeObject(object);
-                return true;
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+        
     }
 
  

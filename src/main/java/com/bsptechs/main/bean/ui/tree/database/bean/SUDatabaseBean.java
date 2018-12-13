@@ -5,7 +5,6 @@
  */
 package com.bsptechs.main.bean.ui.tree.database.bean;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import lombok.Data;
 
